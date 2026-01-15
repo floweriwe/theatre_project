@@ -1,0 +1,93 @@
+# =============================================================================
+# Theatre Backend - Production Dockerfile
+# =============================================================================
+# Multi-stage build для минимизации размера образа
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Stage 1: Builder
+# -----------------------------------------------------------------------------
+FROM python:3.12-slim as builder
+
+WORKDIR /app
+
+# Установка build зависимостей
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Копирование и установка зависимостей
+COPY pyproject.toml ./
+RUN pip install --upgrade pip && \
+    pip wheel --no-cache-dir --wheel-dir /app/wheels -e .
+
+# -----------------------------------------------------------------------------
+# Stage 2: Production
+# -----------------------------------------------------------------------------
+FROM python:3.12-slim as production
+
+# Метаданные
+LABEL maintainer="Theatre Team"
+LABEL description="Theatre Management System - Backend API (Production)"
+LABEL version="1.0.0"
+
+# Создаём непривилегированного пользователя
+RUN groupadd --gid 1000 theatre && \
+    useradd --uid 1000 --gid theatre --shell /bin/bash --create-home theatre
+
+# Переменные окружения
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    # Gunicorn
+    WORKERS=4 \
+    WORKER_CLASS=uvicorn.workers.UvicornWorker \
+    TIMEOUT=120 \
+    GRACEFUL_TIMEOUT=30 \
+    KEEP_ALIVE=5
+
+WORKDIR /app
+
+# Установка runtime зависимостей
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Копирование wheels из builder
+COPY --from=builder /app/wheels /wheels
+RUN pip install --no-cache-dir /wheels/* && rm -rf /wheels
+
+# Копирование исходного кода
+COPY --chown=theatre:theatre app/ ./app/
+COPY --chown=theatre:theatre alembic/ ./alembic/
+COPY --chown=theatre:theatre alembic.ini ./
+COPY --chown=theatre:theatre scripts/ ./scripts/
+
+# Создание директорий
+RUN mkdir -p /app/storage /app/logs && \
+    chown -R theatre:theatre /app
+
+# Переключение на непривилегированного пользователя
+USER theatre
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Порт
+EXPOSE 8000
+
+# Запуск через Gunicorn с Uvicorn workers
+CMD ["sh", "-c", "gunicorn app.main:app \
+    --bind 0.0.0.0:8000 \
+    --workers ${WORKERS} \
+    --worker-class ${WORKER_CLASS} \
+    --timeout ${TIMEOUT} \
+    --graceful-timeout ${GRACEFUL_TIMEOUT} \
+    --keep-alive ${KEEP_ALIVE} \
+    --access-logfile /app/logs/access.log \
+    --error-logfile /app/logs/error.log \
+    --capture-output"]

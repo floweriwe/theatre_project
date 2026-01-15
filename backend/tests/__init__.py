@@ -1,0 +1,3 @@
+"""
+Тесты Theatre Management System.
+"""

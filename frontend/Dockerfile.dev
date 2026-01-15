@@ -1,0 +1,20 @@
+# =============================================================================
+# Theatre Frontend - Development Dockerfile
+# =============================================================================
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Устанавливаем зависимости
+COPY package*.json ./
+RUN npm install
+
+# Копируем исходники (для первичной сборки)
+COPY . .
+
+# Порт Vite dev server
+EXPOSE 5173
+
+# Запускаем dev server с hot reload
+CMD ["npm", "run", "dev", "--", "--host"]

@@ -1,0 +1,63 @@
+# =============================================================================
+# Theatre Frontend - Production Dockerfile
+# =============================================================================
+# Multi-stage build: Node.js для сборки, Nginx для раздачи
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Stage 1: Builder
+# -----------------------------------------------------------------------------
+FROM node:20-alpine as builder
+
+WORKDIR /app
+
+# Копируем package files
+COPY package*.json ./
+
+# Устанавливаем зависимости
+RUN npm ci --only=production=false
+
+# Копируем исходники
+COPY . .
+
+# Build аргументы для конфигурации
+ARG VITE_API_URL=/api/v1
+ENV VITE_API_URL=${VITE_API_URL}
+
+# Собираем production build
+RUN npm run build
+
+# -----------------------------------------------------------------------------
+# Stage 2: Production (Nginx)
+# -----------------------------------------------------------------------------
+FROM nginx:1.25-alpine as production
+
+# Метаданные
+LABEL maintainer="Theatre Team"
+LABEL description="Theatre Management System - Frontend (Production)"
+LABEL version="1.0.0"
+
+# Удаляем дефолтную конфигурацию
+RUN rm -rf /usr/share/nginx/html/* && \
+    rm /etc/nginx/conf.d/default.conf
+
+# Копируем собранное приложение
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Копируем конфигурацию Nginx
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+
+# Создаём директории для логов и кэша
+RUN mkdir -p /var/cache/nginx /var/log/nginx && \
+    chown -R nginx:nginx /var/cache/nginx /var/log/nginx /usr/share/nginx/html
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget -q --spider http://localhost:80/health || exit 1
+
+# Порт
+EXPOSE 80
+
+# Запуск Nginx
+CMD ["nginx", "-g", "daemon off;"]
