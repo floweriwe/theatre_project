@@ -1,0 +1,11 @@
+# Whitelist for Windows
+cat
+type
+dir
+echo
+findstr
+python
+python3
+git
+docker-compose
+curl

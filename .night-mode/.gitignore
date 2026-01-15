@@ -1,0 +1,6 @@
+# Temporary files night mode
+logs/*.log
+logs/progress.json
+backups/*
+*.pyc
+__pycache__/
