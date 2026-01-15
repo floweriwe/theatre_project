@@ -1,20 +1,20 @@
-# =============================================================================
-# Theatre Frontend - Development Dockerfile
-# =============================================================================
-
 FROM node:20-alpine
-
 WORKDIR /app
 
-# Устанавливаем зависимости
+# Кэш npm
+RUN mkdir -p /root/.npm
+
+# Копируем только package files (для кэширования слоя)
 COPY package*.json ./
-RUN npm install
 
-# Копируем исходники (для первичной сборки)
-COPY . .
+# npm ci быстрее чем npm install
+RUN npm ci \
+    --prefer-offline \
+    --no-audit \
+    --cache /root/.npm \
+    --loglevel=error
 
-# Порт Vite dev server
+# НЕ копируем исходники - они монтируются через volume!
+
 EXPOSE 5173
-
-# Запускаем dev server с hot reload
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

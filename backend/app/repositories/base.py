@@ -125,6 +125,21 @@ class BaseRepository(Generic[ModelType]):
         await self._session.refresh(instance)
         return instance
     
+    
+    async def update(self, id: int, data: dict[str, Any]) -> ModelType:
+        """Update entity by ID."""
+        instance = await self.get_by_id(id)
+        if not instance:
+            raise ValueError(f"Entity with id {id} not found")
+        
+        for key, value in data.items():
+            if hasattr(instance, key):
+                setattr(instance, key, value)
+        
+        await self._session.flush()
+        await self._session.refresh(instance)
+        return instance
+
     async def delete(self, instance: ModelType) -> None:
         """
         Удалить запись.

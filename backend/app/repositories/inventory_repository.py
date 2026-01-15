@@ -212,7 +212,7 @@ class InventoryItemRepository(BaseRepository[InventoryItem]):
         )
         
         result = await self._session.execute(query)
-        items = result.scalars().unique().all()
+        items = result.unique().scalars().all()
         
         return items, total
     
@@ -363,7 +363,7 @@ class InventoryMovementRepository(BaseRepository[InventoryMovement]):
             .limit(limit)
         )
         result = await self._session.execute(query)
-        return result.scalars().unique().all()
+        return result.unique().scalars().all()
     
     async def create_movement(
         self,

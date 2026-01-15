@@ -68,3 +68,9 @@ storage/temp/
 
 # Alembic
 alembic/versions/__pycache__/
+
+nul
+NUL
+CON
+PRN
+AUX

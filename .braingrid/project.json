@@ -1,0 +1,15 @@
+{
+  "organization_id": "37991b62-fb68-4224-bd85-a5fcef931d89",
+  "project_id": "2b0aa7e7-4195-4f6d-9e91-e5411f2fa9bf",
+  "project_short_id": "PROJ-1",
+  "project_name": "theatre_project",
+  "project_description": "Project for floweriwe/theatre_project",
+  "repository": {
+    "id": "66134609-4c23-4f25-b51a-fd2ed8bf7508",
+    "owner": "floweriwe",
+    "name": "theatre_project",
+    "full_name": "floweriwe/theatre_project",
+    "url": "https://github.com/floweriwe/theatre_project.git"
+  },
+  "created_at": "2026-01-15T19:13:12.868Z"
+}

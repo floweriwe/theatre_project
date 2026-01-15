@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(braingrid requirement breakdown:*)",
+      "Bash(docker-compose:*)",
+      "Bash(grep:*)",
+      "Bash(python:*)",
+      "Bash(dir /b \"C:\\\\Work\\\\projects\\\\theatre\\\\theatre_app_2026\\\\backend\\\\app\\\\models\")",
+      "Bash(dir /b \"C:\\\\Work\\\\projects\\\\theatre\\\\theatre_app_2026\\\\backend\\\\alembic\\\\versions\")"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "python .claude/scripts/context-monitor.py"
+  }
+}

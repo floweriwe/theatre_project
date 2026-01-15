@@ -1,0 +1,5 @@
+backend/app/**/*.py
+frontend/src/**/*.ts
+frontend/src/**/*.tsx
+backend/scripts/*.py
+backend/alembic/versions/*.py
