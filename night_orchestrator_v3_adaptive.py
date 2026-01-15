@@ -16,6 +16,7 @@ import threading
 from task_manager import TaskManager, Task, TaskStatus, TaskPriority, create_initial_tasks
 from result_analyzer import ResultAnalyzer
 from context_builder import ProjectContext
+from claude_cli_integration import ClaudeCliIntegration
 
 
 class AdaptiveOrchestrator:
@@ -38,6 +39,7 @@ class AdaptiveOrchestrator:
         self.task_manager = TaskManager(".night-mode/task_queue.json")
         self.analyzer = ResultAnalyzer(project_dir)
         self.context = ProjectContext(project_dir)
+        self.claude_cli = ClaudeCliIntegration(project_dir)
         
         # Состояние
         self.session_id = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -374,8 +376,9 @@ class AdaptiveOrchestrator:
     # =========================================================================
     
     def _action_code_edit(self, action: Dict) -> Dict[str, Any]:
-        """Редактировать код"""
+        """Редактировать код через Claude CLI"""
         file_path = action.get("file")
+        instruction = action.get("instruction", "Edit this file")
         
         if not file_path:
             return {"success": False, "error": "No file specified", "output": ""}
@@ -391,14 +394,20 @@ class AdaptiveOrchestrator:
         
         self.log(f"[CODE EDIT] {file_path}", "INFO")
         
-        # TODO: Здесь будет реальное редактирование кода
-        # Пока просто симуляция
-        output = f"Edited file: {file_path}"
+        context_data = {
+            "project_context": self.context.get_summary(),
+            "current_task": self.current_task.name if self.current_task else ""
+        }
         
-        return {"success": True, "error": None, "output": output}
+        try:
+            result = self.claude_cli.edit_file(file_path, instruction, context_data)
+            return result
+        except Exception as e:
+            self.log(f"[ERROR] Failed to edit file via Claude CLI: {e}", "ERROR")
+            return {"success": False, "error": str(e), "output": ""}
     
     def _action_code_create(self, action: Dict) -> Dict[str, Any]:
-        """Создать новый файл с кодом"""
+        """Создать новый файл с кодом через Claude CLI"""
         file_path = action.get("file")
         
         if not file_path:
@@ -420,17 +429,51 @@ class AdaptiveOrchestrator:
         
         self.log(f"[CODE CREATE] {file_path}", "INFO")
         
-        # TODO: Здесь будет генерация кода
-        # Пока создаём заглушку
+        # Определить тип файла и метод создания
+        file_name = os.path.basename(file_path)
+        model_name = self._extract_entity_name(file_name)
+        
+        context_data = {
+            "project_context": self.context.get_summary(),
+            "current_task": self.current_task.name if self.current_task else ""
+        }
+        
         try:
-            with open(full_path, 'w', encoding='utf-8') as f:
-                f.write("# TODO: Generated file\n")
+            # Выбрать правильный метод Claude CLI
+            if "/models/" in file_path:
+                result = self.claude_cli.create_model(model_name, file_path, context_data)
+            elif "/schemas/" in file_path:
+                result = self.claude_cli.create_schema(model_name, file_path, context_data)
+            elif "/repositories/" in file_path:
+                result = self.claude_cli.create_repository(model_name, file_path, context_data)
+            elif "/services/" in file_path:
+                result = self.claude_cli.create_service(model_name, file_path, context_data)
+            elif "/api/" in file_path:
+                result = self.claude_cli.create_api_endpoints(model_name, file_path, context_data)
+            else:
+                # Для других файлов - базовая генерация
+                self.log(f"[WARNING] Unknown file type: {file_path}, creating stub", "WARNING")
+                with open(full_path, 'w', encoding='utf-8') as f:
+                    f.write(f"# TODO: Generated file for {file_name}\n")
+                result = {"success": True, "output": f"Created stub: {file_path}", "error": None}
             
-            output = f"Created file: {file_path}"
-            return {"success": True, "error": None, "output": output}
+            return result
         
         except Exception as e:
+            self.log(f"[ERROR] Failed to create file via Claude CLI: {e}", "ERROR")
             return {"success": False, "error": str(e), "output": ""}
+    
+    def _extract_entity_name(self, file_name: str) -> str:
+        """Извлечь имя сущности из имени файла"""
+        # department.py → Department
+        # department_service.py → Department
+        # inventory_repository.py → Inventory
+        
+        name = file_name.replace(".py", "")
+        name = name.replace("_service", "").replace("_repository", "")
+        
+        # Capitalize first letter
+        return name.capitalize()
     
     def _action_command(self, action: Dict) -> Dict[str, Any]:
         """Выполнить команду"""

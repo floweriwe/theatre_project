@@ -15,7 +15,7 @@
         }
       ],
       "estimated_time": 60,
-      "created_at": "2026-01-16T05:36:05.092130",
+      "created_at": "2026-01-16T05:49:20.125041",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -38,7 +38,7 @@
         }
       ],
       "estimated_time": 30,
-      "created_at": "2026-01-16T05:36:05.092140",
+      "created_at": "2026-01-16T05:49:20.125052",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -61,7 +61,7 @@
         }
       ],
       "estimated_time": 60,
-      "created_at": "2026-01-16T05:36:05.092144",
+      "created_at": "2026-01-16T05:49:20.125056",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -75,7 +75,7 @@
       "description": "Scan all models and understand current structure",
       "phase": "phase-2-database",
       "priority": 1,
-      "status": "completed",
+      "status": "running",
       "dependencies": [
         "1.1",
         "1.2",
@@ -92,14 +92,11 @@
         }
       ],
       "estimated_time": 120,
-      "created_at": "2026-01-16T05:36:05.092148",
-      "started_at": "2026-01-16T05:36:05.110538",
-      "completed_at": "2026-01-16T05:36:05.800639",
+      "created_at": "2026-01-16T05:49:20.125061",
+      "started_at": "2026-01-16T05:49:20.143832",
+      "completed_at": null,
       "error": null,
-      "result": {
-        "time": 0.0010991096496582031,
-        "output": "Found 7 files matching backend/app/models/*.py\nC:\\Work\\projects\\theatre\\theatre_app_2026\\backend/app/models\\document.py\nC:\\Work\\projects\\theatre\\theatre_app_2026\\backend/app/models\\inventory.py\nC:\\Work\\projects\\theatre\\theatre_app_2026\\backend/app/models\\performance.py\nC:\\Work\\projects\\theatre\\theatre_app_2026\\backend/app/models\\schedule.py\nC:\\Work\\projects\\theatre\\theatre_app_2026\\backend/app/models\\theater.py\nC:\\Work\\projects\\theatre\\theatre_app_2026\\backend/app/models\\user.py\nC:\\Work\\projects\\theatre\\theatre_app_2026\\backend/app/models\\__init__.py\nAnalyzing database schema...\nModels: 6\nTables: 16\n"
-      },
+      "result": null,
       "generated_by": null,
       "auto_generated": false
     },
@@ -109,7 +106,7 @@
       "description": "Add Department model with relationships to User",
       "phase": "phase-2-database",
       "priority": 1,
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "2.1"
       ],
@@ -124,14 +121,11 @@
         }
       ],
       "estimated_time": 300,
-      "created_at": "2026-01-16T05:36:05.092151",
-      "started_at": "2026-01-16T05:36:07.806896",
-      "completed_at": "2026-01-16T05:36:07.980852",
+      "created_at": "2026-01-16T05:49:20.125064",
+      "started_at": null,
+      "completed_at": null,
       "error": null,
-      "result": {
-        "time": 0.0017094612121582031,
-        "output": "Created file: backend/app/models/department.py\nEdited file: backend/app/models/user.py"
-      },
+      "result": null,
       "generated_by": null,
       "auto_generated": false
     },
@@ -141,7 +135,7 @@
       "description": "Add Venue model for performance locations",
       "phase": "phase-2-database",
       "priority": 1,
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "2.1"
       ],
@@ -152,14 +146,11 @@
         }
       ],
       "estimated_time": 300,
-      "created_at": "2026-01-16T05:36:05.092153",
-      "started_at": "2026-01-16T05:36:09.993822",
-      "completed_at": "2026-01-16T05:36:10.189970",
+      "created_at": "2026-01-16T05:49:20.125068",
+      "started_at": null,
+      "completed_at": null,
       "error": null,
-      "result": {
-        "time": 0.0011148452758789062,
-        "output": "Created file: backend/app/models/venue.py"
-      },
+      "result": null,
       "generated_by": null,
       "auto_generated": false
     },
@@ -169,7 +160,7 @@
       "description": "Generate and apply migration for Department and Venue",
       "phase": "phase-2-database",
       "priority": 1,
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "2.2",
         "2.3"
@@ -185,10 +176,10 @@
         }
       ],
       "estimated_time": 180,
-      "created_at": "2026-01-16T05:36:05.092156",
-      "started_at": "2026-01-16T05:36:12.202969",
-      "completed_at": "2026-01-16T05:36:13.760476",
-      "error": "FAILED: Target database is not up to date.\ntime=\"2026-01-16T05:36:12+07:00\" level=warning msg=\"C:\\\\Work\\\\projects\\\\theatre\\\\theatre_app_2026\\\\docker-compose.dev.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"\nINFO  [alembic.runtime.migration] Context impl PostgresqlImpl.\nINFO  [alembic.runtime.migration] Will assume transactional DDL.\nERROR [alembic.util.messaging] Target database is not up to date.\n",
+      "created_at": "2026-01-16T05:49:20.125071",
+      "started_at": null,
+      "completed_at": null,
+      "error": null,
       "result": null,
       "generated_by": null,
       "auto_generated": false
@@ -199,7 +190,7 @@
       "description": "Add departments and venues to seed_data.py",
       "phase": "phase-2-database",
       "priority": 2,
-      "status": "blocked",
+      "status": "pending",
       "dependencies": [
         "2.4"
       ],
@@ -214,7 +205,7 @@
         }
       ],
       "estimated_time": 300,
-      "created_at": "2026-01-16T05:36:05.092158",
+      "created_at": "2026-01-16T05:49:20.125075",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -239,7 +230,7 @@
         }
       ],
       "estimated_time": 600,
-      "created_at": "2026-01-16T05:36:05.092160",
+      "created_at": "2026-01-16T05:49:20.125078",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -268,7 +259,7 @@
         }
       ],
       "estimated_time": 900,
-      "created_at": "2026-01-16T05:36:05.092162",
+      "created_at": "2026-01-16T05:49:20.125080",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -297,7 +288,7 @@
         }
       ],
       "estimated_time": 900,
-      "created_at": "2026-01-16T05:36:05.092164",
+      "created_at": "2026-01-16T05:49:20.125083",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -322,7 +313,7 @@
         }
       ],
       "estimated_time": 600,
-      "created_at": "2026-01-16T05:36:05.092167",
+      "created_at": "2026-01-16T05:49:20.125086",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -347,7 +338,7 @@
         }
       ],
       "estimated_time": 600,
-      "created_at": "2026-01-16T05:36:05.092169",
+      "created_at": "2026-01-16T05:49:20.125088",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -372,7 +363,7 @@
         }
       ],
       "estimated_time": 600,
-      "created_at": "2026-01-16T05:36:05.092170",
+      "created_at": "2026-01-16T05:49:20.125091",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -397,7 +388,7 @@
         }
       ],
       "estimated_time": 600,
-      "created_at": "2026-01-16T05:36:05.092172",
+      "created_at": "2026-01-16T05:49:20.125093",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -422,7 +413,7 @@
         }
       ],
       "estimated_time": 600,
-      "created_at": "2026-01-16T05:36:05.092174",
+      "created_at": "2026-01-16T05:49:20.125096",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -453,7 +444,7 @@
         }
       ],
       "estimated_time": 1200,
-      "created_at": "2026-01-16T05:36:05.092176",
+      "created_at": "2026-01-16T05:49:20.125099",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -478,7 +469,7 @@
         }
       ],
       "estimated_time": 600,
-      "created_at": "2026-01-16T05:36:05.092178",
+      "created_at": "2026-01-16T05:49:20.125102",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -510,7 +501,7 @@
         }
       ],
       "estimated_time": 900,
-      "created_at": "2026-01-16T05:36:05.092181",
+      "created_at": "2026-01-16T05:49:20.125104",
       "started_at": null,
       "completed_at": null,
       "error": null,
@@ -540,242 +531,15 @@
         }
       ],
       "estimated_time": 900,
-      "created_at": "2026-01-16T05:36:05.092183",
+      "created_at": "2026-01-16T05:49:20.125107",
       "started_at": null,
       "completed_at": null,
       "error": null,
       "result": null,
       "generated_by": null,
       "auto_generated": false
-    },
-    {
-      "id": "2.2.create-schema",
-      "name": "Create Pydantic schemas for Department",
-      "description": "Add request/response schemas for Department",
-      "phase": "phase-2-database",
-      "priority": 1,
-      "status": "completed",
-      "dependencies": [
-        "2.2"
-      ],
-      "actions": [
-        {
-          "type": "code_create",
-          "file": "backend/app/schemas/department.py"
-        }
-      ],
-      "estimated_time": 300,
-      "created_at": "2026-01-16T05:36:07.982244",
-      "started_at": "2026-01-16T05:36:15.818253",
-      "completed_at": "2026-01-16T05:36:15.989379",
-      "error": null,
-      "result": {
-        "time": 0.0009589195251464844,
-        "output": "Created file: backend/app/schemas/department.py"
-      },
-      "generated_by": "2.2",
-      "auto_generated": true
-    },
-    {
-      "id": "2.2.create-repository",
-      "name": "Create repository for Department",
-      "description": "Add CRUD repository for Department",
-      "phase": "phase-2-database",
-      "priority": 1,
-      "status": "completed",
-      "dependencies": [
-        "2.2.create-schema",
-        "2.2"
-      ],
-      "actions": [
-        {
-          "type": "code_create",
-          "file": "backend/app/repositories/department_repository.py"
-        }
-      ],
-      "estimated_time": 600,
-      "created_at": "2026-01-16T05:36:07.982250",
-      "started_at": "2026-01-16T05:36:17.995420",
-      "completed_at": "2026-01-16T05:36:18.186446",
-      "error": null,
-      "result": {
-        "time": 0.0007009506225585938,
-        "output": "Created file: backend/app/repositories/department_repository.py"
-      },
-      "generated_by": "2.2",
-      "auto_generated": true
-    },
-    {
-      "id": "2.2.create-service",
-      "name": "Create service for Department",
-      "description": "Add business logic service for Department",
-      "phase": "phase-2-database",
-      "priority": 1,
-      "status": "completed",
-      "dependencies": [
-        "2.2.create-repository",
-        "2.2"
-      ],
-      "actions": [
-        {
-          "type": "code_create",
-          "file": "backend/app/services/department_service.py"
-        }
-      ],
-      "estimated_time": 600,
-      "created_at": "2026-01-16T05:36:07.982254",
-      "started_at": "2026-01-16T05:36:20.191792",
-      "completed_at": "2026-01-16T05:36:20.378195",
-      "error": null,
-      "result": {
-        "time": 0.0007698535919189453,
-        "output": "Created file: backend/app/services/department_service.py"
-      },
-      "generated_by": "2.2",
-      "auto_generated": true
-    },
-    {
-      "id": "2.2.create-api",
-      "name": "Create API endpoints for Department",
-      "description": "Add REST endpoints for Department",
-      "phase": "phase-2-database",
-      "priority": 1,
-      "status": "completed",
-      "dependencies": [
-        "2.2.create-service",
-        "2.2"
-      ],
-      "actions": [
-        {
-          "type": "code_create",
-          "file": "backend/app/api/v1/departments.py"
-        }
-      ],
-      "estimated_time": 900,
-      "created_at": "2026-01-16T05:36:07.982256",
-      "started_at": "2026-01-16T05:36:22.384650",
-      "completed_at": "2026-01-16T05:36:22.576319",
-      "error": null,
-      "result": {
-        "time": 0.0009586811065673828,
-        "output": "Created file: backend/app/api/v1/departments.py"
-      },
-      "generated_by": "2.2",
-      "auto_generated": true
-    },
-    {
-      "id": "2.3.create-schema",
-      "name": "Create Pydantic schemas for Venue",
-      "description": "Add request/response schemas for Venue",
-      "phase": "phase-2-database",
-      "priority": 1,
-      "status": "completed",
-      "dependencies": [
-        "2.3"
-      ],
-      "actions": [
-        {
-          "type": "code_create",
-          "file": "backend/app/schemas/venue.py"
-        }
-      ],
-      "estimated_time": 300,
-      "created_at": "2026-01-16T05:36:10.191558",
-      "started_at": "2026-01-16T05:36:24.582349",
-      "completed_at": "2026-01-16T05:36:24.779191",
-      "error": null,
-      "result": {
-        "time": 0.0008933544158935547,
-        "output": "Created file: backend/app/schemas/venue.py"
-      },
-      "generated_by": "2.3",
-      "auto_generated": true
-    },
-    {
-      "id": "2.3.create-repository",
-      "name": "Create repository for Venue",
-      "description": "Add CRUD repository for Venue",
-      "phase": "phase-2-database",
-      "priority": 1,
-      "status": "completed",
-      "dependencies": [
-        "2.3.create-schema",
-        "2.3"
-      ],
-      "actions": [
-        {
-          "type": "code_create",
-          "file": "backend/app/repositories/venue_repository.py"
-        }
-      ],
-      "estimated_time": 600,
-      "created_at": "2026-01-16T05:36:10.191568",
-      "started_at": "2026-01-16T05:36:26.786156",
-      "completed_at": "2026-01-16T05:36:26.976431",
-      "error": null,
-      "result": {
-        "time": 0.0007066726684570312,
-        "output": "Created file: backend/app/repositories/venue_repository.py"
-      },
-      "generated_by": "2.3",
-      "auto_generated": true
-    },
-    {
-      "id": "2.3.create-service",
-      "name": "Create service for Venue",
-      "description": "Add business logic service for Venue",
-      "phase": "phase-2-database",
-      "priority": 1,
-      "status": "completed",
-      "dependencies": [
-        "2.3.create-repository",
-        "2.3"
-      ],
-      "actions": [
-        {
-          "type": "code_create",
-          "file": "backend/app/services/venue_service.py"
-        }
-      ],
-      "estimated_time": 600,
-      "created_at": "2026-01-16T05:36:10.191573",
-      "started_at": "2026-01-16T05:36:28.983464",
-      "completed_at": "2026-01-16T05:36:29.181286",
-      "error": null,
-      "result": {
-        "time": 0.0007722377777099609,
-        "output": "Created file: backend/app/services/venue_service.py"
-      },
-      "generated_by": "2.3",
-      "auto_generated": true
-    },
-    {
-      "id": "2.3.create-api",
-      "name": "Create API endpoints for Venue",
-      "description": "Add REST endpoints for Venue",
-      "phase": "phase-2-database",
-      "priority": 1,
-      "status": "running",
-      "dependencies": [
-        "2.3.create-service",
-        "2.3"
-      ],
-      "actions": [
-        {
-          "type": "code_create",
-          "file": "backend/app/api/v1/venues.py"
-        }
-      ],
-      "estimated_time": 900,
-      "created_at": "2026-01-16T05:36:10.191578",
-      "started_at": "2026-01-16T05:36:31.186462",
-      "completed_at": null,
-      "error": null,
-      "result": null,
-      "generated_by": "2.3",
-      "auto_generated": true
     }
   ],
-  "completed_count": 10,
-  "failed_count": 1
+  "completed_count": 0,
+  "failed_count": 0
 }

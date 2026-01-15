@@ -2,7 +2,7 @@
   "project_info": {
     "name": "Theatre Management System",
     "version": "0.1.0 MVP",
-    "last_updated": "2026-01-16T05:36:05.090423"
+    "last_updated": "2026-01-16T05:49:20.123069"
   },
   "backend": {
     "models": [
@@ -18,34 +18,42 @@
     "schemas": [
       "auth",
       "base",
+      "department",
       "document",
       "inventory",
       "performance",
       "schedule",
-      "user"
+      "user",
+      "venue"
     ],
     "repositories": [
       "base",
+      "department_repository",
       "document_repository",
       "inventory_repository",
       "performance_repository",
       "schedule_repository",
-      "user_repository"
+      "user_repository",
+      "venue_repository"
     ],
     "services": [
       "auth_service",
+      "department_service",
       "document_service",
       "inventory_service",
       "performance_service",
       "redis_service",
-      "schedule_service"
+      "schedule_service",
+      "venue_service"
     ],
     "api_endpoints": [
       "auth",
+      "departments",
       "documents",
       "inventory",
       "performances",
-      "schedule"
+      "schedule",
+      "venues"
     ],
     "migrations": [
       "20250101_0000_001_initial_initial_migration.py",
@@ -156,9 +164,9 @@
     "low": []
   },
   "metrics": {
-    "total_files": 150,
+    "total_files": 160,
     "total_lines": 0,
-    "backend_files": 66,
+    "backend_files": 76,
     "frontend_files": 84
   }
 }
