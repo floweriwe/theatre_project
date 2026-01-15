@@ -6,6 +6,7 @@
   },
   "backend": {
     "models": [
+      "department",
       "document",
       "inventory",
       "performance",

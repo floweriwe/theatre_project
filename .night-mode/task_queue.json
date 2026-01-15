@@ -109,7 +109,7 @@
       "description": "Add Department model with relationships to User",
       "phase": "phase-2-database",
       "priority": 1,
-      "status": "running",
+      "status": "completed",
       "dependencies": [
         "2.1"
       ],
@@ -126,9 +126,12 @@
       "estimated_time": 300,
       "created_at": "2026-01-16T05:36:05.092151",
       "started_at": "2026-01-16T05:36:07.806896",
-      "completed_at": null,
+      "completed_at": "2026-01-16T05:36:07.980852",
       "error": null,
-      "result": null,
+      "result": {
+        "time": 0.0017094612121582031,
+        "output": "Created file: backend/app/models/department.py\nEdited file: backend/app/models/user.py"
+      },
       "generated_by": null,
       "auto_generated": false
     },
@@ -138,7 +141,7 @@
       "description": "Add Venue model for performance locations",
       "phase": "phase-2-database",
       "priority": 1,
-      "status": "pending",
+      "status": "running",
       "dependencies": [
         "2.1"
       ],
@@ -150,7 +153,7 @@
       ],
       "estimated_time": 300,
       "created_at": "2026-01-16T05:36:05.092153",
-      "started_at": null,
+      "started_at": "2026-01-16T05:36:09.993822",
       "completed_at": null,
       "error": null,
       "result": null,
@@ -541,8 +544,111 @@
       "result": null,
       "generated_by": null,
       "auto_generated": false
+    },
+    {
+      "id": "2.2.create-schema",
+      "name": "Create Pydantic schemas for Department",
+      "description": "Add request/response schemas for Department",
+      "phase": "phase-2-database",
+      "priority": 1,
+      "status": "pending",
+      "dependencies": [
+        "2.2"
+      ],
+      "actions": [
+        {
+          "type": "code_create",
+          "file": "backend/app/schemas/department.py"
+        }
+      ],
+      "estimated_time": 300,
+      "created_at": "2026-01-16T05:36:07.982244",
+      "started_at": null,
+      "completed_at": null,
+      "error": null,
+      "result": null,
+      "generated_by": "2.2",
+      "auto_generated": true
+    },
+    {
+      "id": "2.2.create-repository",
+      "name": "Create repository for Department",
+      "description": "Add CRUD repository for Department",
+      "phase": "phase-2-database",
+      "priority": 1,
+      "status": "pending",
+      "dependencies": [
+        "2.2.create-schema",
+        "2.2"
+      ],
+      "actions": [
+        {
+          "type": "code_create",
+          "file": "backend/app/repositories/department_repository.py"
+        }
+      ],
+      "estimated_time": 600,
+      "created_at": "2026-01-16T05:36:07.982250",
+      "started_at": null,
+      "completed_at": null,
+      "error": null,
+      "result": null,
+      "generated_by": "2.2",
+      "auto_generated": true
+    },
+    {
+      "id": "2.2.create-service",
+      "name": "Create service for Department",
+      "description": "Add business logic service for Department",
+      "phase": "phase-2-database",
+      "priority": 1,
+      "status": "pending",
+      "dependencies": [
+        "2.2.create-repository",
+        "2.2"
+      ],
+      "actions": [
+        {
+          "type": "code_create",
+          "file": "backend/app/services/department_service.py"
+        }
+      ],
+      "estimated_time": 600,
+      "created_at": "2026-01-16T05:36:07.982254",
+      "started_at": null,
+      "completed_at": null,
+      "error": null,
+      "result": null,
+      "generated_by": "2.2",
+      "auto_generated": true
+    },
+    {
+      "id": "2.2.create-api",
+      "name": "Create API endpoints for Department",
+      "description": "Add REST endpoints for Department",
+      "phase": "phase-2-database",
+      "priority": 1,
+      "status": "pending",
+      "dependencies": [
+        "2.2.create-service",
+        "2.2"
+      ],
+      "actions": [
+        {
+          "type": "code_create",
+          "file": "backend/app/api/v1/departments.py"
+        }
+      ],
+      "estimated_time": 900,
+      "created_at": "2026-01-16T05:36:07.982256",
+      "started_at": null,
+      "completed_at": null,
+      "error": null,
+      "result": null,
+      "generated_by": "2.2",
+      "auto_generated": true
     }
   ],
-  "completed_count": 1,
+  "completed_count": 2,
   "failed_count": 0
 }
