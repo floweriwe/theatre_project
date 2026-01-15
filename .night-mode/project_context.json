@@ -12,7 +12,8 @@
       "performance",
       "schedule",
       "theater",
-      "user"
+      "user",
+      "venue"
     ],
     "schemas": [
       "auth",
