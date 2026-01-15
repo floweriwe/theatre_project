@@ -169,7 +169,7 @@
       "description": "Generate and apply migration for Department and Venue",
       "phase": "phase-2-database",
       "priority": 1,
-      "status": "running",
+      "status": "failed",
       "dependencies": [
         "2.2",
         "2.3"
@@ -187,8 +187,8 @@
       "estimated_time": 180,
       "created_at": "2026-01-16T05:36:05.092156",
       "started_at": "2026-01-16T05:36:12.202969",
-      "completed_at": null,
-      "error": null,
+      "completed_at": "2026-01-16T05:36:13.760476",
+      "error": "FAILED: Target database is not up to date.\ntime=\"2026-01-16T05:36:12+07:00\" level=warning msg=\"C:\\\\Work\\\\projects\\\\theatre\\\\theatre_app_2026\\\\docker-compose.dev.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"\nINFO  [alembic.runtime.migration] Context impl PostgresqlImpl.\nINFO  [alembic.runtime.migration] Will assume transactional DDL.\nERROR [alembic.util.messaging] Target database is not up to date.\n",
       "result": null,
       "generated_by": null,
       "auto_generated": false
@@ -199,7 +199,7 @@
       "description": "Add departments and venues to seed_data.py",
       "phase": "phase-2-database",
       "priority": 2,
-      "status": "pending",
+      "status": "blocked",
       "dependencies": [
         "2.4"
       ],
@@ -554,7 +554,7 @@
       "description": "Add request/response schemas for Department",
       "phase": "phase-2-database",
       "priority": 1,
-      "status": "pending",
+      "status": "running",
       "dependencies": [
         "2.2"
       ],
@@ -566,7 +566,7 @@
       ],
       "estimated_time": 300,
       "created_at": "2026-01-16T05:36:07.982244",
-      "started_at": null,
+      "started_at": "2026-01-16T05:36:15.818253",
       "completed_at": null,
       "error": null,
       "result": null,
@@ -756,5 +756,5 @@
     }
   ],
   "completed_count": 3,
-  "failed_count": 0
+  "failed_count": 1
 }
