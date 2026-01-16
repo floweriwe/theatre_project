@@ -15,6 +15,7 @@ from app.models.inventory import (
     MovementType,
 )
 from app.models.inventory_photo import InventoryPhoto
+from app.models.performance_inventory import PerformanceInventory
 from app.models.performance import (
     Performance,
     PerformanceSection,
@@ -57,6 +58,7 @@ __all__ = [
     "MovementType",
     # Performances
     "Performance",
+    "PerformanceInventory",
     "PerformanceSection",
     "PerformanceStatus",
     "SectionType",

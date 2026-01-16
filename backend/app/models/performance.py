@@ -28,6 +28,7 @@ from app.database.base import Base, AuditMixin
 if TYPE_CHECKING:
     from app.models.user import User
     from app.models.theater import Theater
+    from app.models.performance_inventory import PerformanceInventory
 
 
 class PerformanceStatus(str, PyEnum):
@@ -100,7 +101,13 @@ class Performance(Base, AuditMixin):
         back_populates="performance",
         cascade="all, delete-orphan"
     )
-    
+    inventory_items: Mapped[list["PerformanceInventory"]] = relationship(
+        "PerformanceInventory",
+        back_populates="performance",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+    )
+
     def __repr__(self) -> str:
         return f"<Performance(id={self.id}, title='{self.title}')>"
 

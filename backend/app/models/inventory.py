@@ -30,6 +30,7 @@ if TYPE_CHECKING:
     from app.models.user import User
     from app.models.theater import Theater
     from app.models.inventory_photo import InventoryPhoto
+    from app.models.performance_inventory import PerformanceInventory
 
 
 class ItemStatus(str, PyEnum):
@@ -266,6 +267,12 @@ class InventoryItem(Base, AuditMixin):
     theater: Mapped["Theater | None"] = relationship("Theater")
     photos: Mapped[list["InventoryPhoto"]] = relationship(
         "InventoryPhoto",
+        back_populates="item",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+    )
+    performances: Mapped[list["PerformanceInventory"]] = relationship(
+        "PerformanceInventory",
         back_populates="item",
         cascade="all, delete-orphan",
         lazy="selectin",
