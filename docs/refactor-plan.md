@@ -1,9 +1,9 @@
 # Theatre MVP Refactoring Plan
 
 > **BrainGrid Requirement:** REQ-1
-> **Последнее обновление:** 2026-01-16
-> **Текущая фаза:** Phase 4 завершена → Phase 5 (Testing & QA)
-> **Общая готовность:** 80% (Backend 78%, Frontend 85-90%)
+> **Последнее обновление:** 2026-01-17
+> **Текущая фаза:** Phase 6 завершена (Enhancement)
+> **Общая готовность:** 100% MVP + Enhancements
 > **Итоговый отчёт:** см. `docs/PHASE_1-4_SUMMARY.md`
 
 ---
@@ -234,6 +234,43 @@
 
 ---
 
+## Phase 6: File Handling Enhancement (8 часов) ✅
+
+**BrainGrid:** REQ-9 (9 tasks completed)
+**Ветка:** `feature/phase6-file-handling`
+**Цель:** Расширить возможности работы с файлами, добавить CRUD для departments/venues.
+**Результат:** MVP Enhancements
+
+### Backend (4 tasks)
+
+| # | Задача | Статус |
+|---|--------|--------|
+| TASK-1 | Content-Type detection (python-magic) | ✅ |
+| TASK-2 | DOCX→PDF preview conversion | ✅ |
+| TASK-3 | Departments CRUD API | ✅ |
+| TASK-4 | Venues CRUD API | ✅ |
+
+### Frontend (5 tasks)
+
+| # | Задача | Статус |
+|---|--------|--------|
+| TASK-5 | FileViewer dispatcher (MIME routing) | ✅ |
+| TASK-6 | SpreadsheetViewer (SheetJS) | ✅ |
+| TASK-7 | AudioPlayer (HTML5 audio) | ✅ |
+| TASK-8 | VideoPlayer (HTML5 video) | ✅ |
+| TASK-9 | FilePreviewModal integration | ✅ |
+
+### Критерии завершения Phase 6
+- [x] Departments CRUD API работает
+- [x] Venues CRUD API с валидацией capacity
+- [x] FileViewer роутит файлы по MIME типу
+- [x] SpreadsheetViewer отображает XLSX/CSV
+- [x] AudioPlayer воспроизводит MP3/WAV
+- [x] VideoPlayer воспроизводит MP4
+- [x] FilePreviewModal с download кнопкой
+
+---
+
 ## Сводка по фазам
 
 | Phase | Название | Часы | Результат | Статус |
@@ -243,7 +280,8 @@
 | 3 | Module Completion | 33h | 75% → 90% | ✅ Готово |
 | 4 | Frontend Polish | 18h | 90% → 95% | ✅ Готово |
 | 5 | Testing & QA | 12h | 95% → 100% | ✅ Готово |
-| **Σ** | **ИТОГО** | **91h** | **100%** | **MVP COMPLETE** |
+| 6 | File Handling | 8h | Enhancement | ✅ Готово |
+| **Σ** | **ИТОГО** | **99h** | **100% + Enh** | **MVP + PHASE 6** |
 
 ---
 
@@ -258,6 +296,27 @@
 ---
 
 ## Лог прогресса
+
+### 2026-01-17 (Phase 6 завершена - File Handling Enhancement)
+**Phase 6 File Handling Enhancement завершена:**
+- Реализованы все 9 задач из REQ-9
+- **Backend (4 tasks):**
+  - Content-Type detection с python-magic
+  - DOCX→PDF preview conversion
+  - Departments CRUD API с tenant isolation
+  - Venues CRUD API с capacity validation
+- **Frontend (5 tasks):**
+  - FileViewer dispatcher (MIME type routing)
+  - SpreadsheetViewer (SheetJS для XLSX/CSV)
+  - AudioPlayer (HTML5 audio с custom controls)
+  - VideoPlayer (HTML5 video с fullscreen)
+  - FilePreviewModal интеграция
+- **Статистика:**
+  - 42 файла изменено
+  - +8,459 строк кода
+  - TypeScript check: passed
+  - Build: successful
+- **PR:** https://github.com/floweriwe/theatre_project/pull/4
 
 ### 2026-01-17 (Phase 5 завершена - MVP COMPLETE)
 **Phase 5 Testing & QA завершена:**
