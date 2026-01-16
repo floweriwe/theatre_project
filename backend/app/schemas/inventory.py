@@ -31,7 +31,7 @@ class ItemStatus(str, Enum):
 
 class MovementType(str, Enum):
     """Тип перемещения."""
-    
+
     RECEIPT = "receipt"
     TRANSFER = "transfer"
     RESERVE = "reserve"
@@ -41,6 +41,44 @@ class MovementType(str, Enum):
     WRITE_OFF = "write_off"
     REPAIR_START = "repair_start"
     REPAIR_END = "repair_end"
+
+
+class InventoryCondition(str, Enum):
+    """Физическое состояние предмета."""
+
+    NEW = "new"
+    GOOD = "good"
+    FAIR = "fair"
+    POOR = "poor"
+    BROKEN = "broken"
+
+
+# =============================================================================
+# Photo Schemas
+# =============================================================================
+
+class InventoryPhotoBase(BaseModel):
+    """Базовая схема фотографии инвентаря."""
+
+    caption: str | None = Field(None, max_length=500, description="Подпись к фото")
+
+
+class InventoryPhotoCreate(InventoryPhotoBase):
+    """Схема создания фотографии (caption передаётся отдельно от файла)."""
+    pass
+
+
+class InventoryPhotoResponse(InventoryPhotoBase):
+    """Схема ответа фотографии."""
+
+    id: int
+    item_id: int
+    file_path: str
+    is_primary: bool
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 # =============================================================================
@@ -195,20 +233,27 @@ class InventoryItemUpdate(BaseModel):
 
 class InventoryItemResponse(InventoryItemBase):
     """Схема ответа предмета инвентаря."""
-    
+
     id: int
     inventory_number: str
     status: ItemStatus
     is_active: bool
     theater_id: int | None
     images: list[str] | None
+
+    # Физические характеристики
+    dimensions: str | None = None
+    weight: float | None = None
+    condition: InventoryCondition | None = None
+
     created_at: datetime
     updated_at: datetime
-    
+
     # Вложенные объекты
     category: CategoryResponse | None = None
     location: LocationResponse | None = None
-    
+    photos: list[InventoryPhotoResponse] = []
+
     model_config = ConfigDict(from_attributes=True)
 
 

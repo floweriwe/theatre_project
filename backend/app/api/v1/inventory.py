@@ -7,7 +7,11 @@ API ÑÐ½Ð´Ð¿Ð¾Ð¸Ð½Ñ‚Ñ‹ Ð¼Ð¾Ð´ÑƒÐ»Ñ Ð¸Ð½Ð²
 - /inventory/locations â€” Ð¼ÐµÑÑ‚Ð° Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ñ
 - /inventory/stats â€” ÑÑ‚Ð°Ñ‚Ð¸ÑÑ‚Ð¸ÐºÐ°
 """
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+import os
+import uuid
+from pathlib import Path
+
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 
 from app.api.deps import CurrentUserDep, SessionDep
 from app.core.exceptions import NotFoundError, AlreadyExistsError, ValidationError
@@ -33,12 +37,15 @@ from app.schemas.inventory import (
     InventoryItemResponse,
     InventoryItemListResponse,
     PaginatedItems,
+    # Photos
+    InventoryPhotoResponse,
     # Movements
     MovementResponse,
     PaginatedMovements,
     # Stats
     InventoryStats,
 )
+from app.models.inventory_photo import InventoryPhoto
 from app.services.inventory_service import InventoryService
 
 router = APIRouter(prefix="/inventory", tags=["Ð˜Ð½Ð²ÐµÐ½Ñ‚Ð°Ñ€ÑŒ"])
@@ -589,7 +596,7 @@ async def get_inventory_stats(
 # =============================================================================
 
 def _item_to_response(item) -> InventoryItemResponse:
-    """ÐŸÑ€ÐµÐ¾Ð±Ñ€Ð°Ð·Ð¾Ð²Ð°Ñ‚ÑŒ Ð¼Ð¾Ð´ÐµÐ»ÑŒ Ð² response."""
+    """Преобразовать модель в response."""
     return InventoryItemResponse(
         id=item.id,
         name=item.name,
@@ -607,10 +614,29 @@ def _item_to_response(item) -> InventoryItemResponse:
         is_active=item.is_active,
         theater_id=item.theater_id,
         images=item.images,
+        # Физические характеристики
+        dimensions=item.dimensions,
+        weight=item.weight,
+        condition=item.condition,
         created_at=item.created_at,
         updated_at=item.updated_at,
         category=_category_to_response(item.category) if item.category else None,
         location=_location_to_response(item.location) if item.location else None,
+        photos=[_photo_to_response(photo) for photo in item.photos] if item.photos else [],
+    )
+
+
+def _photo_to_response(photo) -> "InventoryPhotoResponse":
+    """Преобразовать фото в response."""
+    from app.schemas.inventory import InventoryPhotoResponse
+    return InventoryPhotoResponse(
+        id=photo.id,
+        item_id=photo.item_id,
+        file_path=photo.file_path,
+        is_primary=photo.is_primary,
+        caption=photo.caption,
+        created_at=photo.created_at,
+        updated_at=photo.updated_at,
     )
 
 
@@ -704,3 +730,110 @@ def _movement_to_response(movement) -> MovementResponse:
         from_location=_location_to_response(movement.from_location) if movement.from_location else None,
         to_location=_location_to_response(movement.to_location) if movement.to_location else None,
     )
+
+
+# =============================================================================
+# Photo Endpoints
+# =============================================================================
+
+STORAGE_PATH = Path("/app/storage/inventory")
+ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif"}
+
+
+@router.post(
+    "/items/{item_id}/photos",
+    response_model=InventoryPhotoResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Загрузить фото предмета",
+)
+async def upload_photo(
+    item_id: int,
+    current_user: CurrentUserDep,
+    service: InventoryService = InventoryServiceDep,
+    file: UploadFile = File(..., description="Файл изображения"),
+    caption: str | None = Query(None, max_length=500, description="Подпись к фото"),
+):
+    """Загрузить фотографию для предмета инвентаря."""
+    # Проверяем существование предмета
+    try:
+        item = await service.get_item(item_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    # Проверяем расширение файла
+    if not file.filename:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Имя файла не указано")
+
+    ext = Path(file.filename).suffix.lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            f"Недопустимый формат файла. Разрешены: {', '.join(ALLOWED_EXTENSIONS)}"
+        )
+
+    # Создаём директорию если не существует
+    STORAGE_PATH.mkdir(parents=True, exist_ok=True)
+
+    # Генерируем уникальное имя файла
+    unique_filename = f"{uuid.uuid4()}{ext}"
+    file_path = STORAGE_PATH / unique_filename
+    relative_path = f"inventory/{unique_filename}"
+
+    # Сохраняем файл
+    try:
+        content = await file.read()
+        with open(file_path, "wb") as f:
+            f.write(content)
+    except Exception as e:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Ошибка сохранения файла: {str(e)}")
+
+    # Создаём запись в БД
+    photo = InventoryPhoto(
+        item_id=item_id,
+        file_path=relative_path,
+        is_primary=False,
+        caption=caption,
+    )
+    service._session.add(photo)
+    await service._session.commit()
+    await service._session.refresh(photo)
+
+    return _photo_to_response(photo)
+
+
+@router.delete(
+    "/photos/{photo_id}",
+    response_model=MessageResponse,
+    summary="Удалить фото",
+)
+async def delete_photo(
+    photo_id: int,
+    current_user: CurrentUserDep,
+    service: InventoryService = InventoryServiceDep,
+):
+    """Удалить фотографию предмета инвентаря."""
+    from sqlalchemy import select
+
+    # Ищем фото
+    result = await service._session.execute(
+        select(InventoryPhoto).where(InventoryPhoto.id == photo_id)
+    )
+    photo = result.scalar_one_or_none()
+
+    if not photo:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Фото не найдено")
+
+    # Удаляем физический файл
+    file_path = Path("/app/storage") / photo.file_path
+    try:
+        if file_path.exists():
+            os.remove(file_path)
+    except Exception:
+        # Логируем, но не падаем если файл уже удалён
+        pass
+
+    # Удаляем запись из БД
+    await service._session.delete(photo)
+    await service._session.commit()
+
+    return MessageResponse(message="Фото успешно удалено")
