@@ -109,36 +109,40 @@ class BaseRepository(Generic[ModelType]):
     ) -> ModelType:
         """
         Обновить существующую запись.
-        
+
         Args:
             instance: Экземпляр модели для обновления
             data: Словарь с новыми данными
-            
+
         Returns:
             Обновлённый экземпляр
         """
         for key, value in data.items():
             if hasattr(instance, key):
                 setattr(instance, key, value)
-        
+
         await self._session.flush()
         await self._session.refresh(instance)
         return instance
-    
-    
-    async def update(self, id: int, data: dict[str, Any]) -> ModelType:
-        """Update entity by ID."""
+
+    async def update_by_id(self, id: int, data: dict[str, Any]) -> ModelType:
+        """
+        Обновить запись по ID.
+
+        Args:
+            id: Первичный ключ
+            data: Словарь с новыми данными
+
+        Returns:
+            Обновлённый экземпляр
+
+        Raises:
+            ValueError: Если запись не найдена
+        """
         instance = await self.get_by_id(id)
-        if not instance:
-            raise ValueError(f"Entity with id {id} not found")
-        
-        for key, value in data.items():
-            if hasattr(instance, key):
-                setattr(instance, key, value)
-        
-        await self._session.flush()
-        await self._session.refresh(instance)
-        return instance
+        if instance is None:
+            raise ValueError(f"{self._model.__name__} with id {id} not found")
+        return await self.update(instance, data)
 
     async def delete(self, instance: ModelType) -> None:
         """

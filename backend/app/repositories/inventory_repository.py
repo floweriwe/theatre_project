@@ -212,8 +212,8 @@ class InventoryItemRepository(BaseRepository[InventoryItem]):
         )
         
         result = await self._session.execute(query)
-        items = result.unique().scalars().all()
-        
+        items = result.scalars().unique().all()
+
         return items, total
     
     async def get_by_category(
@@ -363,7 +363,7 @@ class InventoryMovementRepository(BaseRepository[InventoryMovement]):
             .limit(limit)
         )
         result = await self._session.execute(query)
-        return result.unique().scalars().all()
+        return result.scalars().unique().all()
     
     async def create_movement(
         self,

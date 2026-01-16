@@ -17,6 +17,7 @@ from app.database.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
     from app.models.theater import Theater
+    from app.models.department import Department
 
 
 class User(Base, TimestampMixin):
@@ -58,7 +59,15 @@ class User(Base, TimestampMixin):
         nullable=True,
         index=True,
     )
-    
+
+    # Привязка к цеху
+    department_id: Mapped[int | None] = mapped_column(
+        Integer,
+        ForeignKey("departments.id", name="fk_users_department_id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+
     # Время последнего входа
     last_login_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
@@ -69,6 +78,11 @@ class User(Base, TimestampMixin):
     theater: Mapped["Theater | None"] = relationship(
         "Theater",
         back_populates="users",
+        lazy="selectin",
+    )
+    department: Mapped["Department | None"] = relationship(
+        "Department",
+        foreign_keys=[department_id],
         lazy="selectin",
     )
     user_roles: Mapped[list["UserRole"]] = relationship(

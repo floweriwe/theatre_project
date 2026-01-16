@@ -169,7 +169,7 @@ class ScheduleService:
         update_data = data.model_dump(exclude_unset=True)
         update_data["updated_by_id"] = user_id
         
-        await self._event_repo.update(event_id, update_data)
+        await self._event_repo.update_by_id(event_id, update_data)
         await self._session.commit()
         
         return await self._event_repo.get_with_relations(event_id)
@@ -177,7 +177,7 @@ class ScheduleService:
     async def delete_event(self, event_id: int, user_id: int) -> bool:
         """Удалить событие (soft delete)."""
         await self.get_event(event_id)
-        await self._event_repo.update(event_id, {
+        await self._event_repo.update_by_id(event_id, {
             "is_active": False,
             "updated_by_id": user_id,
         })
@@ -195,7 +195,7 @@ class ScheduleService:
         if event.status not in [EventStatus.PLANNED]:
             raise ValidationError("Можно подтвердить только запланированное событие")
         
-        await self._event_repo.update(event_id, {
+        await self._event_repo.update_by_id(event_id, {
             "status": EventStatus.CONFIRMED,
             "updated_by_id": user_id,
         })
@@ -210,7 +210,7 @@ class ScheduleService:
         if event.status not in [EventStatus.PLANNED, EventStatus.CONFIRMED]:
             raise ValidationError("Невозможно начать событие в текущем статусе")
         
-        await self._event_repo.update(event_id, {
+        await self._event_repo.update_by_id(event_id, {
             "status": EventStatus.IN_PROGRESS,
             "updated_by_id": user_id,
         })
@@ -225,7 +225,7 @@ class ScheduleService:
         if event.status not in [EventStatus.IN_PROGRESS, EventStatus.CONFIRMED]:
             raise ValidationError("Невозможно завершить событие в текущем статусе")
         
-        await self._event_repo.update(event_id, {
+        await self._event_repo.update_by_id(event_id, {
             "status": EventStatus.COMPLETED,
             "updated_by_id": user_id,
         })
@@ -240,7 +240,7 @@ class ScheduleService:
         if event.status == EventStatus.COMPLETED:
             raise ValidationError("Нельзя отменить завершённое событие")
         
-        await self._event_repo.update(event_id, {
+        await self._event_repo.update_by_id(event_id, {
             "status": EventStatus.CANCELLED,
             "updated_by_id": user_id,
         })
@@ -297,7 +297,7 @@ class ScheduleService:
             raise NotFoundError(f"Участник с ID {participant_id} не найден")
         
         update_data = data.model_dump(exclude_unset=True)
-        await self._participant_repo.update(participant_id, update_data)
+        await self._participant_repo.update_by_id(participant_id, update_data)
         await self._session.commit()
         
         return await self._participant_repo.get_by_id(participant_id)
@@ -325,7 +325,7 @@ class ScheduleService:
         if not participant:
             raise NotFoundError("Вы не являетесь участником этого события")
         
-        await self._participant_repo.update(participant.id, {"status": status})
+        await self._participant_repo.update_by_id(participant.id, {"status": status})
         await self._session.commit()
         
         return await self._participant_repo.get_by_id(participant.id)

@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from app.models.user import User
     from app.models.theater import Theater
     from app.models.performance import Performance
+    from app.models.venue import Venue
 
 
 class EventType(str, PyEnum):
@@ -87,9 +88,13 @@ class ScheduleEvent(Base, AuditMixin):
     start_time: Mapped[time] = mapped_column(Time, nullable=False)
     end_time: Mapped[time | None] = mapped_column(Time, nullable=True)
     
-    # Место проведения
-    venue: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    
+    # Место проведения (FK на venues)
+    venue_id: Mapped[int | None] = mapped_column(
+        ForeignKey("venues.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True
+    )
+
     # Связь со спектаклем (опционально)
     performance_id: Mapped[int | None] = mapped_column(
         ForeignKey("performances.id", ondelete="SET NULL"),
@@ -116,6 +121,7 @@ class ScheduleEvent(Base, AuditMixin):
     
     # Связи
     performance: Mapped["Performance | None"] = relationship("Performance")
+    venue: Mapped["Venue | None"] = relationship("Venue", lazy="selectin")
     participants: Mapped[list["EventParticipant"]] = relationship(
         "EventParticipant",
         back_populates="event",

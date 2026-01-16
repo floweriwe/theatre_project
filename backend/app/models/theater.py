@@ -13,6 +13,8 @@ from app.database.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
     from app.models.user import User
+    from app.models.department import Department
+    from app.models.venue import Venue
 
 
 class Theater(Base, TimestampMixin):
@@ -67,6 +69,16 @@ class Theater(Base, TimestampMixin):
         back_populates="theater",
         lazy="selectin",
     )
-    
+    departments: Mapped[list["Department"]] = relationship(
+        "Department",
+        back_populates="theater",
+        lazy="selectin",
+    )
+    venues: Mapped[list["Venue"]] = relationship(
+        "Venue",
+        back_populates="theater",
+        lazy="selectin",
+    )
+
     def __repr__(self) -> str:
         return f"<Theater(id={self.id}, code='{self.code}', name='{self.name}')>"

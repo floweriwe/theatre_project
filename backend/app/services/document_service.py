@@ -224,14 +224,14 @@ class DocumentService:
         if existing:
             raise AlreadyExistsError(f"Категория с кодом '{data.code}' уже существует")
         
-        category = DocumentCategory(
+        category_data = {
             **data.model_dump(),
-            theater_id=theater_id,
-            created_by_id=user_id,
-            updated_by_id=user_id,
-        )
-        
-        created = await self._category_repo.create(category.__dict__)
+            "theater_id": theater_id,
+            "created_by_id": user_id,
+            "updated_by_id": user_id,
+        }
+
+        created = await self._category_repo.create(category_data)
         await self._session.commit()
         
         return await self._category_repo.get_by_id(created.id)
@@ -254,7 +254,7 @@ class DocumentService:
             if existing:
                 raise AlreadyExistsError(f"Категория с кодом '{update_data['code']}' уже существует")
         
-        updated = await self._category_repo.update(category_id, update_data)
+        updated = await self._category_repo.update_by_id(category_id, update_data)
         await self._session.commit()
         
         return updated
@@ -262,7 +262,7 @@ class DocumentService:
     async def delete_category(self, category_id: int) -> bool:
         """Удалить категорию (soft delete)."""
         await self.get_category(category_id)
-        await self._category_repo.update(category_id, {"is_active": False})
+        await self._category_repo.update_by_id(category_id, {"is_active": False})
         await self._session.commit()
         return True
     
@@ -470,7 +470,7 @@ class DocumentService:
             update_data["file_type"] = new_file.file_type
             update_data["current_version"] = new_version
         
-        await self._document_repo.update(document_id, update_data)
+        await self._document_repo.update_by_id(document_id, update_data)
         await self._session.commit()
         
         return await self._document_repo.get_with_relations(document_id)
@@ -478,7 +478,7 @@ class DocumentService:
     async def delete_document(self, document_id: int, user_id: int) -> bool:
         """Удалить документ (soft delete)."""
         await self.get_document(document_id)
-        await self._document_repo.update(document_id, {
+        await self._document_repo.update_by_id(document_id, {
             "is_active": False,
             "updated_by_id": user_id,
         })
@@ -492,7 +492,7 @@ class DocumentService:
         if document.status == DocumentStatus.ARCHIVED:
             raise ValidationError("Документ уже в архиве")
         
-        await self._document_repo.update(document_id, {
+        await self._document_repo.update_by_id(document_id, {
             "status": DocumentStatus.ARCHIVED,
             "updated_by_id": user_id,
         })
@@ -507,7 +507,7 @@ class DocumentService:
         if document.status != DocumentStatus.ARCHIVED:
             raise ValidationError("Документ не в архиве")
         
-        await self._document_repo.update(document_id, {
+        await self._document_repo.update_by_id(document_id, {
             "status": DocumentStatus.ACTIVE,
             "updated_by_id": user_id,
         })

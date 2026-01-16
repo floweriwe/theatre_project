@@ -49,24 +49,42 @@ export function InventoryItemPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (id) {
-      loadItem(parseInt(id));
-    }
-  }, [id]);
+    let isCancelled = false;
 
-  const loadItem = async (itemId: number) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await inventoryService.getItem(itemId);
-      setItem(data);
-    } catch (err) {
-      console.error('Failed to load item:', err);
-      setError('Не удалось загрузить данные предмета');
-    } finally {
-      setLoading(false);
+    const loadItem = async (itemId: number) => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await inventoryService.getItem(itemId);
+        if (!isCancelled) {
+          setItem(data);
+        }
+      } catch (err) {
+        if (!isCancelled) {
+          console.error('Failed to load item:', err);
+          setError('Не удалось загрузить данные предмета');
+        }
+      } finally {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    if (id) {
+      const itemId = parseInt(id, 10);
+      if (isNaN(itemId) || itemId <= 0) {
+        setError('Некорректный ID предмета');
+        setLoading(false);
+        return;
+      }
+      loadItem(itemId);
     }
-  };
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [id]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('ru-RU', {

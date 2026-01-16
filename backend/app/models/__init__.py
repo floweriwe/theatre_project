@@ -36,6 +36,8 @@ from app.models.schedule import (
     ParticipantRole,
     ParticipantStatus,
 )
+from app.models.department import Department, DepartmentType
+from app.models.venue import Venue, VenueType
 
 __all__ = [
     # User
@@ -70,4 +72,10 @@ __all__ = [
     "EventStatus",
     "ParticipantRole",
     "ParticipantStatus",
+    # Department
+    "Department",
+    "DepartmentType",
+    # Venue
+    "Venue",
+    "VenueType",
 ]

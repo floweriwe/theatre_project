@@ -137,7 +137,7 @@ class PerformanceService:
         update_data = data.model_dump(exclude_unset=True)
         update_data["updated_by_id"] = user_id
         
-        await self._performance_repo.update(performance_id, update_data)
+        await self._performance_repo.update_by_id(performance_id, update_data)
         await self._session.commit()
         
         return await self._performance_repo.get_with_sections(performance_id)
@@ -145,7 +145,7 @@ class PerformanceService:
     async def delete_performance(self, performance_id: int, user_id: int) -> bool:
         """Удалить спектакль (soft delete)."""
         await self.get_performance(performance_id)
-        await self._performance_repo.update(performance_id, {
+        await self._performance_repo.update_by_id(performance_id, {
             "is_active": False,
             "updated_by_id": user_id,
         })
@@ -194,7 +194,7 @@ class PerformanceService:
                 f"Невозможно перейти из статуса '{current_status.value}' в '{new_status.value}'"
             )
         
-        await self._performance_repo.update(performance_id, {
+        await self._performance_repo.update_by_id(performance_id, {
             "status": new_status,
             "updated_by_id": user_id,
         })
@@ -268,7 +268,7 @@ class PerformanceService:
             f.write(content)
         
         # Обновляем спектакль
-        await self._performance_repo.update(performance_id, {
+        await self._performance_repo.update_by_id(performance_id, {
             "poster_path": poster_path,
             "updated_by_id": user_id,
         })
@@ -336,7 +336,7 @@ class PerformanceService:
         update_data = data.model_dump(exclude_unset=True)
         update_data["updated_by_id"] = user_id
         
-        await self._section_repo.update(section_id, update_data)
+        await self._section_repo.update_by_id(section_id, update_data)
         await self._session.commit()
         
         return await self._section_repo.get_by_id(section_id)

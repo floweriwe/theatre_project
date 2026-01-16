@@ -100,14 +100,14 @@ class InventoryService:
             if not parent:
                 raise NotFoundError(f"Родительская категория с ID {data.parent_id} не найдена")
         
-        category = InventoryCategory(
+        category_data = {
             **data.model_dump(),
-            theater_id=theater_id,
-            created_by_id=user_id,
-            updated_by_id=user_id,
-        )
-        
-        created = await self._category_repo.create(category.__dict__)
+            "theater_id": theater_id,
+            "created_by_id": user_id,
+            "updated_by_id": user_id,
+        }
+
+        created = await self._category_repo.create(category_data)
         await self._session.commit()
         
         return await self._category_repo.get_by_id(created.id)
@@ -130,7 +130,7 @@ class InventoryService:
             if existing:
                 raise AlreadyExistsError(f"Категория с кодом '{update_data['code']}' уже существует")
         
-        updated = await self._category_repo.update(category_id, update_data)
+        updated = await self._category_repo.update_by_id(category_id, update_data)
         await self._session.commit()
         
         return updated
@@ -138,7 +138,7 @@ class InventoryService:
     async def delete_category(self, category_id: int) -> bool:
         """Удалить категорию (soft delete)."""
         category = await self.get_category(category_id)
-        await self._category_repo.update(category_id, {"is_active": False})
+        await self._category_repo.update_by_id(category_id, {"is_active": False})
         await self._session.commit()
         return True
     
@@ -190,14 +190,14 @@ class InventoryService:
             if not parent:
                 raise NotFoundError(f"Родительское место хранения с ID {data.parent_id} не найдено")
         
-        location = StorageLocation(
+        location_data = {
             **data.model_dump(),
-            theater_id=theater_id,
-            created_by_id=user_id,
-            updated_by_id=user_id,
-        )
-        
-        created = await self._location_repo.create(location.__dict__)
+            "theater_id": theater_id,
+            "created_by_id": user_id,
+            "updated_by_id": user_id,
+        }
+
+        created = await self._location_repo.create(location_data)
         await self._session.commit()
         
         return await self._location_repo.get_by_id(created.id)
@@ -220,7 +220,7 @@ class InventoryService:
             if existing:
                 raise AlreadyExistsError(f"Место хранения с кодом '{update_data['code']}' уже существует")
         
-        updated = await self._location_repo.update(location_id, update_data)
+        updated = await self._location_repo.update_by_id(location_id, update_data)
         await self._session.commit()
         
         return updated
@@ -228,7 +228,7 @@ class InventoryService:
     async def delete_location(self, location_id: int) -> bool:
         """Удалить место хранения (soft delete)."""
         location = await self.get_location(location_id)
-        await self._location_repo.update(location_id, {"is_active": False})
+        await self._location_repo.update_by_id(location_id, {"is_active": False})
         await self._session.commit()
         return True
     
@@ -365,7 +365,7 @@ class InventoryService:
                 comment="Перемещение при редактировании",
             )
         
-        updated = await self._item_repo.update(item_id, update_data)
+        updated = await self._item_repo.update_by_id(item_id, update_data)
         await self._session.commit()
         
         return await self._item_repo.get_with_relations(item_id)
@@ -373,7 +373,7 @@ class InventoryService:
     async def delete_item(self, item_id: int, user_id: int) -> bool:
         """Удалить предмет (soft delete)."""
         item = await self.get_item(item_id)
-        await self._item_repo.update(item_id, {
+        await self._item_repo.update_by_id(item_id, {
             "is_active": False,
             "updated_by_id": user_id,
         })
@@ -413,7 +413,7 @@ class InventoryService:
         )
         
         # Обновляем местоположение
-        await self._item_repo.update(item_id, {
+        await self._item_repo.update_by_id(item_id, {
             "location_id": to_location_id,
             "updated_by_id": user_id,
         })
@@ -445,7 +445,7 @@ class InventoryService:
         )
         
         # Обновляем статус
-        await self._item_repo.update(item_id, {
+        await self._item_repo.update_by_id(item_id, {
             "status": ItemStatus.RESERVED,
             "updated_by_id": user_id,
         })
@@ -475,7 +475,7 @@ class InventoryService:
         )
         
         # Обновляем статус
-        await self._item_repo.update(item_id, {
+        await self._item_repo.update_by_id(item_id, {
             "status": ItemStatus.IN_STOCK,
             "updated_by_id": user_id,
         })
@@ -506,7 +506,7 @@ class InventoryService:
         )
         
         # Обновляем статус
-        await self._item_repo.update(item_id, {
+        await self._item_repo.update_by_id(item_id, {
             "status": ItemStatus.WRITTEN_OFF,
             "location_id": None,
             "updated_by_id": user_id,
