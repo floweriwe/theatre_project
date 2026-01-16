@@ -272,9 +272,19 @@ class DocumentStats(BaseModel):
 
 class FileUploadResponse(BaseModel):
     """Ответ после загрузки файла."""
-    
+
     file_path: str
     file_name: str
     file_size: int
     mime_type: str
     file_type: FileType
+
+
+class DocumentPreviewUrlResponse(BaseModel):
+    """Ответ с URL для предпросмотра/скачивания документа."""
+
+    url: str = Field(..., description="URL для доступа к файлу")
+    file_name: str = Field(..., description="Имя файла")
+    content_type: str = Field(..., description="MIME-тип файла")
+    file_size: int = Field(..., description="Размер файла в байтах")
+    expires_in: int = Field(3600, description="Время жизни URL в секундах")

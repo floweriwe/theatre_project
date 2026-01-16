@@ -6,19 +6,27 @@
 - Загрузка и хранение файлов
 - Версионирование
 - Статистика
+- Конвертация DOCX в PDF для предпросмотра
 """
+import io
+import mimetypes
 import os
 import shutil
 from datetime import datetime
 from pathlib import Path
 from typing import BinaryIO
-import mimetypes
 
+import magic  # type: ignore
+from docx import Document as DocxDocument  # type: ignore
 from fastapi import UploadFile
+from reportlab.lib.pagesizes import letter  # type: ignore
+from reportlab.lib.styles import getSampleStyleSheet  # type: ignore
+from reportlab.lib.units import inch  # type: ignore
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer  # type: ignore
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
-from app.core.exceptions import NotFoundError, AlreadyExistsError, ValidationError
+from app.core.exceptions import AlreadyExistsError, NotFoundError, ValidationError
 from app.models.document import (
     DocumentCategory,
     Document,
@@ -91,11 +99,31 @@ class DocumentService:
     # =========================================================================
     # File Operations
     # =========================================================================
-    
+
+    def _detect_content_type(self, file_bytes: bytes) -> str:
+        """
+        Определить MIME-тип файла по его содержимому.
+
+        Использует python-magic для определения типа файла.
+
+        Args:
+            file_bytes: Содержимое файла
+
+        Returns:
+            MIME-тип (например, 'application/pdf', 'image/jpeg')
+        """
+        try:
+            mime = magic.Magic(mime=True)
+            detected_type = mime.from_buffer(file_bytes)
+            return detected_type if detected_type else "application/octet-stream"
+        except Exception:
+            # Fallback на octet-stream если не удалось определить
+            return "application/octet-stream"
+
     def _get_file_type(self, mime_type: str) -> FileType:
         """Определить тип файла по MIME типу."""
         return MIME_TYPE_MAP.get(mime_type, FileType.OTHER)
-    
+
     def _generate_file_path(self, file_name: str, theater_id: int | None = None) -> str:
         """
         Сгенерировать путь для хранения файла.
@@ -146,9 +174,14 @@ class DocumentService:
         
         if file_size == 0:
             raise ValidationError("Файл пустой")
-        
-        # Определяем MIME тип
-        mime_type = file.content_type or mimetypes.guess_type(file.filename or "")[0] or "application/octet-stream"
+
+        # Определяем MIME тип с помощью python-magic
+        mime_type = self._detect_content_type(content)
+
+        # Fallback на заголовок Content-Type или расширение файла
+        if mime_type == "application/octet-stream":
+            mime_type = file.content_type or mimetypes.guess_type(file.filename or "")[0] or "application/octet-stream"
+
         file_type = self._get_file_type(mime_type)
         
         # Генерируем путь
@@ -627,3 +660,146 @@ class DocumentService:
             image_count=stats.get("image_count", 0),
             other_count=stats.get("other_count", 0),
         )
+
+    # =========================================================================
+    # Document Conversion (DOCX to PDF)
+    # =========================================================================
+
+    def _get_preview_path(self, document_id: int) -> Path:
+        """
+        Получить путь для хранения preview PDF.
+
+        Args:
+            document_id: ID документа
+
+        Returns:
+            Путь к preview PDF файлу
+        """
+        preview_dir = self._storage_path / "previews"
+        preview_dir.mkdir(parents=True, exist_ok=True)
+        return preview_dir / f"doc_{document_id}_preview.pdf"
+
+    def _convert_docx_to_pdf(self, docx_path: Path, pdf_path: Path) -> bool:
+        """
+        Конвертировать DOCX в PDF (простая текстовая версия).
+
+        Извлекает текст из DOCX и создаёт простой PDF с помощью reportlab.
+        ОГРАНИЧЕНИЯ: теряется сложное форматирование, таблицы, изображения.
+
+        Args:
+            docx_path: Путь к DOCX файлу
+            pdf_path: Путь для сохранения PDF
+
+        Returns:
+            True если конвертация успешна
+        """
+        try:
+            # Читаем DOCX
+            doc = DocxDocument(docx_path)
+
+            # Создаём PDF
+            pdf_buffer = io.BytesIO()
+            pdf = SimpleDocTemplate(
+                pdf_buffer,
+                pagesize=letter,
+                rightMargin=inch,
+                leftMargin=inch,
+                topMargin=inch,
+                bottomMargin=inch,
+            )
+
+            # Стили
+            styles = getSampleStyleSheet()
+            story = []
+
+            # Заголовок
+            title_style = styles["Title"]
+            story.append(Paragraph("Document Preview", title_style))
+            story.append(Spacer(1, 0.2 * inch))
+
+            # Добавляем параграфы из документа
+            normal_style = styles["Normal"]
+            for para in doc.paragraphs:
+                if para.text.strip():
+                    # Очищаем текст от проблемных символов
+                    text = para.text.replace("<", "&lt;").replace(">", "&gt;")
+                    story.append(Paragraph(text, normal_style))
+                    story.append(Spacer(1, 0.1 * inch))
+
+            # Строим PDF
+            pdf.build(story)
+
+            # Сохраняем
+            with open(pdf_path, "wb") as f:
+                f.write(pdf_buffer.getvalue())
+
+            return True
+
+        except Exception:
+            # Если конвертация не удалась, возвращаем False
+            return False
+
+    async def get_document_preview_url(self, document_id: int) -> str | None:
+        """
+        Получить URL для предпросмотра документа в формате PDF.
+
+        Для DOCX/DOC файлов создаёт preview PDF (если ещё не создан).
+        Для PDF файлов возвращает URL оригинала.
+
+        Args:
+            document_id: ID документа
+
+        Returns:
+            URL для предпросмотра или None если конвертация невозможна
+
+        Raises:
+            NotFoundError: Если документ не найден
+        """
+        document = await self.get_document(document_id)
+
+        # Для PDF возвращаем URL оригинала
+        if document.mime_type == "application/pdf":
+            return self.get_file_url(document.file_path)
+
+        # Проверяем, что это DOCX/DOC
+        if document.mime_type not in [
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ]:
+            return None
+
+        # Проверяем существование preview
+        preview_path = self._get_preview_path(document_id)
+
+        if not preview_path.exists():
+            # Создаём preview
+            source_path = self._storage_path / document.file_path
+
+            if not source_path.exists():
+                raise NotFoundError(f"Исходный файл документа {document_id} не найден")
+
+            # Конвертируем
+            success = self._convert_docx_to_pdf(source_path, preview_path)
+
+            if not success:
+                return None
+
+        # Возвращаем URL для preview
+        relative_path = preview_path.relative_to(self._storage_path)
+        return f"/storage/documents/{relative_path}"
+
+    def delete_document_preview(self, document_id: int) -> bool:
+        """
+        Удалить preview PDF документа.
+
+        Args:
+            document_id: ID документа
+
+        Returns:
+            True если успешно удалён
+        """
+        preview_path = self._get_preview_path(document_id)
+        if preview_path.exists():
+            preview_path.unlink()
+            return True
+        return False
