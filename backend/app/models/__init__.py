@@ -13,6 +13,7 @@ from app.models.inventory import (
     InventoryMovement,
     ItemStatus,
     MovementType,
+    InventoryCondition,
 )
 from app.models.inventory_photo import InventoryPhoto
 from app.models.performance_inventory import PerformanceInventory
@@ -56,6 +57,7 @@ __all__ = [
     "InventoryPhoto",
     "ItemStatus",
     "MovementType",
+    "InventoryCondition",
     # Performances
     "Performance",
     "PerformanceInventory",

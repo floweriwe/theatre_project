@@ -15,6 +15,7 @@ from sqlalchemy import (
     Boolean,
     DateTime,
     Enum,
+    Float,
     ForeignKey,
     Integer,
     Numeric,
@@ -45,7 +46,7 @@ class ItemStatus(str, PyEnum):
 
 class MovementType(str, PyEnum):
     """Тип перемещения."""
-    
+
     RECEIPT = "receipt"             # Поступление
     TRANSFER = "transfer"           # Перемещение
     RESERVE = "reserve"             # Резервирование
@@ -55,6 +56,16 @@ class MovementType(str, PyEnum):
     WRITE_OFF = "write_off"         # Списание
     REPAIR_START = "repair_start"   # Отправка в ремонт
     REPAIR_END = "repair_end"       # Возврат из ремонта
+
+
+class InventoryCondition(str, PyEnum):
+    """Физическое состояние предмета инвентаря."""
+
+    NEW = "new"           # Новый
+    GOOD = "good"         # Хорошее
+    FAIR = "fair"         # Удовлетворительное
+    POOR = "poor"         # Плохое
+    BROKEN = "broken"     # Сломан/непригоден
 
 
 class InventoryCategory(Base, AuditMixin):
@@ -239,7 +250,24 @@ class InventoryItem(Base, AuditMixin):
     
     # Изображения (пути к файлам)
     images: Mapped[list | None] = mapped_column(JSONB, nullable=True)
-    
+
+    # Физические характеристики
+    dimensions: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+        comment="Габариты (например, '2x3x1м')"
+    )
+    weight: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
+        comment="Вес в кг"
+    )
+    condition: Mapped[InventoryCondition | None] = mapped_column(
+        Enum(InventoryCondition, values_callable=lambda x: [e.value for e in x]),
+        nullable=True,
+        comment="Физическое состояние"
+    )
+
     # Флаги
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     
