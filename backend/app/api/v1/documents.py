@@ -31,6 +31,7 @@ from app.schemas.document import (
     DocumentResponse,
     DocumentListResponse,
     PaginatedDocuments,
+    DocumentPreviewUrlResponse,
     # Versions
     DocumentVersionResponse,
     # Stats
@@ -379,16 +380,118 @@ async def download_document(
     """Ð¡ÐºÐ°Ñ‡Ð°Ñ‚ÑŒ Ñ„Ð°Ð¹Ð» Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð°."""
     try:
         document = await service.get_document(document_id)
-        
+
         file_path = Path(settings.STORAGE_PATH) / "documents" / document.file_path
         if not file_path.exists():
             raise HTTPException(status.HTTP_404_NOT_FOUND, "Ð¤Ð°Ð¹Ð» Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½")
-        
+
         return FileResponse(
             path=file_path,
             filename=document.file_name,
             media_type=document.mime_type,
         )
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+
+@router.get(
+    "/{document_id}/download-url",
+    response_model=DocumentPreviewUrlResponse,
+    summary="Получить URL для скачивания документа",
+)
+async def get_document_download_url(
+    document_id: int,
+    current_user: CurrentUserDep,
+    service: DocumentService = DocumentServiceDep,
+):
+    """
+    Получить URL для скачивания документа с информацией о content_type.
+
+    Возвращает URL и метаданные файла, включая корректный MIME-тип,
+    определенный при загрузке с помощью python-magic.
+    """
+    try:
+        document = await service.get_document(document_id)
+
+        # Проверяем существование файла
+        file_path = Path(settings.STORAGE_PATH) / "documents" / document.file_path
+        if not file_path.exists():
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "Файл не найден")
+
+        # Формируем URL для доступа к файлу
+        # В production это будет внешний URL через nginx/CDN
+        download_url = f"/api/v1/documents/{document_id}/download"
+
+        return DocumentPreviewUrlResponse(
+            url=download_url,
+            file_name=document.file_name,
+            content_type=document.mime_type,
+            file_size=document.file_size,
+            expires_in=3600,  # 1 час
+        )
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+
+@router.get(
+    "/{document_id}/preview",
+    summary="Предпросмотр документа (PDF)",
+)
+async def preview_document(
+    document_id: int,
+    current_user: CurrentUserDep,
+    service: DocumentService = DocumentServiceDep,
+):
+    """
+    Получить предпросмотр документа в формате PDF.
+
+    Для DOCX/DOC файлов создаёт упрощённый PDF preview.
+    Для PDF файлов возвращает оригинал.
+    Для других форматов возвращает 400.
+
+    ОГРАНИЧЕНИЯ MVP:
+    - DOCX конвертируется в простой текстовый PDF
+    - Теряется сложное форматирование, таблицы, изображения
+    - Для полноценного preview требуется LibreOffice (Phase 2)
+    """
+    try:
+        document = await service.get_document(document_id)
+
+        # Для PDF возвращаем оригинал
+        if document.mime_type == "application/pdf":
+            file_path = Path(settings.STORAGE_PATH) / "documents" / document.file_path
+            if not file_path.exists():
+                raise HTTPException(status.HTTP_404_NOT_FOUND, "Файл не найден")
+
+            return FileResponse(
+                path=file_path,
+                filename=document.file_name,
+                media_type="application/pdf",
+            )
+
+        # Для DOCX/DOC создаём preview
+        preview_url = await service.get_document_preview_url(document_id)
+
+        if preview_url is None:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                "Предпросмотр недоступен для данного типа файла",
+            )
+
+        # Получаем путь к preview файлу
+        preview_path = Path(settings.STORAGE_PATH) / "previews" / f"doc_{document_id}_preview.pdf"
+        if not preview_path.exists():
+            raise HTTPException(
+                status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "Ошибка создания предпросмотра",
+            )
+
+        return FileResponse(
+            path=preview_path,
+            filename=f"preview_{document.file_name}.pdf",
+            media_type="application/pdf",
+        )
+
     except NotFoundError as e:
         raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
 

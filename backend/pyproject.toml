@@ -47,6 +47,12 @@ dependencies = [
     # Utilities
     "aiofiles>=23.2.0",
     "python-dateutil>=2.9.0",
+    "python-magic>=0.4.27",
+    "python-magic-bin>=0.4.14; platform_system=='Windows'",
+
+    # Document conversion
+    "python-docx>=1.1.0",
+    "reportlab>=4.0.0",
 ]
 
 [project.optional-dependencies]
@@ -120,6 +126,9 @@ module = [
     "redis.*",
     "jose.*",
     "passlib.*",
+    "docx.*",
+    "reportlab.*",
+    "magic.*",
 ]
 ignore_missing_imports = true
 
