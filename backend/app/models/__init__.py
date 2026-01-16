@@ -35,6 +35,12 @@ from app.models.document import (
     DocumentStatus,
     FileType,
 )
+from app.models.document_template import (
+    DocumentTemplate,
+    DocumentTemplateVariable,
+    TemplateType,
+    VariableType,
+)
 from app.models.schedule import (
     ScheduleEvent,
     EventParticipant,
@@ -78,6 +84,11 @@ __all__ = [
     "Tag",
     "DocumentStatus",
     "FileType",
+    # Document Templates
+    "DocumentTemplate",
+    "DocumentTemplateVariable",
+    "TemplateType",
+    "VariableType",
     # Schedule
     "ScheduleEvent",
     "EventParticipant",

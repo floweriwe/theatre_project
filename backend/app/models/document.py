@@ -31,6 +31,7 @@ from app.database.base import Base, AuditMixin
 if TYPE_CHECKING:
     from app.models.user import User
     from app.models.theater import Theater
+    from app.models.document_template import DocumentTemplate
 
 
 class DocumentStatus(str, PyEnum):
@@ -203,6 +204,15 @@ class Document(Base, AuditMixin):
         nullable=True,
         index=True
     )
+
+    # Связь с шаблоном (если документ был сгенерирован из шаблона)
+    generated_from_template_id: Mapped[int | None] = mapped_column(
+        ForeignKey("document_templates.id", ondelete="SET NULL"),
+        nullable=True
+    )
+
+    # Данные переменных, которые были использованы при генерации
+    generation_data: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     
     # Дополнительные метаданные
     extra_data: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
@@ -233,7 +243,11 @@ class Document(Base, AuditMixin):
         secondary=document_tags,
         back_populates="documents"
     )
-    
+    generated_from_template: Mapped["DocumentTemplate | None"] = relationship(
+        "DocumentTemplate",
+        foreign_keys="[Document.generated_from_template_id]"
+    )
+
     def __repr__(self) -> str:
         return f"<Document(id={self.id}, name='{self.name}')>"
 
