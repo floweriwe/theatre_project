@@ -3,7 +3,6 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Calendar,
   Plus,
@@ -14,8 +13,6 @@ import {
   RefreshCw,
   Clock,
   MapPin,
-  Users,
-  AlertCircle,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -23,23 +20,26 @@ import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Alert } from '@/components/ui/Alert';
 import { cn } from '@/utils/helpers';
-import { ROUTES } from '@/utils/constants';
 import { scheduleService } from '@/services/schedule_service';
-import type { ScheduleEvent, EventType, EventStatus } from '@/types/schedule_types';
+import type { ScheduleEventListItem, EventType } from '@/types/schedule_types';
 
 const EVENT_TYPE_LABELS: Record<EventType, string> = {
   performance: 'Спектакль',
   rehearsal: 'Репетиция',
-  technical: 'Техническая',
+  tech_rehearsal: 'Техническая',
+  dress_rehearsal: 'Генеральная',
   meeting: 'Собрание',
+  maintenance: 'Техобслуживание',
   other: 'Другое',
 };
 
 const EVENT_TYPE_COLORS: Record<EventType, string> = {
   performance: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
   rehearsal: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  technical: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+  tech_rehearsal: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+  dress_rehearsal: 'bg-pink-500/10 text-pink-400 border-pink-500/20',
   meeting: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+  maintenance: 'bg-teal-500/10 text-teal-400 border-teal-500/20',
   other: 'bg-gray-500/10 text-gray-400 border-gray-500/20',
 };
 
@@ -50,7 +50,7 @@ const MONTHS = [
 ];
 
 export function SchedulePage() {
-  const [events, setEvents] = useState<ScheduleEvent[]>([]);
+  const [events, setEvents] = useState<ScheduleEventListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
@@ -111,11 +111,11 @@ export function SchedulePage() {
 
   const getEventsForDay = (day: number) => {
     return events.filter((event) => {
-      const eventDate = new Date(event.start_date);
+      const date = new Date(event.eventDate);
       return (
-        eventDate.getDate() === day &&
-        eventDate.getMonth() === currentDate.getMonth() &&
-        eventDate.getFullYear() === currentDate.getFullYear()
+        date.getDate() === day &&
+        date.getMonth() === currentDate.getMonth() &&
+        date.getFullYear() === currentDate.getFullYear()
       );
     });
   };
@@ -296,7 +296,7 @@ export function SchedulePage() {
                               key={event.id}
                               className={cn(
                                 'text-xs px-1 py-0.5 rounded truncate',
-                                EVENT_TYPE_COLORS[event.event_type]
+                                EVENT_TYPE_COLORS[event.eventType]
                               )}
                             >
                               {event.title}
@@ -345,26 +345,26 @@ export function SchedulePage() {
                     className="p-3 rounded-lg bg-surface hover:bg-white/5 transition-colors cursor-pointer"
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <Badge className={EVENT_TYPE_COLORS[event.event_type]}>
-                        {EVENT_TYPE_LABELS[event.event_type]}
+                      <Badge className={EVENT_TYPE_COLORS[event.eventType]}>
+                        {EVENT_TYPE_LABELS[event.eventType]}
                       </Badge>
-                      {event.start_time && (
+                      {event.startTime && (
                         <span className="text-sm text-text-muted">
-                          {formatTime(event.start_time)}
+                          {formatTime(event.startTime)}
                         </span>
                       )}
                     </div>
                     <h4 className="font-medium text-white mb-1">{event.title}</h4>
-                    {event.location && (
+                    {event.venue && (
                       <div className="flex items-center gap-1 text-sm text-text-muted">
                         <MapPin className="w-3 h-3" />
-                        {event.location}
+                        {event.venue}
                       </div>
                     )}
-                    {event.duration_minutes && (
+                    {event.endTime && (
                       <div className="flex items-center gap-1 text-sm text-text-muted mt-1">
                         <Clock className="w-3 h-3" />
-                        {event.duration_minutes} мин
+                        {formatTime(event.startTime)} — {formatTime(event.endTime)}
                       </div>
                     )}
                   </div>

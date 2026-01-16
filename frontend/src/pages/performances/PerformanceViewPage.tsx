@@ -5,15 +5,11 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
-  Theater,
   ArrowLeft,
   Edit,
   Trash2,
   Clock,
   Calendar,
-  User,
-  Music,
-  Palette,
   AlertCircle,
   FileText,
   Lightbulb,
@@ -30,7 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import { ROUTES } from '@/utils/constants';
 import { performanceService } from '@/services/performance_service';
 import { PropsEquipmentTab } from '@/components/features/performances';
-import type { Performance, PerformanceStatus, PerformanceSection } from '@/types/performance_types';
+import type { Performance, PerformanceStatus } from '@/types/performance_types';
 
 const STATUS_LABELS: Record<PerformanceStatus, string> = {
   preparation: 'В подготовке',
@@ -138,7 +134,7 @@ export function PerformanceViewPage() {
                 {STATUS_LABELS[performance.status]}
               </Badge>
               {performance.ageRating && (
-                <Badge variant="outline">{performance.ageRating}</Badge>
+                <Badge variant="default">{performance.ageRating}</Badge>
               )}
             </div>
             <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
@@ -156,7 +152,7 @@ export function PerformanceViewPage() {
               Редактировать
             </Link>
           </Button>
-          <Button variant="destructive">
+          <Button variant="danger">
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>

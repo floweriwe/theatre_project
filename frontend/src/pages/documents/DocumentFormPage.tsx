@@ -11,7 +11,6 @@ import {
   ArrowLeft,
   Save,
   FileText,
-  Folder,
   Upload,
   X,
   File,

@@ -124,12 +124,12 @@ export function Header({ title = 'Обзор', onMenuClick }: HeaderProps) {
           >
             <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center">
               <span className="text-sm font-medium text-gold">
-                {user?.first_name?.[0] || 'A'}
+                {user?.firstName?.[0] || 'A'}
               </span>
             </div>
             <div className="hidden md:block text-left">
               <p className="text-sm font-medium text-white">
-                {user?.first_name || 'Администратор'}
+                {user?.firstName || 'Администратор'}
               </p>
               <p className="text-xs text-text-muted">admin</p>
             </div>

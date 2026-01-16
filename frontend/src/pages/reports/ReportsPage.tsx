@@ -5,12 +5,9 @@
 import { useEffect, useState } from 'react';
 import {
   BarChart3,
-  TrendingUp,
-  Users,
   Package,
   FileText,
   Calendar,
-  Download,
   RefreshCw,
   Theater,
 } from 'lucide-react';

@@ -13,7 +13,6 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
 import { Alert } from '../../components/ui/Alert';
 
 interface RegisterFormData {

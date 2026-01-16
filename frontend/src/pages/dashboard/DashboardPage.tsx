@@ -9,7 +9,6 @@ import {
   FileText,
   Theater,
   Calendar,
-  TrendingUp,
   ArrowRight,
   Sparkles,
   User,
@@ -17,7 +16,6 @@ import {
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { cn } from '@/utils/helpers';
 import { ROUTES } from '@/utils/constants';
 import { inventoryService } from '@/services/inventory_service';
 import { documentService } from '@/services/document_service';
@@ -148,7 +146,7 @@ export function DashboardPage() {
               {dateString}
             </p>
             <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
-              {getGreeting()}, {user?.first_name || 'Администратор'}!
+              {getGreeting()}, {user?.firstName || 'Администратор'}!
             </h1>
             <p className="text-text-secondary">
               Добро пожаловать в систему управления театром

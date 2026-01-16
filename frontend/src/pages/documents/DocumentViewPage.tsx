@@ -11,10 +11,7 @@ import {
   Edit,
   Trash2,
   Calendar,
-  User,
-  Tag,
   Eye,
-  Clock,
   AlertCircle,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
@@ -28,13 +25,13 @@ import type { Document, DocumentStatus } from '@/types/document_types';
 
 const STATUS_LABELS: Record<DocumentStatus, string> = {
   draft: 'Черновик',
-  published: 'Опубликован',
+  active: 'Активный',
   archived: 'В архиве',
 };
 
 const STATUS_COLORS: Record<DocumentStatus, string> = {
   draft: 'bg-amber-500/10 text-amber-400',
-  published: 'bg-emerald-500/10 text-emerald-400',
+  active: 'bg-emerald-500/10 text-emerald-400',
   archived: 'bg-gray-500/10 text-gray-400',
 };
 
@@ -122,8 +119,8 @@ export function DocumentViewPage() {
             <div className="flex items-center gap-3 mb-2">
               <FileText className="w-8 h-8 text-emerald-400" />
               <div>
-                <h1 className="text-2xl font-display font-bold text-white">{document.title}</h1>
-                <p className="text-text-muted">{document.file_path?.split('/').pop()}</p>
+                <h1 className="text-2xl font-display font-bold text-white">{document.name}</h1>
+                <p className="text-text-muted">{document.filePath?.split('/').pop()}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -131,7 +128,7 @@ export function DocumentViewPage() {
                 {STATUS_LABELS[document.status]}
               </Badge>
               <span className="text-text-muted">•</span>
-              <span className="text-text-muted">{formatBytes(document.file_size || 0)}</span>
+              <span className="text-text-muted">{formatBytes(document.fileSize || 0)}</span>
             </div>
           </div>
         </div>
@@ -146,7 +143,7 @@ export function DocumentViewPage() {
               Редактировать
             </Link>
           </Button>
-          <Button variant="destructive">
+          <Button variant="danger">
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>
@@ -169,15 +166,15 @@ export function DocumentViewPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-text-muted mb-1">Тип файла</p>
-                  <p className="text-white">{document.mime_type || 'application/pdf'}</p>
+                  <p className="text-white">{document.mimeType || 'application/pdf'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-text-muted mb-1">Версия</p>
-                  <p className="text-white">v{document.version}</p>
+                  <p className="text-white">v{document.currentVersion}</p>
                 </div>
                 <div>
                   <p className="text-sm text-text-muted mb-1">Видимость</p>
-                  <p className="text-white">{document.is_public ? 'Публичный' : 'Приватный'}</p>
+                  <p className="text-white">{document.isPublic ? 'Публичный' : 'Приватный'}</p>
                 </div>
               </div>
             </div>
@@ -219,30 +216,29 @@ export function DocumentViewPage() {
               <h2 className="text-lg font-medium text-white">Даты</h2>
             </div>
             <div className="space-y-4">
-              {document.created_at && (
+              {document.createdAt && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Создан</p>
-                  <p className="text-white">{formatDate(document.created_at)}</p>
+                  <p className="text-white">{formatDate(document.createdAt)}</p>
                 </div>
               )}
-              {document.updated_at && (
+              {document.updatedAt && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Обновлён</p>
-                  <p className="text-white">{formatDate(document.updated_at)}</p>
+                  <p className="text-white">{formatDate(document.updatedAt)}</p>
                 </div>
               )}
             </div>
           </Card>
 
-          {document.performance && (
+          {document.performanceId && (
             <Card className="p-6">
               <h2 className="text-lg font-medium text-white mb-4">Связанный спектакль</h2>
-              <Link 
-                to={`${ROUTES.PERFORMANCES}/${document.performance.id}`}
+              <Link
+                to={`${ROUTES.PERFORMANCES}/${document.performanceId}`}
                 className="block p-3 bg-surface rounded-lg hover:bg-white/5 transition-colors"
               >
-                <p className="font-medium text-white">{document.performance.title}</p>
-                <p className="text-sm text-text-muted">{document.performance.author}</p>
+                <p className="font-medium text-white">Спектакль #{document.performanceId}</p>
               </Link>
             </Card>
           )}

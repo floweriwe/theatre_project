@@ -11,21 +11,17 @@ import {
   ArrowLeft,
   Save,
   Package,
-  MapPin,
   Tag,
   Hash,
-  FileText,
   Layers,
   CircleDollarSign,
   Calendar,
-  AlertCircle,
   Plus,
 } from 'lucide-react';
 import { Button, Input, Card, Alert, ContainerSpinner, Select } from '@/components/ui';
 import { inventoryService } from '@/services/inventory_service';
 import { ROUTES } from '@/utils/constants';
-import type { 
-  InventoryItem, 
+import type {
   InventoryCategory,
   StorageLocation,
   ItemStatus,

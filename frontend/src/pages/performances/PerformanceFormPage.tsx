@@ -15,15 +15,12 @@ import {
   Clock,
   Calendar,
   FileText,
-  Tag,
-  AlertCircle,
   Plus,
-  Image,
 } from 'lucide-react';
 import { Button, Input, Card, Alert, ContainerSpinner, Select } from '@/components/ui';
 import { performanceService } from '@/services/performance_service';
 import { ROUTES } from '@/utils/constants';
-import type { Performance, PerformanceStatus } from '@/types';
+import type { PerformanceStatus } from '@/types';
 
 // =============================================================================
 // Types
@@ -120,7 +117,7 @@ export function PerformanceFormPage() {
     
     try {
       setLoading(true);
-      const perf = await performanceService.get(Number(id));
+      const perf = await performanceService.getPerformance(Number(id));
       setFormData({
         title: perf.title,
         subtitle: perf.subtitle || '',
@@ -199,14 +196,14 @@ export function PerformanceFormPage() {
       };
       
       if (isEditing) {
-        await performanceService.update(Number(id), data);
+        await performanceService.updatePerformance(Number(id), data);
         setSuccess('Спектакль успешно обновлён');
         
         setTimeout(() => {
           navigate(`${ROUTES.PERFORMANCES}/${id}`);
         }, 1000);
       } else {
-        const newPerf = await performanceService.create(data);
+        const newPerf = await performanceService.createPerformance(data);
         setSuccess('Спектакль успешно создан');
         
         setTimeout(() => {

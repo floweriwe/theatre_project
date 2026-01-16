@@ -7,9 +7,10 @@
 
 import { useCallback, useMemo } from 'react';
 import { useAuthStore } from '@/store/authStore';
+import type { User } from '@/types';
 
 /** Роли пользователей */
-export type UserRole = 
+export type UserRole =
   | 'admin'
   | 'sysadmin'
   | 'director'
@@ -23,7 +24,7 @@ export type UserRole =
 interface UseAuthReturn {
   isAuthenticated: boolean;
   isLoading: boolean;
-  user: ReturnType<typeof useAuthStore>['user'];
+  user: User | null;
   /** Проверка разрешения */
   hasPermission: (permission: string) => boolean;
   /** Проверка роли */
@@ -51,13 +52,12 @@ export function useAuth(): UseAuthReturn {
   const hasPermission = useCallback(
     (permission: string): boolean => {
       if (!user) return false;
-      
+
       // Админ имеет все права
-      if (user.roles?.some(r => r.code === 'admin')) return true;
-      
-      // Проверяем наличие конкретного разрешения
-      const allPermissions = user.roles?.flatMap(r => r.permissions || []) || [];
-      return allPermissions.includes(permission);
+      if (user.roles?.includes('admin')) return true;
+
+      // Проверяем наличие конкретного разрешения в permissions
+      return user.permissions?.includes(permission) || false;
     },
     [user]
   );
@@ -68,15 +68,14 @@ export function useAuth(): UseAuthReturn {
       if (!user) return false;
 
       const roles = Array.isArray(role) ? role : [role];
-      const userRoles = user.roles?.map(r => r.code) || [];
-      return roles.some(r => userRoles.includes(r));
+      return roles.some(r => user.roles?.includes(r));
     },
     [user]
   );
 
   // Является ли пользователь администратором
   const isAdmin = useMemo(() => {
-    return user?.roles?.some(r => r.code === 'admin' || r.code === 'sysadmin') || false;
+    return user?.roles?.some(r => r === 'admin' || r === 'sysadmin') || false;
   }, [user]);
 
   return {

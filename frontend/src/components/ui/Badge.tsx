@@ -7,7 +7,7 @@
 import { type ReactNode } from 'react';
 import { cn } from '@/utils/helpers';
 
-type BadgeVariant = 'default' | 'gold' | 'success' | 'warning' | 'error' | 'info';
+export type BadgeVariant = 'default' | 'gold' | 'success' | 'warning' | 'error' | 'info';
 type BadgeSize = 'sm' | 'md' | 'lg';
 
 interface BadgeProps {

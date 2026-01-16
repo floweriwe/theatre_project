@@ -183,7 +183,7 @@ export const VerifyEmailPage: React.FC = () => {
             <Button 
               onClick={handleResendEmail} 
               className="w-full mb-4"
-              isLoading={resendLoading}
+              loading={resendLoading}
             >
               Отправить новую ссылку
             </Button>
@@ -235,7 +235,7 @@ export const VerifyEmailPage: React.FC = () => {
             <Button 
               onClick={handleResendEmail} 
               className="w-full"
-              isLoading={resendLoading}
+              loading={resendLoading}
             >
               Отправить повторно
             </Button>
@@ -273,6 +273,7 @@ export const EmailVerificationPendingPage: React.FC = () => {
       const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [resendCooldown]);
 
   const handleResend = async () => {
@@ -365,7 +366,7 @@ export const EmailVerificationPendingPage: React.FC = () => {
             variant="outline" 
             className="w-full mb-4"
             onClick={handleResend}
-            isLoading={resendLoading}
+            loading={resendLoading}
             disabled={resendCooldown > 0}
           >
             {resendCooldown > 0 

@@ -13,7 +13,6 @@ import {
   RefreshCw,
   Clock,
   Calendar,
-  Users,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -250,10 +249,10 @@ export function PerformancesListPage() {
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   {perf.genre && (
-                    <Badge variant="outline">{perf.genre}</Badge>
+                    <Badge variant="default">{perf.genre}</Badge>
                   )}
                   {perf.ageRating && (
-                    <Badge variant="outline">{perf.ageRating}</Badge>
+                    <Badge variant="default">{perf.ageRating}</Badge>
                   )}
                 </div>
 

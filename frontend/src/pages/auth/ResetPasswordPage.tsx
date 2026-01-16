@@ -373,7 +373,7 @@ export const ResetPasswordPage: React.FC = () => {
                     type="submit"
                     className="w-full"
                     size="lg"
-                    isLoading={isLoading}
+                    loading={isLoading}
                     disabled={!allRequirementsMet || !passwordsMatch}
                   >
                     Сохранить новый пароль

@@ -127,6 +127,7 @@ function ToastItem({ toast }: { toast: Toast }) {
       }, 300);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [isExiting, removeToast, toast.id]);
 
   const handleClose = () => {

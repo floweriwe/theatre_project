@@ -4,14 +4,10 @@
 
 import { useState } from 'react';
 import {
-  User,
-  Mail,
-  Phone,
   Shield,
   Camera,
   Save,
   Key,
-  Bell,
   Clock,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
@@ -24,8 +20,8 @@ export function ProfilePage() {
   const { user } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: user?.first_name || 'Администратор',
-    lastName: user?.last_name || '',
+    firstName: user?.firstName || 'Администратор',
+    lastName: user?.lastName || '',
     email: user?.email || 'admin@theatre.test',
     phone: '+7 (999) 123-45-67',
   });

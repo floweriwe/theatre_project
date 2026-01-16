@@ -3,7 +3,7 @@
  */
 
 import { useState } from 'react';
-import { X, Calendar, Clock, MapPin, Users, Theater } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';

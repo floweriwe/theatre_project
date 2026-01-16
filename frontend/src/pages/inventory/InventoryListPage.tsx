@@ -8,7 +8,6 @@ import {
   Package,
   Plus,
   Search,
-  Filter,
   Grid,
   List,
   RefreshCw,

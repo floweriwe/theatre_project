@@ -6,7 +6,6 @@ import { useState } from 'react';
 import {
   History,
   Search,
-  Filter,
   Download,
   User,
   Clock,

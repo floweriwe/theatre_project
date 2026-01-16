@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom';
 import {
   Home,
   ArrowLeft,
-  Search,
   Theater,
   HelpCircle,
 } from 'lucide-react';
