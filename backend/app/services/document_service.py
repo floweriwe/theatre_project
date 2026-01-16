@@ -320,6 +320,7 @@ class DocumentService:
         tag_ids: list[int] | None = None,
         is_public: bool | None = None,
         is_active: bool | None = True,
+        department_id: int | None = None,
         theater_id: int | None = None,
         skip: int = 0,
         limit: int = 20,
@@ -333,6 +334,7 @@ class DocumentService:
             tag_ids=tag_ids,
             is_public=is_public,
             is_active=is_active,
+            department_id=department_id,
             theater_id=theater_id,
             skip=skip,
             limit=limit,
@@ -529,7 +531,72 @@ class DocumentService:
         await self.get_document(document_id)
         versions = await self._version_repo.get_by_document(document_id, skip, limit)
         return list(versions)
-    
+
+    async def get_latest_version(self, document_id: int) -> DocumentVersion:
+        """Получить последнюю версию документа."""
+        await self.get_document(document_id)
+        version = await self._version_repo.get_latest(document_id)
+        if not version:
+            raise NotFoundError(f"Версии документа {document_id} не найдены")
+        return version
+
+    async def get_version_by_id(self, version_id: int) -> DocumentVersion:
+        """Получить версию по ID."""
+        version = await self._version_repo.get_by_id(version_id)
+        if not version:
+            raise NotFoundError(f"Версия с ID {version_id} не найдена")
+        return version
+
+    async def upload_new_version(
+        self,
+        document_id: int,
+        file: UploadFile,
+        user_id: int,
+        comment: str | None = None,
+    ) -> DocumentVersion:
+        """
+        Загрузить новую версию документа.
+
+        Создаёт новую версию и обновляет документ.
+        Удаляет старые версии, оставляя только 2 последних.
+        """
+        document = await self.get_document(document_id)
+
+        # Сохраняем файл
+        file_info = await self.save_file(file, document.theater_id)
+
+        # Вычисляем новый номер версии
+        new_version_num = document.current_version + 1
+
+        # Создаём запись версии
+        version = await self._version_repo.create_version(
+            document_id=document_id,
+            version=new_version_num,
+            file_path=file_info.file_path,
+            file_name=file_info.file_name,
+            file_size=file_info.file_size,
+            user_id=user_id,
+            comment=comment or "Новая версия",
+        )
+
+        # Обновляем документ
+        await self._document_repo.update_by_id(document_id, {
+            "file_path": file_info.file_path,
+            "file_name": file_info.file_name,
+            "file_size": file_info.file_size,
+            "mime_type": file_info.mime_type,
+            "file_type": file_info.file_type,
+            "current_version": new_version_num,
+            "updated_by_id": user_id,
+        })
+
+        # Удаляем старые версии (оставляем 2)
+        await self._version_repo.delete_old_versions(document_id, keep_count=2)
+
+        await self._session.commit()
+
+        return version
+
     # =========================================================================
     # Statistics
     # =========================================================================

@@ -400,6 +400,69 @@ async def get_calendar(
 
 
 # =============================================================================
+# Conflict Detection Endpoint
+# =============================================================================
+
+@router.get(
+    "/conflicts",
+    summary="Проверить конфликты расписания",
+)
+async def check_conflicts(
+    venue_id: int = Query(..., description="ID площадки"),
+    event_date: date = Query(..., description="Дата события"),
+    start_time: str = Query(..., description="Время начала (HH:MM)"),
+    end_time: str = Query(..., description="Время окончания (HH:MM)"),
+    event_id: int | None = Query(None, description="ID текущего события (для обновления)"),
+    current_user: CurrentUserDep = None,
+    service: ScheduleService = ScheduleServiceDep,
+):
+    """
+    Проверить наличие конфликтов расписания.
+
+    Возвращает список событий, которые пересекаются по времени
+    с указанной площадкой в указанную дату.
+    """
+    from datetime import time as dt_time
+
+    # Парсим время
+    try:
+        start_h, start_m = map(int, start_time.split(":"))
+        end_h, end_m = map(int, end_time.split(":"))
+        start = dt_time(start_h, start_m)
+        end = dt_time(end_h, end_m)
+    except (ValueError, AttributeError):
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            "Неверный формат времени. Используйте HH:MM"
+        )
+
+    conflicts = await service.check_conflicts(
+        venue_id=venue_id,
+        event_date=event_date,
+        start_time=start,
+        end_time=end,
+        exclude_event_id=event_id,
+        theater_id=current_user.theater_id,
+    )
+
+    return {
+        "has_conflicts": len(conflicts) > 0,
+        "conflicts": [
+            {
+                "id": e.id,
+                "title": e.title,
+                "event_date": e.event_date.isoformat(),
+                "start_time": e.start_time.isoformat(),
+                "end_time": e.end_time.isoformat() if e.end_time else None,
+                "event_type": e.event_type.value,
+                "venue_name": e.venue.name if e.venue else None,
+            }
+            for e in conflicts
+        ],
+    }
+
+
+# =============================================================================
 # Stats Endpoint
 # =============================================================================
 

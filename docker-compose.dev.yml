@@ -59,6 +59,29 @@ services:
       - theatre-network
 
   # ─────────────────────────────────────────────────────────────
+  # MinIO Object Storage (S3-compatible)
+  # ─────────────────────────────────────────────────────────────
+  minio:
+    image: minio/minio:latest
+    container_name: theatre-minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - theatre-network
+
+  # ─────────────────────────────────────────────────────────────
   # Backend API (FastAPI)
   # ─────────────────────────────────────────────────────────────
   backend:
@@ -94,6 +117,12 @@ services:
       
       # CORS
       CORS_ORIGINS: "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173"
+
+      # MinIO
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin123
+      MINIO_SECURE: "false"
     volumes:
       - ./backend:/app
       - ./storage:/app/storage
@@ -103,6 +132,8 @@ services:
       db:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      minio:
         condition: service_healthy
     networks:
       - theatre-network
@@ -137,6 +168,8 @@ volumes:
     name: theatre-postgres-data
   redis_data:
     name: theatre-redis-data
+  minio_data:
+    name: theatre-minio-data
 
 # ─────────────────────────────────────────────────────────────
 # Networks

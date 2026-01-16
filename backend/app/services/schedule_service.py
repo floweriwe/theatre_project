@@ -6,7 +6,7 @@
 - Управление участниками
 - Календарное представление
 """
-from datetime import date, timedelta
+from datetime import date, time, timedelta
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -392,7 +392,7 @@ class ScheduleService:
     async def get_stats(self, theater_id: int | None = None) -> ScheduleStats:
         """Получить статистику расписания."""
         stats = await self._event_repo.get_stats(theater_id)
-        
+
         return ScheduleStats(
             total_events=stats["total_events"],
             planned=stats.get("planned", 0),
@@ -404,3 +404,83 @@ class ScheduleService:
             other_count=stats.get("other_count", 0),
             upcoming_events=stats.get("upcoming_events", 0),
         )
+
+    # =========================================================================
+    # Conflict Detection
+    # =========================================================================
+
+    async def check_conflicts(
+        self,
+        venue_id: int,
+        event_date: date,
+        start_time: time,
+        end_time: time | None,
+        exclude_event_id: int | None = None,
+        theater_id: int | None = None,
+    ) -> list[ScheduleEvent]:
+        """
+        Проверить наличие конфликтов расписания.
+
+        Возвращает список событий, которые пересекаются по времени
+        с указанной площадкой в указанную дату.
+
+        Логика пересечения:
+        - Существующее событие (S) пересекается с новым (N) если:
+          S.start < N.end AND S.end > N.start
+
+        Args:
+            venue_id: ID площадки
+            event_date: Дата события
+            start_time: Время начала
+            end_time: Время окончания (если None, считаем конец дня)
+            exclude_event_id: ID события для исключения (при обновлении)
+            theater_id: ID театра для мульти-тенантности
+
+        Returns:
+            Список конфликтующих событий
+        """
+        from sqlalchemy import select, and_
+        from sqlalchemy.orm import selectinload
+        from datetime import time as dt_time
+
+        # Если end_time не указан, считаем конец дня
+        if end_time is None:
+            end_time = dt_time(23, 59, 59)
+
+        # Базовый запрос
+        query = (
+            select(ScheduleEvent)
+            .where(
+                and_(
+                    ScheduleEvent.venue_id == venue_id,
+                    ScheduleEvent.event_date == event_date,
+                    ScheduleEvent.is_active == True,
+                    # Условие пересечения времени:
+                    # existing.start < new.end AND existing.end > new.start
+                    ScheduleEvent.start_time < end_time,
+                )
+            )
+            .options(selectinload(ScheduleEvent.venue))
+        )
+
+        # Исключаем текущее событие (при обновлении)
+        if exclude_event_id is not None:
+            query = query.where(ScheduleEvent.id != exclude_event_id)
+
+        # Фильтр по театру
+        if theater_id is not None:
+            query = query.where(ScheduleEvent.theater_id == theater_id)
+
+        result = await self._session.execute(query)
+        events = result.scalars().all()
+
+        # Дополнительно проверяем конец времени
+        # (SQLAlchemy не всегда хорошо обрабатывает nullable end_time)
+        conflicts = []
+        for event in events:
+            event_end = event.end_time or dt_time(23, 59, 59)
+            # Проверяем полное условие пересечения
+            if event.start_time < end_time and event_end > start_time:
+                conflicts.append(event)
+
+        return conflicts

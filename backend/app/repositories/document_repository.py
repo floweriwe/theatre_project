@@ -116,6 +116,7 @@ class DocumentRepository(BaseRepository[Document]):
         tag_ids: list[int] | None = None,
         is_public: bool | None = None,
         is_active: bool | None = None,
+        department_id: int | None = None,
         theater_id: int | None = None,
         skip: int = 0,
         limit: int = 20,
@@ -161,7 +162,10 @@ class DocumentRepository(BaseRepository[Document]):
         
         if theater_id is not None:
             filters.append(Document.theater_id == theater_id)
-        
+
+        if department_id is not None:
+            filters.append(Document.department_id == department_id)
+
         # Применяем фильтры
         if filters:
             query = query.where(and_(*filters))

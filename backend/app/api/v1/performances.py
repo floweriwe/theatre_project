@@ -620,3 +620,200 @@ async def remove_performance_inventory(
     await service._session.commit()
 
     return MessageResponse(message="Предмет успешно отвязан от спектакля")
+
+
+# =============================================================================
+# Checklists Endpoints
+# =============================================================================
+
+@router.get(
+    "/{performance_id}/checklists",
+    response_model=list["ChecklistWithItemsResponse"],
+    summary="Получить чеклисты спектакля",
+)
+async def get_performance_checklists(
+    performance_id: int,
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Получить все чеклисты готовности спектакля."""
+    from app.schemas.checklist import ChecklistWithItemsResponse, ChecklistItemResponse
+
+    try:
+        await service.get_performance(performance_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    checklists = await service.get_checklists(performance_id)
+
+    result = []
+    for cl in checklists:
+        items = [
+            ChecklistItemResponse(
+                id=item.id,
+                checklist_id=item.checklist_id,
+                description=item.description,
+                is_completed=item.is_completed,
+                sort_order=item.sort_order,
+                assigned_to_id=item.assigned_to_id,
+                completed_at=item.completed_at,
+                created_at=item.created_at,
+            )
+            for item in cl.items
+        ]
+        result.append(ChecklistWithItemsResponse(
+            id=cl.id,
+            performance_id=cl.performance_id,
+            name=cl.name,
+            description=cl.description,
+            is_active=cl.is_active,
+            created_at=cl.created_at,
+            updated_at=cl.updated_at,
+            items=items,
+            total_items=cl.total_items,
+            completed_items=cl.completed_items,
+            completion_percentage=cl.completion_percentage,
+        ))
+
+    return result
+
+
+@router.post(
+    "/{performance_id}/checklists",
+    response_model="ChecklistResponse",
+    status_code=status.HTTP_201_CREATED,
+    summary="Создать чеклист",
+)
+async def create_checklist(
+    performance_id: int,
+    data: "ChecklistCreate",
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Создать новый чеклист для спектакля."""
+    from app.schemas.checklist import ChecklistCreate, ChecklistResponse
+
+    try:
+        checklist = await service.create_checklist(
+            performance_id=performance_id,
+            name=data.name,
+            description=data.description,
+            user_id=current_user.id,
+        )
+        return ChecklistResponse(
+            id=checklist.id,
+            performance_id=checklist.performance_id,
+            name=checklist.name,
+            description=checklist.description,
+            is_active=checklist.is_active,
+            created_at=checklist.created_at,
+            updated_at=checklist.updated_at,
+        )
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+
+@router.delete(
+    "/checklists/{checklist_id}",
+    response_model=MessageResponse,
+    summary="Удалить чеклист",
+)
+async def delete_checklist(
+    checklist_id: int,
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Удалить чеклист."""
+    try:
+        await service.delete_checklist(checklist_id)
+        return MessageResponse(message="Чеклист успешно удалён")
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+
+@router.post(
+    "/checklists/{checklist_id}/items",
+    response_model="ChecklistItemResponse",
+    status_code=status.HTTP_201_CREATED,
+    summary="Добавить элемент в чеклист",
+)
+async def add_checklist_item(
+    checklist_id: int,
+    data: "ChecklistItemCreate",
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Добавить элемент в чеклист."""
+    from app.schemas.checklist import ChecklistItemCreate, ChecklistItemResponse
+
+    try:
+        item = await service.add_checklist_item(
+            checklist_id=checklist_id,
+            description=data.description,
+        )
+        return ChecklistItemResponse(
+            id=item.id,
+            checklist_id=item.checklist_id,
+            description=item.description,
+            is_completed=item.is_completed,
+            sort_order=item.sort_order,
+            assigned_to_id=item.assigned_to_id,
+            completed_at=item.completed_at,
+            created_at=item.created_at,
+        )
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+
+@router.patch(
+    "/checklist-items/{item_id}",
+    response_model="ChecklistItemResponse",
+    summary="Обновить элемент чеклиста",
+)
+async def update_checklist_item(
+    item_id: int,
+    data: "ChecklistItemUpdate",
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Обновить элемент чеклиста (например, отметить выполненным)."""
+    from app.schemas.checklist import ChecklistItemUpdate, ChecklistItemResponse
+
+    try:
+        item = await service.update_checklist_item(
+            item_id=item_id,
+            description=data.description,
+            is_completed=data.is_completed,
+            sort_order=data.sort_order,
+            assigned_to_id=data.assigned_to_id,
+        )
+        return ChecklistItemResponse(
+            id=item.id,
+            checklist_id=item.checklist_id,
+            description=item.description,
+            is_completed=item.is_completed,
+            sort_order=item.sort_order,
+            assigned_to_id=item.assigned_to_id,
+            completed_at=item.completed_at,
+            created_at=item.created_at,
+        )
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+
+@router.delete(
+    "/checklist-items/{item_id}",
+    response_model=MessageResponse,
+    summary="Удалить элемент чеклиста",
+)
+async def delete_checklist_item(
+    item_id: int,
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Удалить элемент из чеклиста."""
+    try:
+        await service.delete_checklist_item(item_id)
+        return MessageResponse(message="Элемент успешно удалён")
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)

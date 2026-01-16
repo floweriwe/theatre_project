@@ -70,6 +70,7 @@ async def get_documents(
     status: DocumentStatus | None = Query(None, description="Ð¤Ð¸Ð»ÑŒÑ‚Ñ€ Ð¿Ð¾ ÑÑ‚Ð°Ñ‚ÑƒÑÑƒ"),
     file_type: FileType | None = Query(None, description="Ð¤Ð¸Ð»ÑŒÑ‚Ñ€ Ð¿Ð¾ Ñ‚Ð¸Ð¿Ñƒ Ñ„Ð°Ð¹Ð»Ð°"),
     is_public: bool | None = Query(None, description="Ð¢Ð¾Ð»ÑŒÐºÐ¾ Ð¿ÑƒÐ±Ð»Ð¸Ñ‡Ð½Ñ‹Ðµ"),
+    department_id: int | None = Query(None, description="Ð¤Ð¸Ð»ÑŒÑ‚Ñ€ Ð¿Ð¾ Ñ†ÐµÑ…Ñƒ"),
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
 ):
@@ -82,6 +83,7 @@ async def get_documents(
         status=status,
         file_type=file_type,
         is_public=is_public,
+        department_id=department_id,
         theater_id=current_user.theater_id,
         skip=skip,
         limit=limit,
@@ -289,6 +291,78 @@ async def get_document_versions(
     try:
         versions = await service.get_document_versions(document_id)
         return [_version_to_response(v) for v in versions]
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+
+@router.get(
+    "/{document_id}/versions/latest",
+    response_model=DocumentVersionResponse,
+    summary="Получить последнюю версию",
+)
+async def get_latest_version(
+    document_id: int,
+    current_user: CurrentUserDep,
+    service: DocumentService = DocumentServiceDep,
+):
+    """Получить информацию о последней версии документа."""
+    try:
+        version = await service.get_latest_version(document_id)
+        return _version_to_response(version)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+
+@router.post(
+    "/{document_id}/versions",
+    response_model=DocumentVersionResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Загрузить новую версию",
+)
+async def upload_new_version(
+    document_id: int,
+    current_user: CurrentUserDep,
+    file: UploadFile = File(..., description="Файл новой версии"),
+    comment: str | None = Form(None, description="Комментарий к версии"),
+    service: DocumentService = DocumentServiceDep,
+):
+    """Загрузить новую версию документа."""
+    try:
+        version = await service.upload_new_version(
+            document_id=document_id,
+            file=file,
+            user_id=current_user.id,
+            comment=comment,
+        )
+        return _version_to_response(version)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+    except ValidationError as e:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, e.detail)
+
+
+@router.get(
+    "/versions/{version_id}/download",
+    summary="Скачать конкретную версию",
+)
+async def download_version(
+    version_id: int,
+    current_user: CurrentUserDep,
+    service: DocumentService = DocumentServiceDep,
+):
+    """Скачать файл конкретной версии документа."""
+    try:
+        version = await service.get_version_by_id(version_id)
+
+        file_path = Path(settings.STORAGE_PATH) / "documents" / version.file_path
+        if not file_path.exists():
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "Файл не найден")
+
+        return FileResponse(
+            path=file_path,
+            filename=version.file_name,
+            media_type="application/octet-stream",
+        )
     except NotFoundError as e:
         raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
 

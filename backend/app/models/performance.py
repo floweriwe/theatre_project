@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from app.models.user import User
     from app.models.theater import Theater
     from app.models.performance_inventory import PerformanceInventory
+    from app.models.checklist import PerformanceChecklist
 
 
 class PerformanceStatus(str, PyEnum):
@@ -103,6 +104,12 @@ class Performance(Base, AuditMixin):
     )
     inventory_items: Mapped[list["PerformanceInventory"]] = relationship(
         "PerformanceInventory",
+        back_populates="performance",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+    )
+    checklists: Mapped[list["PerformanceChecklist"]] = relationship(
+        "PerformanceChecklist",
         back_populates="performance",
         cascade="all, delete-orphan",
         lazy="selectin",

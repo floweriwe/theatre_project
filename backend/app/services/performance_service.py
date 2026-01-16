@@ -355,7 +355,7 @@ class PerformanceService:
     async def get_stats(self, theater_id: int | None = None) -> PerformanceStats:
         """Получить статистику спектаклей."""
         stats = await self._performance_repo.get_stats(theater_id)
-        
+
         return PerformanceStats(
             total_performances=stats["total_performances"],
             preparation=stats.get("preparation", 0),
@@ -364,3 +364,142 @@ class PerformanceService:
             archived=stats.get("archived", 0),
             genres=stats.get("genres", []),
         )
+
+    # =========================================================================
+    # Checklists
+    # =========================================================================
+
+    async def get_checklists(self, performance_id: int):
+        """Получить все чеклисты спектакля."""
+        from sqlalchemy import select
+        from sqlalchemy.orm import selectinload
+        from app.models.checklist import PerformanceChecklist
+
+        result = await self._session.execute(
+            select(PerformanceChecklist)
+            .where(PerformanceChecklist.performance_id == performance_id)
+            .where(PerformanceChecklist.is_active == True)
+            .options(selectinload(PerformanceChecklist.items))
+            .order_by(PerformanceChecklist.created_at.desc())
+        )
+        return result.scalars().all()
+
+    async def create_checklist(
+        self,
+        performance_id: int,
+        name: str,
+        description: str | None,
+        user_id: int,
+    ):
+        """Создать чеклист для спектакля."""
+        from app.models.checklist import PerformanceChecklist
+
+        await self.get_performance(performance_id)
+
+        checklist = PerformanceChecklist(
+            performance_id=performance_id,
+            name=name,
+            description=description,
+            created_by_id=user_id,
+            updated_by_id=user_id,
+        )
+        self._session.add(checklist)
+        await self._session.commit()
+        await self._session.refresh(checklist)
+        return checklist
+
+    async def delete_checklist(self, checklist_id: int) -> bool:
+        """Удалить чеклист."""
+        from sqlalchemy import select
+        from app.models.checklist import PerformanceChecklist
+
+        result = await self._session.execute(
+            select(PerformanceChecklist).where(PerformanceChecklist.id == checklist_id)
+        )
+        checklist = result.scalar_one_or_none()
+        if not checklist:
+            raise NotFoundError(f"Чеклист с ID {checklist_id} не найден")
+
+        await self._session.delete(checklist)
+        await self._session.commit()
+        return True
+
+    async def add_checklist_item(self, checklist_id: int, description: str):
+        """Добавить элемент в чеклист."""
+        from sqlalchemy import select, func
+        from app.models.checklist import PerformanceChecklist, ChecklistItem
+
+        # Проверяем существование чеклиста
+        result = await self._session.execute(
+            select(PerformanceChecklist).where(PerformanceChecklist.id == checklist_id)
+        )
+        checklist = result.scalar_one_or_none()
+        if not checklist:
+            raise NotFoundError(f"Чеклист с ID {checklist_id} не найден")
+
+        # Получаем максимальный sort_order
+        max_order_result = await self._session.execute(
+            select(func.coalesce(func.max(ChecklistItem.sort_order), 0))
+            .where(ChecklistItem.checklist_id == checklist_id)
+        )
+        max_order = max_order_result.scalar() or 0
+
+        item = ChecklistItem(
+            checklist_id=checklist_id,
+            description=description,
+            sort_order=max_order + 1,
+        )
+        self._session.add(item)
+        await self._session.commit()
+        await self._session.refresh(item)
+        return item
+
+    async def update_checklist_item(
+        self,
+        item_id: int,
+        description: str | None = None,
+        is_completed: bool | None = None,
+        sort_order: int | None = None,
+        assigned_to_id: int | None = None,
+    ):
+        """Обновить элемент чеклиста."""
+        from datetime import datetime
+        from sqlalchemy import select
+        from app.models.checklist import ChecklistItem
+
+        result = await self._session.execute(
+            select(ChecklistItem).where(ChecklistItem.id == item_id)
+        )
+        item = result.scalar_one_or_none()
+        if not item:
+            raise NotFoundError(f"Элемент чеклиста с ID {item_id} не найден")
+
+        if description is not None:
+            item.description = description
+        if is_completed is not None:
+            item.is_completed = is_completed
+            item.completed_at = datetime.utcnow() if is_completed else None
+        if sort_order is not None:
+            item.sort_order = sort_order
+        if assigned_to_id is not None:
+            item.assigned_to_id = assigned_to_id
+
+        await self._session.commit()
+        await self._session.refresh(item)
+        return item
+
+    async def delete_checklist_item(self, item_id: int) -> bool:
+        """Удалить элемент чеклиста."""
+        from sqlalchemy import select
+        from app.models.checklist import ChecklistItem
+
+        result = await self._session.execute(
+            select(ChecklistItem).where(ChecklistItem.id == item_id)
+        )
+        item = result.scalar_one_or_none()
+        if not item:
+            raise NotFoundError(f"Элемент чеклиста с ID {item_id} не найден")
+
+        await self._session.delete(item)
+        await self._session.commit()
+        return True

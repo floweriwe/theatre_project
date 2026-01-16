@@ -21,17 +21,20 @@ from app.database.session import init_db, close_db
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """
     Управление жизненным циклом приложения.
-    
+
     Выполняется при запуске и остановке приложения:
     - Инициализация подключения к БД
     - Инициализация Redis
+    - Инициализация MinIO бакетов
     - Освобождение ресурсов при остановке
     """
+    from app.services.minio_service import minio_service
     from app.services.redis_service import redis_service
-    
+
     # Startup
     await init_db()
     await redis_service.connect()
+    await minio_service.init_buckets()
     yield
     # Shutdown
     await redis_service.disconnect()

@@ -86,11 +86,21 @@ class Settings(BaseSettings):
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
     
     # -------------------------------------------------------------------------
-    # File Storage
+    # File Storage (Local)
     # -------------------------------------------------------------------------
     STORAGE_PATH: str = "/app/storage"
     STORAGE_URL: str = "/static/storage"
     MAX_FILE_SIZE: int = 50 * 1024 * 1024  # 50 MB
+
+    # -------------------------------------------------------------------------
+    # MinIO / S3 Object Storage
+    # -------------------------------------------------------------------------
+    MINIO_ENDPOINT: str = "minio:9000"
+    MINIO_ACCESS_KEY: str = "minioadmin"
+    MINIO_SECRET_KEY: str = "minioadmin123"
+    MINIO_SECURE: bool = False
+    MINIO_BUCKET_INVENTORY: str = "inventory-images"
+    MINIO_BUCKET_DOCUMENTS: str = "documents"
     
     # -------------------------------------------------------------------------
     # CORS

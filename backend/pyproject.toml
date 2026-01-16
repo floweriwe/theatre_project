@@ -40,7 +40,10 @@ dependencies = [
     
     # Redis
     "redis>=5.0.0",
-    
+
+    # Object Storage (MinIO/S3)
+    "minio>=7.2.0",
+
     # Utilities
     "aiofiles>=23.2.0",
     "python-dateutil>=2.9.0",

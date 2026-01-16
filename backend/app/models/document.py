@@ -196,6 +196,13 @@ class Document(Base, AuditMixin):
         ForeignKey("performances.id", ondelete="SET NULL"),
         nullable=True
     )
+
+    # Связь с цехом (для фильтрации документов по цехам)
+    department_id: Mapped[int | None] = mapped_column(
+        ForeignKey("departments.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True
+    )
     
     # Дополнительные метаданные
     extra_data: Mapped[dict | None] = mapped_column(JSONB, nullable=True)

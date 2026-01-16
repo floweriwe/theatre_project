@@ -7,8 +7,6 @@ API ÑÐ½Ð´Ð¿Ð¾Ð¸Ð½Ñ‚Ñ‹ Ð¼Ð¾Ð´ÑƒÐ»Ñ Ð¸Ð½Ð²
 - /inventory/locations â€” Ð¼ÐµÑÑ‚Ð° Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ñ
 - /inventory/stats â€” ÑÑ‚Ð°Ñ‚Ð¸ÑÑ‚Ð¸ÐºÐ°
 """
-import os
-import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
@@ -627,12 +625,17 @@ def _item_to_response(item) -> InventoryItemResponse:
 
 
 def _photo_to_response(photo) -> "InventoryPhotoResponse":
-    """Преобразовать фото в response."""
+    """Преобразовать фото в response с URL из MinIO."""
     from app.schemas.inventory import InventoryPhotoResponse
+    from app.services.minio_service import minio_service
+
+    # Генерируем URL для фото из MinIO
+    file_url = minio_service.get_inventory_image_url(photo.file_path)
+
     return InventoryPhotoResponse(
         id=photo.id,
         item_id=photo.item_id,
-        file_path=photo.file_path,
+        file_path=file_url,  # Возвращаем полный URL вместо пути
         is_primary=photo.is_primary,
         caption=photo.caption,
         created_at=photo.created_at,
@@ -736,8 +739,7 @@ def _movement_to_response(movement) -> MovementResponse:
 # Photo Endpoints
 # =============================================================================
 
-STORAGE_PATH = Path("/app/storage/inventory")
-ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif"}
+ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 
 
 @router.post(
@@ -753,7 +755,9 @@ async def upload_photo(
     file: UploadFile = File(..., description="Файл изображения"),
     caption: str | None = Query(None, max_length=500, description="Подпись к фото"),
 ):
-    """Загрузить фотографию для предмета инвентаря."""
+    """Загрузить фотографию для предмета инвентаря в MinIO."""
+    from app.services.minio_service import minio_service
+
     # Проверяем существование предмета
     try:
         item = await service.get_item(item_id)
@@ -771,26 +775,24 @@ async def upload_photo(
             f"Недопустимый формат файла. Разрешены: {', '.join(ALLOWED_EXTENSIONS)}"
         )
 
-    # Создаём директорию если не существует
-    STORAGE_PATH.mkdir(parents=True, exist_ok=True)
-
-    # Генерируем уникальное имя файла
-    unique_filename = f"{uuid.uuid4()}{ext}"
-    file_path = STORAGE_PATH / unique_filename
-    relative_path = f"inventory/{unique_filename}"
-
-    # Сохраняем файл
+    # Загружаем файл в MinIO
     try:
         content = await file.read()
-        with open(file_path, "wb") as f:
-            f.write(content)
+        object_name = await minio_service.upload_inventory_image(
+            file_data=content,
+            original_filename=file.filename,
+            item_id=item_id,
+        )
     except Exception as e:
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Ошибка сохранения файла: {str(e)}")
+        raise HTTPException(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            f"Ошибка загрузки файла в хранилище: {str(e)}"
+        )
 
     # Создаём запись в БД
     photo = InventoryPhoto(
         item_id=item_id,
-        file_path=relative_path,
+        file_path=object_name,  # Храним путь в MinIO
         is_primary=False,
         caption=caption,
     )
@@ -799,6 +801,36 @@ async def upload_photo(
     await service._session.refresh(photo)
 
     return _photo_to_response(photo)
+
+
+@router.get(
+    "/items/{item_id}/photos",
+    response_model=list[InventoryPhotoResponse],
+    summary="Получить фото предмета",
+)
+async def get_item_photos(
+    item_id: int,
+    current_user: CurrentUserDep,
+    service: InventoryService = InventoryServiceDep,
+):
+    """Получить список фотографий предмета инвентаря с URL."""
+    from sqlalchemy import select
+
+    # Проверяем существование предмета
+    try:
+        await service.get_item(item_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    # Получаем фото
+    result = await service._session.execute(
+        select(InventoryPhoto)
+        .where(InventoryPhoto.item_id == item_id)
+        .order_by(InventoryPhoto.is_primary.desc(), InventoryPhoto.created_at.desc())
+    )
+    photos = result.scalars().all()
+
+    return [_photo_to_response(photo) for photo in photos]
 
 
 @router.delete(
@@ -811,8 +843,9 @@ async def delete_photo(
     current_user: CurrentUserDep,
     service: InventoryService = InventoryServiceDep,
 ):
-    """Удалить фотографию предмета инвентаря."""
+    """Удалить фотографию предмета инвентаря из MinIO и БД."""
     from sqlalchemy import select
+    from app.services.minio_service import minio_service
 
     # Ищем фото
     result = await service._session.execute(
@@ -823,14 +856,8 @@ async def delete_photo(
     if not photo:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Фото не найдено")
 
-    # Удаляем физический файл
-    file_path = Path("/app/storage") / photo.file_path
-    try:
-        if file_path.exists():
-            os.remove(file_path)
-    except Exception:
-        # Логируем, но не падаем если файл уже удалён
-        pass
+    # Удаляем файл из MinIO
+    await minio_service.delete_inventory_image(photo.file_path)
 
     # Удаляем запись из БД
     await service._session.delete(photo)
