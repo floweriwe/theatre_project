@@ -105,7 +105,7 @@ export function PerformancesListPage() {
               <Theater className="w-4 h-4" />
               Репертуар театра
             </p>
-            <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+            <h1 className="text-2xl lg:text-3xl font-display font-bold text-text-primary mb-2">
               Спектакли
             </h1>
             <p className="text-text-secondary">
@@ -131,7 +131,7 @@ export function PerformancesListPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-4">
-          <p className="text-3xl font-bold text-white">{stats?.totalPerformances || performances.length}</p>
+          <p className="text-3xl font-bold text-text-primary">{stats?.totalPerformances || performances.length}</p>
           <p className="text-text-muted">Всего</p>
         </Card>
         <Card className="p-4">
@@ -176,7 +176,7 @@ export function PerformancesListPage() {
               onClick={() => setViewMode('grid')}
               className={cn(
                 'p-2 rounded',
-                viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-text-muted'
+                viewMode === 'grid' ? 'bg-white/10 text-text-primary' : 'text-text-muted'
               )}
             >
               <Grid className="w-4 h-4" />
@@ -185,7 +185,7 @@ export function PerformancesListPage() {
               onClick={() => setViewMode('list')}
               className={cn(
                 'p-2 rounded',
-                viewMode === 'list' ? 'bg-white/10 text-white' : 'text-text-muted'
+                viewMode === 'list' ? 'bg-white/10 text-text-primary' : 'text-text-muted'
               )}
             >
               <List className="w-4 h-4" />
@@ -210,7 +210,7 @@ export function PerformancesListPage() {
       ) : performances.length === 0 ? (
         <Card className="p-8 text-center">
           <Theater className="w-12 h-12 text-text-muted mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-white mb-2">Нет спектаклей</h3>
+          <h3 className="text-lg font-medium text-text-primary mb-2">Нет спектаклей</h3>
           <p className="text-text-muted mb-4">Спектакли не найдены</p>
           <Button asChild>
             <Link to={`${ROUTES.PERFORMANCES}/new`}>
@@ -226,7 +226,7 @@ export function PerformancesListPage() {
               <Card className="p-4 hover:border-purple-500/30 transition-colors h-full">
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h3 className="font-display text-lg font-semibold text-white mb-1">
+                    <h3 className="font-display text-lg font-semibold text-text-primary mb-1">
                       {perf.title}
                     </h3>
                     {perf.subtitle && (

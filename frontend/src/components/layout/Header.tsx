@@ -43,19 +43,19 @@ export function Header({ title = 'Обзор', onMenuClick }: HeaderProps) {
         {/* Mobile menu button */}
         <button
           onClick={onMenuClick}
-          className="lg:hidden p-2 text-text-secondary hover:text-white transition-colors"
+          className="lg:hidden p-2 text-text-secondary hover:text-text-primary transition-colors"
         >
           <Menu className="w-5 h-5" />
         </button>
 
         {/* Page title */}
-        <h1 className="text-lg font-semibold text-white">{title}</h1>
+        <h1 className="text-lg font-semibold text-text-primary">{title}</h1>
       </div>
 
       {/* Right side */}
       <div className="flex items-center gap-2">
         {/* Search */}
-        <button className="p-2 text-text-secondary hover:text-white transition-colors rounded-lg hover:bg-white/5">
+        <button className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-lg hover:bg-white/5">
           <Search className="w-5 h-5" />
         </button>
 
@@ -63,11 +63,11 @@ export function Header({ title = 'Обзор', onMenuClick }: HeaderProps) {
         <div className="relative">
           <button
             onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-            className="p-2 text-text-secondary hover:text-white transition-colors rounded-lg hover:bg-white/5 relative"
+            className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-lg hover:bg-white/5 relative"
           >
             <Bell className="w-5 h-5" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-medium rounded-full flex items-center justify-center">
+              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-text-primary text-[10px] font-medium rounded-full flex items-center justify-center">
                 {unreadCount}
               </span>
             )}
@@ -82,7 +82,7 @@ export function Header({ title = 'Обзор', onMenuClick }: HeaderProps) {
               />
               <div className="absolute right-0 top-full mt-2 w-80 bg-surface-light border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
                 <div className="p-3 border-b border-white/5">
-                  <h3 className="font-medium text-white">Уведомления</h3>
+                  <h3 className="font-medium text-text-primary">Уведомления</h3>
                 </div>
                 <div className="max-h-80 overflow-y-auto">
                   {notifications.map((notification) => (
@@ -93,7 +93,7 @@ export function Header({ title = 'Обзор', onMenuClick }: HeaderProps) {
                         notification.unread && 'bg-gold/5'
                       )}
                     >
-                      <p className="text-sm text-white">{notification.text}</p>
+                      <p className="text-sm text-text-primary">{notification.text}</p>
                       <p className="text-xs text-text-muted mt-1">{notification.time}</p>
                     </div>
                   ))}
@@ -111,7 +111,7 @@ export function Header({ title = 'Обзор', onMenuClick }: HeaderProps) {
         {/* Help */}
         <Link
           to="/help"
-          className="p-2 text-text-secondary hover:text-white transition-colors rounded-lg hover:bg-white/5"
+          className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-lg hover:bg-white/5"
         >
           <HelpCircle className="w-5 h-5" />
         </Link>
@@ -128,7 +128,7 @@ export function Header({ title = 'Обзор', onMenuClick }: HeaderProps) {
               </span>
             </div>
             <div className="hidden md:block text-left">
-              <p className="text-sm font-medium text-white">
+              <p className="text-sm font-medium text-text-primary">
                 {user?.firstName || 'Администратор'}
               </p>
               <p className="text-xs text-text-muted">admin</p>
@@ -145,14 +145,14 @@ export function Header({ title = 'Обзор', onMenuClick }: HeaderProps) {
               />
               <div className="absolute right-0 top-full mt-2 w-56 bg-surface-light border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
                 <div className="p-3 border-b border-white/5">
-                  <p className="font-medium text-white">{user?.email || 'admin@theatre.test'}</p>
+                  <p className="font-medium text-text-primary">{user?.email || 'admin@theatre.test'}</p>
                   <p className="text-xs text-text-muted mt-0.5">Администратор</p>
                 </div>
                 <div className="p-1">
                   <Link
                     to={ROUTES.PROFILE}
                     onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-text-secondary hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 rounded-lg transition-colors"
                   >
                     <User className="w-4 h-4" />
                     Профиль
@@ -160,7 +160,7 @@ export function Header({ title = 'Обзор', onMenuClick }: HeaderProps) {
                   <Link
                     to={ROUTES.SETTINGS}
                     onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-text-secondary hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 rounded-lg transition-colors"
                   >
                     <Settings className="w-4 h-4" />
                     Настройки

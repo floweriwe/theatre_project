@@ -55,6 +55,7 @@ dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
     "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
     "httpx>=0.27.0",
     
     # Linting & Formatting
@@ -130,8 +131,24 @@ asyncio_mode = "auto"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
-addopts = "-v --tb=short"
+addopts = "-v --tb=short --strict-markers"
+markers = [
+    "unit: Unit tests for isolated components",
+    "integration: Integration tests for API endpoints",
+    "service: Service layer tests",
+    "slow: Tests that take a long time to run",
+]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+]
 
 [tool.coverage.run]
 source = ["app"]
 omit = ["*/tests/*", "*/alembic/*"]
+branch = true
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false

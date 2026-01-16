@@ -70,7 +70,7 @@ export const VerifyEmailPage: React.FC = () => {
             </svg>
           </div>
           
-          <h2 className="text-2xl font-bold text-white mb-3">
+          <h2 className="text-2xl font-bold text-text-primary mb-3">
             Проверяем ссылку...
           </h2>
           <p className="text-white/60">
@@ -97,7 +97,7 @@ export const VerifyEmailPage: React.FC = () => {
             </svg>
           </div>
           
-          <h2 className="text-2xl font-bold text-white mb-3">
+          <h2 className="text-2xl font-bold text-text-primary mb-3">
             Email подтверждён!
           </h2>
           
@@ -107,7 +107,7 @@ export const VerifyEmailPage: React.FC = () => {
 
           {/* Что доступно */}
           <div className="bg-white/5 rounded-xl p-4 mb-8 text-left">
-            <h4 className="text-white font-medium mb-3 flex items-center gap-2">
+            <h4 className="text-text-primary font-medium mb-3 flex items-center gap-2">
               <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                   d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
@@ -159,7 +159,7 @@ export const VerifyEmailPage: React.FC = () => {
             </svg>
           </div>
           
-          <h2 className="text-2xl font-bold text-white mb-3">
+          <h2 className="text-2xl font-bold text-text-primary mb-3">
             Ссылка устарела
           </h2>
           
@@ -213,7 +213,7 @@ export const VerifyEmailPage: React.FC = () => {
           </svg>
         </div>
         
-        <h2 className="text-2xl font-bold text-white mb-3">
+        <h2 className="text-2xl font-bold text-text-primary mb-3">
           Ошибка подтверждения
         </h2>
         
@@ -308,14 +308,14 @@ export const EmailVerificationPendingPage: React.FC = () => {
             </svg>
             {/* Бейдж */}
             <div className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-4 h-4 text-text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
 
-          <h1 className="text-2xl font-bold text-white mb-3">
+          <h1 className="text-2xl font-bold text-text-primary mb-3">
             Подтвердите email
           </h1>
           
@@ -328,7 +328,7 @@ export const EmailVerificationPendingPage: React.FC = () => {
 
           {/* Инструкции */}
           <div className="bg-white/5 rounded-xl p-5 mb-6 text-left">
-            <h4 className="text-white font-medium mb-3">Что делать:</h4>
+            <h4 className="text-text-primary font-medium mb-3">Что делать:</h4>
             <ol className="space-y-3 text-white/60">
               <li className="flex items-start gap-3">
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm font-medium">
@@ -392,7 +392,7 @@ export const EmailVerificationPendingPage: React.FC = () => {
               Изменить email
             </button>
             <span className="text-white/20">•</span>
-            <Link to="/login" className="text-white/60 hover:text-white">
+            <Link to="/login" className="text-white/60 hover:text-text-primary">
               Войти в другой аккаунт
             </Link>
           </div>

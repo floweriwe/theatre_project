@@ -25,6 +25,7 @@ import { Button, Input, Card, Alert, ContainerSpinner, Select, Badge } from '@/c
 import { documentService } from '@/services/document_service';
 import { ROUTES } from '@/utils/constants';
 import { cn } from '@/utils/helpers';
+import { getErrorMessage } from '@/services/api';
 import type { Document, DocumentCategory } from '@/types';
 
 // =============================================================================
@@ -118,9 +119,9 @@ export function DocumentFormPage() {
           isPublic: doc.isPublic,
         });
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Failed to load data:', err);
-      setError('Ошибка загрузки данных');
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -249,9 +250,9 @@ export function DocumentFormPage() {
           navigate(`${ROUTES.DOCUMENTS}/${newDoc.id}`);
         }, 1000);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Failed to save:', err);
-      setError('Ошибка сохранения. Попробуйте ещё раз.');
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }
@@ -295,7 +296,7 @@ export function DocumentFormPage() {
                 <FileText className="w-5 h-5 text-gold-300" />
                 <span className="text-sm text-gold-300 font-medium">Документы</span>
               </div>
-              <h1 className="font-display text-2xl lg:text-3xl font-bold text-white">
+              <h1 className="font-display text-2xl lg:text-3xl font-bold text-text-primary">
                 {isEditing ? 'Редактирование документа' : 'Загрузка документа'}
               </h1>
             </div>
@@ -322,7 +323,7 @@ export function DocumentFormPage() {
           <div className="space-y-6">
             {/* File Upload */}
             <div>
-              <h2 className="font-display text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                 <Upload className="w-5 h-5 text-gold-300" />
                 {isEditing ? 'Заменить файл (опционально)' : 'Файл *'}
               </h2>
@@ -333,7 +334,7 @@ export function DocumentFormPage() {
                   <div className="flex items-center gap-3">
                     {getFileIcon(existingDocument.fileName)}
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-white truncate">{existingDocument.fileName}</p>
+                      <p className="font-medium text-text-primary truncate">{existingDocument.fileName}</p>
                       <p className="text-sm text-text-muted">
                         {formatFileSize(existingDocument.fileSize)} • v{existingDocument.currentVersion}
                       </p>
@@ -349,7 +350,7 @@ export function DocumentFormPage() {
                   <div className="flex items-center gap-3">
                     {getFileIcon(selectedFile.name)}
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-white truncate">{selectedFile.name}</p>
+                      <p className="font-medium text-text-primary truncate">{selectedFile.name}</p>
                       <p className="text-sm text-text-muted">{formatFileSize(selectedFile.size)}</p>
                     </div>
                     <Button variant="ghost" size="sm" onClick={handleRemoveFile}>
@@ -372,7 +373,7 @@ export function DocumentFormPage() {
                 )}
               >
                 <Upload className="w-10 h-10 text-text-muted mx-auto mb-3" />
-                <p className="text-white font-medium mb-1">
+                <p className="text-text-primary font-medium mb-1">
                   Нажмите для выбора или перетащите файл
                 </p>
                 <p className="text-sm text-text-muted">
@@ -398,7 +399,7 @@ export function DocumentFormPage() {
 
             {/* Basic Info */}
             <div className="pt-6 border-t border-border-subtle">
-              <h2 className="font-display text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5 text-gold-300" />
                 Информация
               </h2>
@@ -430,7 +431,7 @@ export function DocumentFormPage() {
                     onChange={(e) => handleChange('description', e.target.value)}
                     rows={3}
                     className="w-full px-4 py-3 bg-bg-surface-hover border border-border-subtle rounded-xl 
-                      text-white placeholder:text-text-muted
+                      text-text-primary placeholder:text-text-muted
                       focus:outline-none focus:ring-2 focus:ring-gold-300/50 focus:border-gold-300/50
                       transition-all resize-none"
                   />
@@ -440,7 +441,7 @@ export function DocumentFormPage() {
 
             {/* Visibility */}
             <div className="pt-6 border-t border-border-subtle">
-              <h2 className="font-display text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                 {formData.isPublic ? <Eye className="w-5 h-5 text-gold-300" /> : <EyeOff className="w-5 h-5 text-gold-300" />}
                 Видимость
               </h2>
@@ -459,7 +460,7 @@ export function DocumentFormPage() {
                   <div className="flex items-center gap-3">
                     <EyeOff className={cn('w-5 h-5', !formData.isPublic ? 'text-gold-300' : 'text-text-muted')} />
                     <div>
-                      <p className={cn('font-medium', !formData.isPublic ? 'text-gold-300' : 'text-white')}>
+                      <p className={cn('font-medium', !formData.isPublic ? 'text-gold-300' : 'text-text-primary')}>
                         Приватный
                       </p>
                       <p className="text-xs text-text-muted">Виден только авторизованным</p>
@@ -480,7 +481,7 @@ export function DocumentFormPage() {
                   <div className="flex items-center gap-3">
                     <Eye className={cn('w-5 h-5', formData.isPublic ? 'text-gold-300' : 'text-text-muted')} />
                     <div>
-                      <p className={cn('font-medium', formData.isPublic ? 'text-gold-300' : 'text-white')}>
+                      <p className={cn('font-medium', formData.isPublic ? 'text-gold-300' : 'text-text-primary')}>
                         Публичный
                       </p>
                       <p className="text-xs text-text-muted">Доступен всем пользователям</p>

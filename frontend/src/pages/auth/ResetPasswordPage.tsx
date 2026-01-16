@@ -124,7 +124,7 @@ export const ResetPasswordPage: React.FC = () => {
             </svg>
           </div>
           
-          <h2 className="text-2xl font-bold text-white mb-3">
+          <h2 className="text-2xl font-bold text-text-primary mb-3">
             Ссылка недействительна
           </h2>
           
@@ -169,7 +169,7 @@ export const ResetPasswordPage: React.FC = () => {
         </div>
 
         {/* Контент левой панели */}
-        <div className="relative z-10 flex flex-col justify-center px-16 text-white">
+        <div className="relative z-10 flex flex-col justify-center px-16 text-text-primary">
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-6">
               <div 
@@ -201,7 +201,7 @@ export const ResetPasswordPage: React.FC = () => {
                 </svg>
               </div>
               <div className="text-sm">
-                <div className="text-white">Используйте уникальный пароль</div>
+                <div className="text-text-primary">Используйте уникальный пароль</div>
                 <div>Не используйте пароль от других сервисов</div>
               </div>
             </div>
@@ -214,7 +214,7 @@ export const ResetPasswordPage: React.FC = () => {
                 </svg>
               </div>
               <div className="text-sm">
-                <div className="text-white">Храните пароль в безопасности</div>
+                <div className="text-text-primary">Храните пароль в безопасности</div>
                 <div>Используйте менеджер паролей</div>
               </div>
             </div>
@@ -236,7 +236,7 @@ export const ResetPasswordPage: React.FC = () => {
             >
               🎭
             </div>
-            <span className="text-xl font-bold text-white">Theatre</span>
+            <span className="text-xl font-bold text-text-primary">Theatre</span>
           </div>
 
           <Card variant="elevated" className="p-8">
@@ -249,7 +249,7 @@ export const ResetPasswordPage: React.FC = () => {
                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                   </div>
-                  <h2 className="text-2xl font-bold text-white mb-2">
+                  <h2 className="text-2xl font-bold text-text-primary mb-2">
                     Новый пароль
                   </h2>
                   <p className="text-white/60">
@@ -277,7 +277,7 @@ export const ResetPasswordPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-9 text-white/40 hover:text-white/60"
+                        className="absolute right-3 top-9 text-white/40 hover:text-text-primary/60"
                       >
                         {showPassword ? (
                           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -342,7 +342,7 @@ export const ResetPasswordPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-9 text-white/40 hover:text-white/60"
+                      className="absolute right-3 top-9 text-white/40 hover:text-text-primary/60"
                     >
                       {showConfirmPassword ? (
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -390,7 +390,7 @@ export const ResetPasswordPage: React.FC = () => {
                   </svg>
                 </div>
                 
-                <h2 className="text-2xl font-bold text-white mb-3">
+                <h2 className="text-2xl font-bold text-text-primary mb-3">
                   Пароль изменён!
                 </h2>
                 

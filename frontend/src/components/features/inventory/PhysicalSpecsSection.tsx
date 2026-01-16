@@ -36,7 +36,7 @@ export function PhysicalSpecsSection({
     <Card className="p-6">
       <div className="flex items-center gap-2 mb-4">
         <Ruler className="w-5 h-5 text-text-muted" />
-        <h2 className="text-lg font-medium text-white">
+        <h2 className="text-lg font-medium text-text-primary">
           Физические характеристики
         </h2>
       </div>
@@ -49,7 +49,7 @@ export function PhysicalSpecsSection({
           </div>
           <div>
             <p className="text-sm text-text-muted">Габариты</p>
-            <p className="text-white font-medium">
+            <p className="text-text-primary font-medium">
               {dimensions || 'Не указаны'}
             </p>
           </div>
@@ -62,7 +62,7 @@ export function PhysicalSpecsSection({
           </div>
           <div>
             <p className="text-sm text-text-muted">Вес</p>
-            <p className="text-white font-medium">
+            <p className="text-text-primary font-medium">
               {weight !== null ? `${weight} кг` : 'Не указан'}
             </p>
           </div>
@@ -80,7 +80,7 @@ export function PhysicalSpecsSection({
                 {CONDITION_LABELS[condition]}
               </Badge>
             ) : (
-              <p className="text-white font-medium">Не указано</p>
+              <p className="text-text-primary font-medium">Не указано</p>
             )}
           </div>
         </div>

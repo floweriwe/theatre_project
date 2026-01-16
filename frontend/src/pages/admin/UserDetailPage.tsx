@@ -279,13 +279,13 @@ export const UserDetailPage: React.FC = () => {
     <div className="space-y-6">
       {/* ÃÂ¥ÃÂ»ÃÂµÃÂ±ÃÂ½Ã‘â€¹ÃÂµ ÃÂºÃ‘â‚¬ÃÂ¾Ã‘Ë†ÃÂºÃÂ¸ */}
       <nav className="flex items-center gap-2 text-sm">
-        <Link to="/admin/users" className="text-slate-400 hover:text-white transition-colors">
+        <Link to="/admin/users" className="text-slate-400 hover:text-text-primary transition-colors">
           ÃÅ¸ÃÂ¾ÃÂ»Ã‘Å’ÃÂ·ÃÂ¾ÃÂ²ÃÂ°Ã‘â€šÃÂµÃÂ»ÃÂ¸
         </Link>
         <svg className="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
-        <span className="text-white">
+        <span className="text-text-primary">
           {user.firstName} {user.lastName}
         </span>
       </nav>
@@ -305,7 +305,7 @@ export const UserDetailPage: React.FC = () => {
             {/* ÃËœÃÂ½Ã‘â€žÃÂ¾Ã‘â‚¬ÃÂ¼ÃÂ°Ã‘â€ ÃÂ¸Ã‘Â */}
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-1">
-                <h1 className="text-2xl font-bold text-white">
+                <h1 className="text-2xl font-bold text-text-primary">
                   {user.firstName} {user.lastName}
                 </h1>
                 <span className={`px-2.5 py-1 text-xs font-medium rounded-lg ${statusColors[user.status]}`}>
@@ -370,7 +370,7 @@ export const UserDetailPage: React.FC = () => {
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.key
                   ? 'text-amber-400 border-amber-400'
-                  : 'text-slate-400 border-transparent hover:text-white'
+                  : 'text-slate-400 border-transparent hover:text-text-primary'
               }`}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -388,7 +388,7 @@ export const UserDetailPage: React.FC = () => {
         <div className="lg:col-span-2 space-y-6">
           {activeTab === 'info' && (
             <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">ÃÅ¡ÃÂ¾ÃÂ½Ã‘â€šÃÂ°ÃÂºÃ‘â€šÃÂ½ÃÂ°Ã‘Â ÃÂ¸ÃÂ½Ã‘â€žÃÂ¾Ã‘â‚¬ÃÂ¼ÃÂ°Ã‘â€ ÃÂ¸Ã‘Â</h2>
+              <h2 className="text-lg font-semibold text-text-primary mb-4">ÃÅ¡ÃÂ¾ÃÂ½Ã‘â€šÃÂ°ÃÂºÃ‘â€šÃÂ½ÃÂ°Ã‘Â ÃÂ¸ÃÂ½Ã‘â€žÃÂ¾Ã‘â‚¬ÃÂ¼ÃÂ°Ã‘â€ ÃÂ¸Ã‘Â</h2>
               
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -402,7 +402,7 @@ export const UserDetailPage: React.FC = () => {
                         onChange={(e) => setEditedUser({ ...editedUser, firstName: e.target.value })}
                       />
                     ) : (
-                      <p className="text-white">{user.firstName}</p>
+                      <p className="text-text-primary">{user.firstName}</p>
                     )}
                   </div>
                   <div>
@@ -415,7 +415,7 @@ export const UserDetailPage: React.FC = () => {
                         onChange={(e) => setEditedUser({ ...editedUser, lastName: e.target.value })}
                       />
                     ) : (
-                      <p className="text-white">{user.lastName}</p>
+                      <p className="text-text-primary">{user.lastName}</p>
                     )}
                   </div>
                 </div>
@@ -431,7 +431,7 @@ export const UserDetailPage: React.FC = () => {
                       onChange={(e) => setEditedUser({ ...editedUser, email: e.target.value })}
                     />
                   ) : (
-                    <p className="text-white">{user.email}</p>
+                    <p className="text-text-primary">{user.email}</p>
                   )}
                 </div>
 
@@ -446,7 +446,7 @@ export const UserDetailPage: React.FC = () => {
                       placeholder="+7 (___) ___-__-__"
                     />
                   ) : (
-                    <p className="text-white">{user.phone || 'Ã¢â‚¬â€'}</p>
+                    <p className="text-text-primary">{user.phone || 'Ã¢â‚¬â€'}</p>
                   )}
                 </div>
 
@@ -461,7 +461,7 @@ export const UserDetailPage: React.FC = () => {
                         onChange={(e) => setEditedUser({ ...editedUser, department: e.target.value })}
                       />
                     ) : (
-                      <p className="text-white">{user.department || 'Ã¢â‚¬â€'}</p>
+                      <p className="text-text-primary">{user.department || 'Ã¢â‚¬â€'}</p>
                     )}
                   </div>
                   <div>
@@ -474,7 +474,7 @@ export const UserDetailPage: React.FC = () => {
                         onChange={(e) => setEditedUser({ ...editedUser, position: e.target.value })}
                       />
                     ) : (
-                      <p className="text-white">{user.position || 'Ã¢â‚¬â€'}</p>
+                      <p className="text-text-primary">{user.position || 'Ã¢â‚¬â€'}</p>
                     )}
                   </div>
                 </div>
@@ -487,7 +487,7 @@ export const UserDetailPage: React.FC = () => {
                     <select
                       value={editedUser.role}
                       onChange={(e) => setEditedUser({ ...editedUser, role: e.target.value as UserRole })}
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:border-amber-500/50"
+                      className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600/50 rounded-lg text-text-primary focus:outline-none focus:border-amber-500/50"
                     >
                       {Object.entries(roleLabels).map(([value, label]) => (
                         <option key={value} value={value}>
@@ -507,7 +507,7 @@ export const UserDetailPage: React.FC = () => {
 
           {activeTab === 'permissions' && (
             <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">ÃÅ¸Ã‘â‚¬ÃÂ°ÃÂ²ÃÂ° ÃÂ´ÃÂ¾Ã‘ÂÃ‘â€šÃ‘Æ’ÃÂ¿ÃÂ°</h2>
+              <h2 className="text-lg font-semibold text-text-primary mb-4">ÃÅ¸Ã‘â‚¬ÃÂ°ÃÂ²ÃÂ° ÃÂ´ÃÂ¾Ã‘ÂÃ‘â€šÃ‘Æ’ÃÂ¿ÃÂ°</h2>
               
               <div className="space-y-6">
                 {permissionGroups.map((group) => (
@@ -551,7 +551,7 @@ export const UserDetailPage: React.FC = () => {
 
           {activeTab === 'activity' && (
             <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Ãâ€“Ã‘Æ’Ã‘â‚¬ÃÂ½ÃÂ°ÃÂ» ÃÂ°ÃÂºÃ‘â€šÃÂ¸ÃÂ²ÃÂ½ÃÂ¾Ã‘ÂÃ‘â€šÃÂ¸</h2>
+              <h2 className="text-lg font-semibold text-text-primary mb-4">Ãâ€“Ã‘Æ’Ã‘â‚¬ÃÂ½ÃÂ°ÃÂ» ÃÂ°ÃÂºÃ‘â€šÃÂ¸ÃÂ²ÃÂ½ÃÂ¾Ã‘ÂÃ‘â€šÃÂ¸</h2>
               
               <div className="space-y-4">
                 {mockActivityLog.map((log, index) => (
@@ -566,7 +566,7 @@ export const UserDetailPage: React.FC = () => {
                     
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-white font-medium">{log.action}</p>
+                        <p className="text-text-primary font-medium">{log.action}</p>
                         <p className="text-sm text-slate-400 mt-0.5">{log.details}</p>
                         {log.ip && (
                           <p className="text-xs text-slate-500 mt-1">IP: {log.ip}</p>
@@ -595,20 +595,20 @@ export const UserDetailPage: React.FC = () => {
             <div className="space-y-2">
               <button
                 onClick={() => setIsResetPasswordModalOpen(true)}
-                className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm text-slate-300 hover:text-text-primary hover:bg-slate-700/50 rounded-lg transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                 </svg>
                 ÃÂ¡ÃÂ±Ã‘â‚¬ÃÂ¾Ã‘ÂÃÂ¸Ã‘â€šÃ‘Å’ ÃÂ¿ÃÂ°Ã‘â‚¬ÃÂ¾ÃÂ»Ã‘Å’
               </button>
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors">
+              <button className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm text-slate-300 hover:text-text-primary hover:bg-slate-700/50 rounded-lg transition-colors">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 ÃÅ¾Ã‘â€šÃÂ¿Ã‘â‚¬ÃÂ°ÃÂ²ÃÂ¸Ã‘â€šÃ‘Å’ Ã‘ÂÃÂ¾ÃÂ¾ÃÂ±Ã‘â€°ÃÂµÃÂ½ÃÂ¸ÃÂµ
               </button>
-              <button className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors">
+              <button className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm text-slate-300 hover:text-text-primary hover:bg-slate-700/50 rounded-lg transition-colors">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
@@ -623,15 +623,15 @@ export const UserDetailPage: React.FC = () => {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-sm text-slate-400">ID ÃÂ¿ÃÂ¾ÃÂ»Ã‘Å’ÃÂ·ÃÂ¾ÃÂ²ÃÂ°Ã‘â€šÃÂµÃÂ»Ã‘Â</span>
-                <span className="text-sm text-white font-mono">{user.id}</span>
+                <span className="text-sm text-text-primary font-mono">{user.id}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-slate-400">Ãâ€ÃÂ°Ã‘â€šÃÂ° Ã‘â‚¬ÃÂµÃÂ³ÃÂ¸Ã‘ÂÃ‘â€šÃ‘â‚¬ÃÂ°Ã‘â€ ÃÂ¸ÃÂ¸</span>
-                <span className="text-sm text-white">{formatDate(user.createdAt)}</span>
+                <span className="text-sm text-text-primary">{formatDate(user.createdAt)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-slate-400">ÃÅ¸ÃÂ¾Ã‘ÂÃÂ»ÃÂµÃÂ´ÃÂ½ÃÂ¸ÃÂ¹ ÃÂ²Ã‘â€¦ÃÂ¾ÃÂ´</span>
-                <span className="text-sm text-white">
+                <span className="text-sm text-text-primary">
                   {user.lastLogin ? formatDateTime(user.lastLogin) : 'ÃÂÃÂ¸ÃÂºÃÂ¾ÃÂ³ÃÂ´ÃÂ°'}
                 </span>
               </div>
@@ -653,7 +653,7 @@ export const UserDetailPage: React.FC = () => {
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white">Windows Ã‚Â· Chrome</p>
+                  <p className="text-sm text-text-primary">Windows Ã‚Â· Chrome</p>
                   <p className="text-xs text-slate-400">ÃÅ“ÃÂ¾Ã‘ÂÃÂºÃÂ²ÃÂ° Ã‚Â· ÃÂ¡ÃÂµÃÂ¹Ã‘â€¡ÃÂ°Ã‘Â ÃÂ¾ÃÂ½ÃÂ»ÃÂ°ÃÂ¹ÃÂ½</p>
                 </div>
                 <div className="w-2 h-2 rounded-full bg-green-400" />

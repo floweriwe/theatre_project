@@ -8,8 +8,8 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 import './PDFViewer.css';
 
 // Configure PDF.js worker
@@ -90,7 +90,7 @@ export function PDFViewer({ fileUrl, fileName }: PDFViewerProps) {
             size="sm"
             onClick={goToPrevPage}
             disabled={pageNumber <= 1 || loading}
-            className="text-white hover:bg-[#243044]"
+            className="text-text-primary hover:bg-[#243044]"
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
@@ -110,7 +110,7 @@ export function PDFViewer({ fileUrl, fileName }: PDFViewerProps) {
             size="sm"
             onClick={goToNextPage}
             disabled={pageNumber >= numPages || loading}
-            className="text-white hover:bg-[#243044]"
+            className="text-text-primary hover:bg-[#243044]"
           >
             <ChevronRight className="w-4 h-4" />
           </Button>
@@ -123,7 +123,7 @@ export function PDFViewer({ fileUrl, fileName }: PDFViewerProps) {
             size="sm"
             onClick={zoomOut}
             disabled={loading}
-            className="text-white hover:bg-[#243044]"
+            className="text-text-primary hover:bg-[#243044]"
             title="Уменьшить"
           >
             <ZoomOut className="w-4 h-4" />
@@ -138,7 +138,7 @@ export function PDFViewer({ fileUrl, fileName }: PDFViewerProps) {
             size="sm"
             onClick={zoomIn}
             disabled={loading}
-            className="text-white hover:bg-[#243044]"
+            className="text-text-primary hover:bg-[#243044]"
             title="Увеличить"
           >
             <ZoomIn className="w-4 h-4" />
@@ -151,7 +151,7 @@ export function PDFViewer({ fileUrl, fileName }: PDFViewerProps) {
             size="sm"
             onClick={fitToWidth}
             disabled={loading}
-            className="text-white hover:bg-[#243044]"
+            className="text-text-primary hover:bg-[#243044]"
             title="По ширине"
           >
             <Maximize2 className="w-4 h-4" />

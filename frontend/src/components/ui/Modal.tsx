@@ -137,7 +137,7 @@ export function Modal({
                 {title && (
                   <h2
                     id="modal-title"
-                    className="font-display text-xl font-semibold text-white"
+                    className="font-display text-xl font-semibold text-text-primary"
                   >
                     {title}
                   </h2>

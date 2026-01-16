@@ -134,7 +134,7 @@ export function DocumentViewPage() {
             <div className="flex items-center gap-3 mb-2">
               <FileText className="w-8 h-8 text-emerald-400" />
               <div>
-                <h1 className="text-2xl font-display font-bold text-white">{document.name}</h1>
+                <h1 className="text-2xl font-display font-bold text-text-primary">{document.name}</h1>
                 <p className="text-text-muted">{document.filePath?.split('/').pop()}</p>
               </div>
             </div>
@@ -174,7 +174,7 @@ export function DocumentViewPage() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Основная информация</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Основная информация</h2>
             
             <div className="space-y-4">
               {document.description && (
@@ -187,15 +187,15 @@ export function DocumentViewPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-text-muted mb-1">Тип файла</p>
-                  <p className="text-white">{document.mimeType || 'application/pdf'}</p>
+                  <p className="text-text-primary">{document.mimeType || 'application/pdf'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-text-muted mb-1">Версия</p>
-                  <p className="text-white">v{document.currentVersion}</p>
+                  <p className="text-text-primary">v{document.currentVersion}</p>
                 </div>
                 <div>
                   <p className="text-sm text-text-muted mb-1">Видимость</p>
-                  <p className="text-white">{document.isPublic ? 'Публичный' : 'Приватный'}</p>
+                  <p className="text-text-primary">{document.isPublic ? 'Публичный' : 'Приватный'}</p>
                 </div>
               </div>
             </div>
@@ -203,7 +203,7 @@ export function DocumentViewPage() {
 
           {/* Preview */}
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Предпросмотр</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Предпросмотр</h2>
             <div className="bg-[#0F1419] rounded-lg p-8 text-center border border-[#D4A574]/20">
               <FileText className="w-16 h-16 text-[#D4A574] mx-auto mb-4" />
               {isPDF ? (
@@ -234,7 +234,7 @@ export function DocumentViewPage() {
         {/* Sidebar */}
         <div className="space-y-6">
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Действия</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Действия</h2>
             <div className="space-y-2">
               {isPDF && (
                 <Button
@@ -260,19 +260,19 @@ export function DocumentViewPage() {
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <Calendar className="w-5 h-5 text-text-muted" />
-              <h2 className="text-lg font-medium text-white">Даты</h2>
+              <h2 className="text-lg font-medium text-text-primary">Даты</h2>
             </div>
             <div className="space-y-4">
               {document.createdAt && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Создан</p>
-                  <p className="text-white">{formatDate(document.createdAt)}</p>
+                  <p className="text-text-primary">{formatDate(document.createdAt)}</p>
                 </div>
               )}
               {document.updatedAt && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Обновлён</p>
-                  <p className="text-white">{formatDate(document.updatedAt)}</p>
+                  <p className="text-text-primary">{formatDate(document.updatedAt)}</p>
                 </div>
               )}
             </div>
@@ -280,12 +280,12 @@ export function DocumentViewPage() {
 
           {document.performanceId && (
             <Card className="p-6">
-              <h2 className="text-lg font-medium text-white mb-4">Связанный спектакль</h2>
+              <h2 className="text-lg font-medium text-text-primary mb-4">Связанный спектакль</h2>
               <Link
                 to={`${ROUTES.PERFORMANCES}/${document.performanceId}`}
                 className="block p-3 bg-surface rounded-lg hover:bg-white/5 transition-colors"
               >
-                <p className="font-medium text-white">Спектакль #{document.performanceId}</p>
+                <p className="font-medium text-text-primary">Спектакль #{document.performanceId}</p>
               </Link>
             </Card>
           )}

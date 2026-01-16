@@ -139,7 +139,7 @@ export function AuditLogPage() {
               <History className="w-4 h-4" />
               Безопасность и контроль
             </p>
-            <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+            <h1 className="text-2xl lg:text-3xl font-display font-bold text-text-primary mb-2">
               Журнал аудита
             </h1>
             <p className="text-text-secondary">
@@ -198,7 +198,7 @@ export function AuditLogPage() {
         {filteredLog.length === 0 ? (
           <div className="p-8 text-center">
             <History className="w-12 h-12 text-text-muted mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-white mb-2">Записи не найдены</h3>
+            <h3 className="text-lg font-medium text-text-primary mb-2">Записи не найдены</h3>
             <p className="text-text-muted">Попробуйте изменить параметры фильтрации</p>
           </div>
         ) : (
@@ -215,7 +215,7 @@ export function AuditLogPage() {
                       <Badge className={ACTION_COLORS[entry.action]}>
                         {ACTION_LABELS[entry.action]}
                       </Badge>
-                      <span className="text-white font-medium truncate">{entry.entityName}</span>
+                      <span className="text-text-primary font-medium truncate">{entry.entityName}</span>
                     </div>
                     <p className="text-sm text-text-secondary mb-2">{entry.details}</p>
                     <div className="flex items-center gap-4 text-sm text-text-muted">

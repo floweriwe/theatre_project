@@ -178,7 +178,7 @@ export function CalendarView({
 
           <button
             onClick={() => onNavigate('TODAY')}
-            className="px-4 py-2 hover:bg-white/5 rounded-lg transition-colors text-sm font-medium text-white"
+            className="px-4 py-2 hover:bg-white/5 rounded-lg transition-colors text-sm font-medium text-text-primary"
           >
             Сегодня
           </button>
@@ -191,7 +191,7 @@ export function CalendarView({
             <ChevronRight className="w-5 h-5 text-text-secondary" />
           </button>
 
-          <div className="text-lg font-display font-semibold text-white ml-4">
+          <div className="text-lg font-display font-semibold text-text-primary ml-4">
             {label}
           </div>
         </div>
@@ -204,7 +204,7 @@ export function CalendarView({
               'px-4 py-2 rounded text-sm font-medium transition-colors',
               view === Views.MONTH
                 ? 'bg-gold/20 text-gold border border-gold/30'
-                : 'text-text-secondary hover:text-white hover:bg-white/5'
+                : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
             )}
           >
             Месяц
@@ -215,7 +215,7 @@ export function CalendarView({
               'px-4 py-2 rounded text-sm font-medium transition-colors',
               view === Views.WEEK
                 ? 'bg-gold/20 text-gold border border-gold/30'
-                : 'text-text-secondary hover:text-white hover:bg-white/5'
+                : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
             )}
           >
             Неделя
@@ -226,7 +226,7 @@ export function CalendarView({
               'px-4 py-2 rounded text-sm font-medium transition-colors',
               view === Views.DAY
                 ? 'bg-gold/20 text-gold border border-gold/30'
-                : 'text-text-secondary hover:text-white hover:bg-white/5'
+                : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
             )}
           >
             День

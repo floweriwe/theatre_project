@@ -173,7 +173,7 @@ export function AccordionHeader({ icon, className, children, ...props }: Accordi
     >
       <div className="flex items-center gap-3 flex-1 min-w-0">
         {icon && <span className="flex-shrink-0 text-[#D4A574]">{icon}</span>}
-        <span className="font-['Inter'] font-medium text-white truncate">{children}</span>
+        <span className="font-['Inter'] font-medium text-text-primary truncate">{children}</span>
       </div>
       <ChevronDown
         className={cn(

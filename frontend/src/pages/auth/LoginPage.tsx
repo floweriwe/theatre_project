@@ -94,7 +94,7 @@ export function LoginPage() {
               <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-gold animate-pulse-gold" />
             </div>
             <div>
-              <h1 className="font-display text-4xl font-bold text-white">
+              <h1 className="font-display text-4xl font-bold text-text-primary">
                 Theatre
               </h1>
               <p className="text-sm uppercase tracking-widest text-white/40">
@@ -105,7 +105,7 @@ export function LoginPage() {
           
           {/* Описание */}
           <div className="space-y-6">
-            <h2 className="font-display text-3xl xl:text-4xl font-semibold text-white leading-tight">
+            <h2 className="font-display text-3xl xl:text-4xl font-semibold text-text-primary leading-tight">
               Современная платформа<br />
               управления театром
             </h2>
@@ -127,7 +127,7 @@ export function LoginPage() {
                   key={feature.title}
                   className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
                 >
-                  <h3 className="font-medium text-white mb-1">{feature.title}</h3>
+                  <h3 className="font-medium text-text-primary mb-1">{feature.title}</h3>
                   <p className="text-sm text-white/50">{feature.desc}</p>
                 </div>
               ))}
@@ -179,7 +179,7 @@ export function LoginPage() {
 
           {/* Заголовок */}
           <div className="text-center lg:text-left mb-8">
-            <h2 className="font-display text-2xl sm:text-3xl font-semibold text-white mb-2">
+            <h2 className="font-display text-2xl sm:text-3xl font-semibold text-text-primary mb-2">
               Добро пожаловать
             </h2>
             <p className="text-white/60">

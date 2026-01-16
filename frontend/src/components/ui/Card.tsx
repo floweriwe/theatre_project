@@ -43,8 +43,9 @@ const variantStyles = {
     'rounded-2xl',
     'cursor-pointer',
     'transition-all duration-200',
-    'hover:bg-bg-surface-hover hover:border-border-default',
-    'hover:shadow-lg hover:shadow-black/20'
+    'hover:bg-bg-surface-hover hover:border-gold/50',
+    'hover:shadow-lg hover:shadow-black/20',
+    'hover:-translate-y-1'
   ),
   glass: cn(
     'bg-bg-overlay/80',
@@ -124,7 +125,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
               )}
               <div className="min-w-0">
                 {title && (
-                  <h3 className="font-display text-lg font-semibold text-white truncate">
+                  <h3 className="font-display text-lg font-semibold text-text-primary truncate">
                     {title}
                   </h3>
                 )}
@@ -175,7 +176,7 @@ export function CardStat({ label, value, icon, trend, className }: CardStatProps
         </div>
       )}
       <div>
-        <p className="text-2xl font-semibold text-white">
+        <p className="text-2xl font-semibold text-text-primary">
           {typeof value === 'number' ? value.toLocaleString('ru-RU') : value}
         </p>
         <div className="flex items-center gap-2">
@@ -240,7 +241,7 @@ export function CardTitle({ className, children, ...props }: CardTitleProps) {
   return (
     <h3
       className={cn(
-        'font-display text-lg font-semibold text-white',
+        'font-display text-lg font-semibold text-text-primary',
         className
       )}
       {...props}

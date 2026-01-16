@@ -167,3 +167,67 @@ async def authorized_client(
     
     # Очищаем заголовки
     client.headers.pop("Authorization", None)
+
+# =============================================================================
+# Additional Test Fixtures
+# =============================================================================
+
+@pytest_asyncio.fixture
+async def test_db(db_session: AsyncSession) -> AsyncSession:
+    """
+    Алиас для db_session для совместимости.
+    """
+    return db_session
+
+
+@pytest_asyncio.fixture
+async def async_client(client: AsyncClient) -> AsyncClient:
+    """
+    Алиас для client для совместимости.
+    """
+    return client
+
+
+
+
+@pytest.fixture
+def admin_user_data() -> dict[str, Any]:
+    """Данные администратора."""
+    return {
+        "email": "admin@theatre.test",
+        "password": "Theatre2024!",
+        "first_name": "Админ",
+        "last_name": "Театров",
+    }
+
+
+@pytest.fixture
+def sample_inventory_item() -> dict[str, Any]:
+    """Пример данных для инвентаря."""
+    return {
+        "name": "Тестовый реквизит",
+        "category": "props",
+        "status": "in_stock",
+        "quantity": 5,
+        "location": "Склад №1",
+        "description": "Тестовое описание реквизита",
+    }
+
+
+@pytest.fixture
+def sample_performance() -> dict[str, Any]:
+    """Пример данных для спектакля."""
+    return {
+        "title": "Тестовый спектакль",
+        "description": "Описание тестового спектакля",
+        "duration_minutes": 120,
+        "genre": "drama",
+    }
+
+
+@pytest.fixture
+def make_headers():
+    """Фабрика для создания HTTP заголовков с токеном."""
+    def _make_headers(token: str) -> dict[str, str]:
+        return {"Authorization": f"Bearer {token}"}
+    return _make_headers

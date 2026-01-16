@@ -147,7 +147,7 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
               <Sparkles className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <span className="font-display text-lg font-semibold text-white">
+              <span className="font-display text-lg font-semibold text-text-primary">
                 Theatre
               </span>
               <span className="block text-[10px] text-gold tracking-wider uppercase">
@@ -159,7 +159,7 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
           {/* Close button for mobile */}
           <button
             onClick={onClose}
-            className="lg:hidden p-2 text-text-secondary hover:text-white transition-colors"
+            className="lg:hidden p-2 text-text-secondary hover:text-text-primary transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -187,12 +187,12 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
                           'transition-all duration-200 group',
                           isActive
                             ? 'bg-gold/10 text-gold'
-                            : 'text-text-secondary hover:text-white hover:bg-white/5'
+                            : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
                         )}
                       >
                         <Icon className={cn(
                           'w-5 h-5 transition-colors',
-                          isActive ? 'text-gold' : 'text-text-muted group-hover:text-white'
+                          isActive ? 'text-gold' : 'text-text-muted group-hover:text-text-primary'
                         )} />
                         <span className="flex-1 text-sm font-medium">
                           {item.label}

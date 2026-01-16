@@ -21,6 +21,7 @@ import { Select } from '@/components/ui/Select';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Alert } from '@/components/ui/Alert';
+import { PageHero } from '@/components/ui/PageHero';
 import { cn } from '@/utils/helpers';
 import { ROUTES } from '@/utils/constants';
 import { inventoryService } from '@/services/inventory_service';
@@ -98,25 +99,14 @@ export function InventoryListPage() {
   return (
     <div className="space-y-6">
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-light to-surface p-6 lg:p-8">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        
-        <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <p className="text-blue-400 text-sm flex items-center gap-2 mb-2">
-              <Package className="w-4 h-4" />
-              Управление имуществом
-            </p>
-            <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
-              Инвентарь
-            </h1>
-            <p className="text-text-secondary">
-              {stats?.totalItems || items.length} единиц оборудования и реквизита на общую сумму{' '}
-              {formatCurrency(stats?.totalValue || 0)}
-            </p>
-          </div>
-
-          <div className="flex gap-3">
+      <PageHero
+        label="Управление имуществом"
+        labelIcon={<Package className="w-4 h-4" />}
+        title="Инвентарь"
+        subtitle={`${stats?.totalItems || items.length} единиц оборудования и реквизита на общую сумму ${formatCurrency(stats?.totalValue || 0)}`}
+        accentColor="blue"
+        action={
+          <>
             <Button variant="outline" onClick={loadData}>
               <RefreshCw className="w-4 h-4 mr-2" />
               Обновить
@@ -127,9 +117,9 @@ export function InventoryListPage() {
                 Добавить
               </Link>
             </Button>
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -139,7 +129,7 @@ export function InventoryListPage() {
               <Package className="w-5 h-5 text-blue-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats?.totalItems || items.length}</p>
+              <p className="text-2xl font-bold text-text-primary">{stats?.totalItems || items.length}</p>
               <p className="text-sm text-text-muted">Всего</p>
             </div>
           </div>
@@ -150,7 +140,7 @@ export function InventoryListPage() {
               <Package className="w-5 h-5 text-emerald-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats?.inStock || 0}</p>
+              <p className="text-2xl font-bold text-text-primary">{stats?.inStock || 0}</p>
               <p className="text-sm text-text-muted">На складе</p>
             </div>
           </div>
@@ -161,7 +151,7 @@ export function InventoryListPage() {
               <Package className="w-5 h-5 text-amber-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats?.reserved || 0}</p>
+              <p className="text-2xl font-bold text-text-primary">{stats?.reserved || 0}</p>
               <p className="text-sm text-text-muted">Зарезервировано</p>
             </div>
           </div>
@@ -172,7 +162,7 @@ export function InventoryListPage() {
               <Package className="w-5 h-5 text-blue-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats?.inUse || 0}</p>
+              <p className="text-2xl font-bold text-text-primary">{stats?.inUse || 0}</p>
               <p className="text-sm text-text-muted">В использовании</p>
             </div>
           </div>
@@ -223,7 +213,7 @@ export function InventoryListPage() {
               onClick={() => setViewMode('grid')}
               className={cn(
                 'p-2 rounded',
-                viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-text-muted hover:text-white'
+                viewMode === 'grid' ? 'bg-white/10 text-text-primary' : 'text-text-muted hover:text-text-primary'
               )}
             >
               <Grid className="w-4 h-4" />
@@ -232,7 +222,7 @@ export function InventoryListPage() {
               onClick={() => setViewMode('list')}
               className={cn(
                 'p-2 rounded',
-                viewMode === 'list' ? 'bg-white/10 text-white' : 'text-text-muted hover:text-white'
+                viewMode === 'list' ? 'bg-white/10 text-text-primary' : 'text-text-muted hover:text-text-primary'
               )}
             >
               <List className="w-4 h-4" />
@@ -262,7 +252,7 @@ export function InventoryListPage() {
       ) : items.length === 0 ? (
         <Card className="p-8 text-center">
           <Package className="w-12 h-12 text-text-muted mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-white mb-2">Нет данных</h3>
+          <h3 className="text-lg font-medium text-text-primary mb-2">Нет данных</h3>
           <p className="text-text-muted mb-4">
             Инвентарь пуст или не найдено элементов по заданным фильтрам
           </p>
@@ -279,7 +269,7 @@ export function InventoryListPage() {
             <Link key={item.id} to={`${ROUTES.INVENTORY}/${item.id}`}>
               <Card className="p-4 hover:border-blue-500/30 transition-colors h-full">
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-medium text-white line-clamp-2">{item.name}</h3>
+                  <h3 className="font-medium text-text-primary line-clamp-2">{item.name}</h3>
                   <Badge className={STATUS_COLORS[item.status]}>
                     {STATUS_LABELS[item.status]}
                   </Badge>
@@ -318,7 +308,7 @@ export function InventoryListPage() {
             <tbody className="divide-y divide-white/5">
               {items.map((item) => (
                 <tr key={item.id} className="hover:bg-white/5 cursor-pointer" onClick={() => window.location.href = `${ROUTES.INVENTORY}/${item.id}`}>
-                  <td className="px-4 py-3 text-white">{item.name}</td>
+                  <td className="px-4 py-3 text-text-primary">{item.name}</td>
                   <td className="px-4 py-3 text-text-secondary">{item.inventoryNumber}</td>
                   <td className="px-4 py-3 text-text-secondary">{item.categoryName || '-'}</td>
                   <td className="px-4 py-3">

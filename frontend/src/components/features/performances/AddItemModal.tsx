@@ -173,7 +173,7 @@ export function AddItemModal({
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-white font-medium">{item.name}</p>
+                      <p className="text-text-primary font-medium">{item.name}</p>
                       <p className="text-sm text-text-muted">
                         {item.inventoryNumber}
                         {item.categoryName && ` • ${item.categoryName}`}
@@ -194,7 +194,7 @@ export function AddItemModal({
           <div className="p-4 bg-bg-tertiary rounded-lg space-y-4">
             <div>
               <p className="text-sm text-text-muted mb-1">Выбрано</p>
-              <p className="text-white font-medium">{selectedItem.name}</p>
+              <p className="text-text-primary font-medium">{selectedItem.name}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

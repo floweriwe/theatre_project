@@ -155,7 +155,7 @@ export function InventoryItemPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-display font-bold text-white">{item.name}</h1>
+            <h1 className="text-2xl font-display font-bold text-text-primary">{item.name}</h1>
             <p className="text-text-muted">{item.inventoryNumber}</p>
           </div>
         </div>
@@ -186,7 +186,7 @@ export function InventoryItemPage() {
         {/* Details */}
         <div className="lg:col-span-2 space-y-6">
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Основная информация</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Основная информация</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <p className="text-sm text-text-muted mb-1">Статус</p>
@@ -196,12 +196,12 @@ export function InventoryItemPage() {
               </div>
               <div>
                 <p className="text-sm text-text-muted mb-1">Количество</p>
-                <p className="text-white font-medium">{item.quantity} шт.</p>
+                <p className="text-text-primary font-medium">{item.quantity} шт.</p>
               </div>
               {item.category && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Категория</p>
-                  <div className="flex items-center gap-2 text-white">
+                  <div className="flex items-center gap-2 text-text-primary">
                     <Tag className="w-4 h-4 text-blue-400" />
                     {item.category.name}
                   </div>
@@ -210,7 +210,7 @@ export function InventoryItemPage() {
               {item.location && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Местоположение</p>
-                  <div className="flex items-center gap-2 text-white">
+                  <div className="flex items-center gap-2 text-text-primary">
                     <MapPin className="w-4 h-4 text-emerald-400" />
                     {item.location.name}
                   </div>
@@ -229,12 +229,12 @@ export function InventoryItemPage() {
           {/* Custom Fields */}
           {item.customFields && Object.keys(item.customFields).length > 0 && (
             <Card className="p-6">
-              <h2 className="text-lg font-medium text-white mb-4">Дополнительные характеристики</h2>
+              <h2 className="text-lg font-medium text-text-primary mb-4">Дополнительные характеристики</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Object.entries(item.customFields).map(([key, value]) => (
                   <div key={key}>
                     <p className="text-sm text-text-muted mb-1 capitalize">{key}</p>
-                    <p className="text-white">{String(value)}</p>
+                    <p className="text-text-primary">{String(value)}</p>
                   </div>
                 ))}
               </div>
@@ -245,7 +245,7 @@ export function InventoryItemPage() {
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <History className="w-5 h-5 text-text-muted" />
-              <h2 className="text-lg font-medium text-white">История изменений</h2>
+              <h2 className="text-lg font-medium text-text-primary">История изменений</h2>
             </div>
             <p className="text-text-muted text-center py-8">
               История изменений пока недоступна
@@ -266,13 +266,13 @@ export function InventoryItemPage() {
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <DollarSign className="w-5 h-5 text-gold" />
-              <h2 className="text-lg font-medium text-white">Стоимость</h2>
+              <h2 className="text-lg font-medium text-text-primary">Стоимость</h2>
             </div>
             <div className="space-y-4">
               {item.purchasePrice && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Цена покупки</p>
-                  <p className="text-xl font-bold text-white">
+                  <p className="text-xl font-bold text-text-primary">
                     {formatCurrency(item.purchasePrice)}
                   </p>
                 </div>
@@ -292,25 +292,25 @@ export function InventoryItemPage() {
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <Calendar className="w-5 h-5 text-text-muted" />
-              <h2 className="text-lg font-medium text-white">Даты</h2>
+              <h2 className="text-lg font-medium text-text-primary">Даты</h2>
             </div>
             <div className="space-y-4">
               {item.purchaseDate && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Дата покупки</p>
-                  <p className="text-white">{formatDate(item.purchaseDate)}</p>
+                  <p className="text-text-primary">{formatDate(item.purchaseDate)}</p>
                 </div>
               )}
               {item.createdAt && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Добавлен в систему</p>
-                  <p className="text-white">{formatDate(item.createdAt)}</p>
+                  <p className="text-text-primary">{formatDate(item.createdAt)}</p>
                 </div>
               )}
               {item.updatedAt && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Последнее обновление</p>
-                  <p className="text-white">{formatDate(item.updatedAt)}</p>
+                  <p className="text-text-primary">{formatDate(item.updatedAt)}</p>
                 </div>
               )}
             </div>

@@ -107,7 +107,7 @@ function SettingItem({ icon, title, description, children }: SettingItemProps) {
           {icon}
         </div>
         <div>
-          <p className="font-medium text-white">{title}</p>
+          <p className="font-medium text-text-primary">{title}</p>
           <p className="text-sm text-text-muted">{description}</p>
         </div>
       </div>
@@ -145,7 +145,7 @@ export function SettingsPage() {
           <div className="space-y-8">
             {/* Тема */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                 <Moon className="w-5 h-5 text-gold-300" />
                 Тема оформления
               </h3>
@@ -189,7 +189,7 @@ export function SettingsPage() {
                       </div>
                       <span className={cn(
                         'font-medium',
-                        currentTheme === theme.id ? 'text-gold-300' : 'text-white'
+                        currentTheme === theme.id ? 'text-gold-300' : 'text-text-primary'
                       )}>
                         {theme.name}
                       </span>
@@ -201,7 +201,7 @@ export function SettingsPage() {
 
             {/* Акцентный цвет */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                 <Palette className="w-5 h-5 text-gold-300" />
                 Акцентный цвет
               </h3>
@@ -228,7 +228,7 @@ export function SettingsPage() {
       case 'language':
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
               <Globe className="w-5 h-5 text-gold-300" />
               Язык интерфейса
             </h3>
@@ -249,7 +249,7 @@ export function SettingsPage() {
                     <div>
                       <p className={cn(
                         'font-medium',
-                        currentLanguage === lang.id ? 'text-gold-300' : 'text-white'
+                        currentLanguage === lang.id ? 'text-gold-300' : 'text-text-primary'
                       )}>
                         {lang.name}
                       </p>
@@ -267,7 +267,7 @@ export function SettingsPage() {
       case 'notifications':
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
               <Bell className="w-5 h-5 text-gold-300" />
               Каналы уведомлений
             </h3>
@@ -298,7 +298,7 @@ export function SettingsPage() {
 
             <div className="border-t border-border-subtle my-6" />
 
-            <h3 className="text-lg font-semibold text-white mb-4">Типы уведомлений</h3>
+            <h3 className="text-lg font-semibold text-text-primary mb-4">Типы уведомлений</h3>
 
             <SettingItem
               icon={<Bell className="w-5 h-5" />}
@@ -321,7 +321,7 @@ export function SettingsPage() {
       case 'privacy':
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
               <Shield className="w-5 h-5 text-gold-300" />
               Безопасность
             </h3>
@@ -329,7 +329,7 @@ export function SettingsPage() {
             <div className="p-4 rounded-xl bg-bg-surface-hover border border-border-subtle">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="font-medium text-white">Двухфакторная аутентификация</p>
+                  <p className="font-medium text-text-primary">Двухфакторная аутентификация</p>
                   <p className="text-sm text-text-muted">Дополнительный уровень защиты аккаунта</p>
                 </div>
                 <Badge variant="warning">Отключено</Badge>
@@ -340,7 +340,7 @@ export function SettingsPage() {
             <div className="p-4 rounded-xl bg-bg-surface-hover border border-border-subtle">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="font-medium text-white">Активные сессии</p>
+                  <p className="font-medium text-text-primary">Активные сессии</p>
                   <p className="text-sm text-text-muted">1 активная сессия (текущая)</p>
                 </div>
               </div>
@@ -352,14 +352,14 @@ export function SettingsPage() {
       case 'data':
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
               <Database className="w-5 h-5 text-gold-300" />
               Управление данными
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 rounded-xl bg-bg-surface-hover border border-border-subtle">
-                <h4 className="font-medium text-white mb-2">Экспорт данных</h4>
+                <h4 className="font-medium text-text-primary mb-2">Экспорт данных</h4>
                 <p className="text-sm text-text-muted mb-4">
                   Скачать все ваши данные в формате JSON
                 </p>
@@ -367,7 +367,7 @@ export function SettingsPage() {
               </div>
 
               <div className="p-4 rounded-xl bg-bg-surface-hover border border-border-subtle">
-                <h4 className="font-medium text-white mb-2">Очистить кэш</h4>
+                <h4 className="font-medium text-text-primary mb-2">Очистить кэш</h4>
                 <p className="text-sm text-text-muted mb-4">
                   Освободить локальное хранилище браузера
                 </p>
@@ -406,7 +406,7 @@ export function SettingsPage() {
             <Settings className="w-5 h-5 text-gold-300" />
             <span className="text-sm text-gold-300 font-medium">Персонализация</span>
           </div>
-          <h1 className="font-display text-3xl lg:text-4xl font-bold text-white mb-2">
+          <h1 className="font-display text-3xl lg:text-4xl font-bold text-text-primary mb-2">
             Настройки
           </h1>
           <p className="text-text-secondary text-lg">
@@ -427,7 +427,7 @@ export function SettingsPage() {
                   'w-full flex items-center gap-3 p-3 rounded-lg transition-all text-left',
                   activeSection === section.id
                     ? 'bg-gold-300/10 text-gold-300'
-                    : 'text-text-secondary hover:bg-bg-surface-hover hover:text-white'
+                    : 'text-text-secondary hover:bg-bg-surface-hover hover:text-text-primary'
                 )}
               >
                 <div className={cn(

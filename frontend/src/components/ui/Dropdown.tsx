@@ -91,7 +91,7 @@ export function DropdownItem({
         'w-full flex items-center gap-2 px-3 py-2 text-sm text-left',
         'transition-colors',
         disabled && 'opacity-50 cursor-not-allowed',
-        !disabled && !destructive && 'text-text-secondary hover:text-white hover:bg-white/5',
+        !disabled && !destructive && 'text-text-secondary hover:text-text-primary hover:bg-white/5',
         !disabled && destructive && 'text-red-400 hover:text-red-300 hover:bg-red-500/10',
         className
       )}
@@ -141,7 +141,7 @@ export function DropdownCheckboxItem({
         'w-full flex items-center gap-2 px-3 py-2 text-sm text-left',
         'transition-colors',
         disabled && 'opacity-50 cursor-not-allowed',
-        !disabled && 'text-text-secondary hover:text-white hover:bg-white/5',
+        !disabled && 'text-text-secondary hover:text-text-primary hover:bg-white/5',
         className
       )}
     >
@@ -180,7 +180,7 @@ export function DropdownSubmenu({
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
-      <div className="w-full flex items-center justify-between px-3 py-2 text-sm text-text-secondary hover:text-white hover:bg-white/5 cursor-pointer">
+      <div className="w-full flex items-center justify-between px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 cursor-pointer">
         {trigger}
         <ChevronDown className="w-4 h-4 -rotate-90" />
       </div>
@@ -209,7 +209,7 @@ export function DropdownTriggerButton({
       className={cn(
         'flex items-center gap-2 px-3 py-2 rounded-lg',
         'bg-surface-light border border-white/10',
-        'text-text-secondary hover:text-white hover:border-white/20',
+        'text-text-secondary hover:text-text-primary hover:border-white/20',
         'transition-colors',
         className
       )}
@@ -265,7 +265,7 @@ export function SimpleDropdown({
           isOpen && 'border-gold ring-2 ring-gold/50'
         )}
       >
-        <span className={selectedOption ? 'text-white' : 'text-text-muted'}>
+        <span className={selectedOption ? 'text-text-primary' : 'text-text-muted'}>
           {selectedOption?.label || placeholder}
         </span>
         <ChevronDown
@@ -290,7 +290,7 @@ export function SimpleDropdown({
                 'w-full px-4 py-2 text-sm text-left transition-colors',
                 option.value === value
                   ? 'bg-gold/10 text-gold'
-                  : 'text-text-secondary hover:text-white hover:bg-white/5'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
               )}
             >
               {option.label}
