@@ -29,6 +29,7 @@ import { Alert } from '@/components/ui/Alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import { ROUTES } from '@/utils/constants';
 import { performanceService } from '@/services/performance_service';
+import { PropsEquipmentTab } from '@/components/features/performances';
 import type { Performance, PerformanceStatus, PerformanceSection } from '@/types/performance_types';
 
 const STATUS_LABELS: Record<PerformanceStatus, string> = {
@@ -243,6 +244,15 @@ export function PerformanceViewPage() {
               </Tabs>
             </Card>
           )}
+
+          {/* Props & Equipment */}
+          <Card className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Box className="w-5 h-5 text-text-muted" />
+              <h2 className="text-lg font-medium text-white">Реквизит и оборудование</h2>
+            </div>
+            <PropsEquipmentTab performanceId={performance.id} />
+          </Card>
         </div>
 
         {/* Sidebar */}

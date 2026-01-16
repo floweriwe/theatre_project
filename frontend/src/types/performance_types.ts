@@ -84,6 +84,30 @@ export interface PerformanceStats {
   genres: Array<{ genre: string; count: number }>;
 }
 
+/** Предмет инвентаря, привязанный к спектаклю */
+export interface PerformanceInventoryItem {
+  itemId: number;
+  itemName: string;
+  itemInventoryNumber: string;
+  itemStatus: string;
+  note: string | null;
+  quantityRequired: number;
+  createdAt: string;
+}
+
+/** Ответ со списком инвентаря спектакля */
+export interface PerformanceInventoryResponse {
+  performanceId: number;
+  items: PerformanceInventoryItem[];
+}
+
+/** Запрос на привязку инвентаря к спектаклю */
+export interface AddPerformanceInventoryRequest {
+  itemId: number;
+  note?: string;
+  quantityRequired?: number;
+}
+
 // =============================================================================
 // Request Types
 // =============================================================================

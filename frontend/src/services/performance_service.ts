@@ -8,6 +8,9 @@ import type {
   PerformanceListItem,
   PerformanceSection,
   PerformanceStats,
+  PerformanceInventoryItem,
+  PerformanceInventoryResponse,
+  AddPerformanceInventoryRequest,
   PaginatedPerformances,
   PerformanceFilters,
   PerformanceCreateRequest,
@@ -306,6 +309,55 @@ export const performanceService = {
   async getStats(): Promise<PerformanceStats> {
     const response = await api.get('/performances/stats/');
     return transformStats(response.data);
+  },
+
+  // ===========================================================================
+  // Inventory
+  // ===========================================================================
+
+  /**
+   * Получить инвентарь спектакля.
+   */
+  async getInventory(performanceId: number): Promise<PerformanceInventoryResponse> {
+    const response = await api.get(`/performances/${performanceId}/inventory`);
+    const data = response.data;
+    return {
+      performanceId: data.performance_id as number,
+      items: (data.items as Record<string, unknown>[]).map((item) => ({
+        itemId: item.item_id as number,
+        itemName: item.item_name as string,
+        itemInventoryNumber: item.item_inventory_number as string,
+        itemStatus: item.item_status as string,
+        note: item.note as string | null,
+        quantityRequired: item.quantity_required as number,
+        createdAt: item.created_at as string,
+      })),
+    };
+  },
+
+  /**
+   * Привязать инвентарь к спектаклю.
+   */
+  async addInventory(
+    performanceId: number,
+    data: AddPerformanceInventoryRequest
+  ): Promise<PerformanceInventoryItem> {
+    const snakeData = {
+      item_id: data.itemId,
+      note: data.note,
+      quantity_required: data.quantityRequired ?? 1,
+    };
+    const response = await api.post(`/performances/${performanceId}/inventory`, snakeData);
+    const item = response.data;
+    return {
+      itemId: item.item_id as number,
+      itemName: item.item_name as string,
+      itemInventoryNumber: item.item_inventory_number as string,
+      itemStatus: item.item_status as string,
+      note: item.note as string | null,
+      quantityRequired: item.quantity_required as number,
+      createdAt: item.created_at as string,
+    };
   },
 };
 
