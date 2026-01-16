@@ -805,20 +805,28 @@ async def create_documents(session: AsyncSession, theater_id: int, performances:
 async def create_schedule(session: AsyncSession, theater_id: int, performances: list, users: list) -> list:
     """Создать события расписания."""
     from app.models.schedule import ScheduleEvent, EventParticipant, EventType, EventStatus, ParticipantRole, ParticipantStatus
-    
+    from app.models.venue import Venue
+
     if not performances or not users:
         print_warning("Пропущено: нет спектаклей или пользователей")
         return []
-    
+
     existing = await session.execute(
         select(ScheduleEvent).where(ScheduleEvent.theater_id == theater_id).limit(1)
     )
     if existing.scalar():
         print_info("События расписания уже существуют")
         return []
-    
+
+    # Получаем площадки из БД
+    venues_result = await session.execute(select(Venue))
+    venue_list = venues_result.scalars().all()
+    venue_map = {v.name: v.id for v in venue_list}
+
+    # Fallback названия для сопоставления
+    venue_names = ["Основная сцена", "Репетиционный зал"]
+
     created = []
-    venues = ["Большая сцена", "Малая сцена", "Репетиционный зал 1", "Репетиционный зал 2"]
     colors = ["#8B5CF6", "#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#EC4899"]
     
     # Фильтруем спектакли в репертуаре
@@ -841,7 +849,7 @@ async def create_schedule(session: AsyncSession, theater_id: int, performances: 
             start_time = dt_time(18, 0) if current_date.weekday() == 6 else dt_time(19, 0)
             end_time = dt_time(21, 30) if current_date.weekday() == 6 else dt_time(22, 0)
             title = perf.title
-            venue = "Большая сцена"
+            venue_name = "Основная сцена"
             is_public = True
         else:
             event_type = random.choice([EventType.REHEARSAL, EventType.TECH_REHEARSAL])
@@ -849,9 +857,12 @@ async def create_schedule(session: AsyncSession, theater_id: int, performances: 
             start_time = dt_time(hour, 0)
             end_time = dt_time(hour + 3, 0)
             title = f"Репетиция: {perf.title}"
-            venue = random.choice(venues)
+            venue_name = random.choice(venue_names)
             is_public = False
-        
+
+        # Получаем venue_id или None
+        venue_id = venue_map.get(venue_name)
+
         event = ScheduleEvent(
             title=title,
             description=f"{'Показ' if event_type == EventType.PERFORMANCE else 'Репетиция'} спектакля {perf.title}",
@@ -860,7 +871,7 @@ async def create_schedule(session: AsyncSession, theater_id: int, performances: 
             event_date=current_date,
             start_time=start_time,
             end_time=end_time,
-            venue=venue,
+            venue_id=venue_id,
             performance_id=perf.id,
             theater_id=theater_id,
             is_public=is_public,
