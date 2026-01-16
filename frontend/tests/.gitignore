@@ -1,0 +1,15 @@
+# Playwright Test Artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+screenshots/
+videos/
+traces/
+
+# Test output
+*.log
+*.json.log
+
+# Coverage
+coverage/
+.nyc_output/

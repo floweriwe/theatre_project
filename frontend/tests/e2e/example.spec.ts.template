@@ -1,0 +1,251 @@
+import { test, expect } from '@playwright/test';
+import { login, navigateTo, searchFor, fillFormField, submitForm } from './helpers';
+
+/**
+ * Example E2E Test Template
+ * Theatre Management System
+ *
+ * Copy this file and modify for your needs.
+ * Remove .template extension to make it runnable.
+ */
+
+// Helper for login (optional, can use directly in tests)
+async function loginUser(page) {
+  await page.goto('/login');
+  await page.getByLabel(/Email/i).fill('admin@theatre.test');
+  await page.getByLabel(/Пароль/i).fill('Theatre2024!');
+  await page.getByRole('button', { name: /Войти в систему/i }).click();
+  await expect(page).toHaveURL('/');
+}
+
+test.describe('Example Feature', () => {
+  // Run before each test in this describe block
+  test.beforeEach(async ({ page }) => {
+    // Login before each test
+    await login(page);
+
+    // Navigate to your feature page
+    await page.goto('/your-feature');
+  });
+
+  // Run after each test (optional, for cleanup)
+  test.afterEach(async ({ page }) => {
+    // Clean up test data if needed
+  });
+
+  test('should display feature page', async ({ page }) => {
+    // Verify page elements
+    await expect(page.getByRole('heading', { name: /Feature Name/i })).toBeVisible();
+
+    // Verify buttons
+    await expect(page.getByRole('button', { name: /Action/i })).toBeVisible();
+
+    // Verify text content
+    await expect(page.getByText(/Expected text/i)).toBeVisible();
+  });
+
+  test('should interact with form', async ({ page }) => {
+    // Fill in form fields
+    await page.getByLabel(/Field Name/i).fill('test value');
+
+    // Select from dropdown
+    await page.getByRole('combobox').selectOption({ label: 'Option 1' });
+
+    // Check checkbox
+    await page.getByRole('checkbox', { name: /Accept/i }).check();
+
+    // Submit form
+    await page.getByRole('button', { name: /Submit/i }).click();
+
+    // Wait for success message
+    await expect(page.getByText(/успешно|Success/i)).toBeVisible({ timeout: 5000 });
+  });
+
+  test('should search items', async ({ page }) => {
+    // Use helper function
+    await searchFor(page, 'search query');
+
+    // Verify results
+    const results = await page.locator('[data-testid="result-item"]').count();
+    expect(results).toBeGreaterThan(0);
+  });
+
+  test('should navigate to detail page', async ({ page }) => {
+    // Click on first item
+    const firstItem = page.locator('a[href*="/items/"]').first();
+    await firstItem.click();
+
+    // Verify URL
+    await expect(page).toHaveURL(/\/items\/\d+/);
+
+    // Verify detail page loaded
+    await expect(page.getByText(/Detail/i)).toBeVisible();
+  });
+
+  test('should create new item', async ({ page }) => {
+    // Navigate to create page
+    await page.getByRole('link', { name: /Add|Create/i }).click();
+
+    // Fill form
+    const timestamp = Date.now();
+    await fillFormField(page, /Name/i, `Test Item ${timestamp}`);
+    await fillFormField(page, /Description/i, 'Test description');
+
+    // Submit
+    await submitForm(page);
+
+    // Verify redirect
+    await expect(page).toHaveURL(/\/items/, { timeout: 10000 });
+
+    // Verify item created
+    await expect(page.getByText(`Test Item ${timestamp}`)).toBeVisible();
+  });
+
+  test('should handle errors gracefully', async ({ page }) => {
+    // Try to submit invalid data
+    await page.getByRole('button', { name: /Submit/i }).click();
+
+    // Should show validation error
+    await expect(page.getByText(/required|обязательн/i)).toBeVisible();
+  });
+
+  test.skip('should test future feature', async ({ page }) => {
+    // This test will be skipped
+    // Use test.skip() for tests that are not ready yet
+  });
+
+  test('should conditionally skip', async ({ page }) => {
+    // Check if feature is available
+    const featureButton = page.getByRole('button', { name: /New Feature/i });
+
+    if (await featureButton.count() === 0) {
+      test.skip(); // Skip if feature not available
+      return;
+    }
+
+    // Run test if feature exists
+    await featureButton.click();
+  });
+});
+
+// Advanced patterns
+test.describe('Advanced Examples', () => {
+  test('should handle file upload', async ({ page }) => {
+    await login(page);
+    await page.goto('/upload');
+
+    // Upload file
+    const fileInput = page.locator('input[type="file"]');
+    await fileInput.setInputFiles('path/to/file.pdf');
+
+    // Submit
+    await page.getByRole('button', { name: /Upload/i }).click();
+
+    // Verify
+    await expect(page.getByText(/uploaded successfully/i)).toBeVisible();
+  });
+
+  test('should handle dialogs', async ({ page }) => {
+    await login(page);
+
+    // Set up dialog handler BEFORE triggering action
+    page.on('dialog', dialog => dialog.accept());
+
+    // Trigger action that shows dialog
+    await page.getByRole('button', { name: /Delete/i }).click();
+
+    // Verify action completed
+    await expect(page.getByText(/deleted/i)).toBeVisible();
+  });
+
+  test('should wait for API response', async ({ page }) => {
+    await login(page);
+
+    // Wait for specific API call
+    const responsePromise = page.waitForResponse(
+      response => response.url().includes('/api/items') && response.status() === 200
+    );
+
+    // Trigger action that calls API
+    await page.getByRole('button', { name: /Refresh/i }).click();
+
+    // Wait for response
+    await responsePromise;
+
+    // Verify data loaded
+    await expect(page.locator('[data-testid="item"]')).toHaveCount(10);
+  });
+
+  test('should take screenshot', async ({ page }) => {
+    await login(page);
+
+    // Take screenshot of specific element
+    await page.locator('#chart').screenshot({ path: 'chart.png' });
+
+    // Take full page screenshot
+    await page.screenshot({ path: 'fullpage.png', fullPage: true });
+  });
+
+  test('should test accessibility', async ({ page }) => {
+    await login(page);
+
+    // Check if element has proper ARIA label
+    const button = page.getByRole('button', { name: /Submit/i });
+    await expect(button).toHaveAttribute('aria-label');
+
+    // Check for required landmarks
+    await expect(page.locator('main')).toBeVisible();
+    await expect(page.locator('nav')).toBeVisible();
+  });
+
+  test('should work with multiple tabs', async ({ page, context }) => {
+    await login(page);
+
+    // Open new tab
+    const newPage = await context.newPage();
+    await newPage.goto('/another-page');
+
+    // Work with both tabs
+    await page.bringToFront();
+    await page.getByRole('button').click();
+
+    await newPage.bringToFront();
+    await newPage.getByRole('button').click();
+  });
+});
+
+// Grouping related tests
+test.describe('CRUD Operations', () => {
+  test.describe('Create', () => {
+    test('should create basic item', async ({ page }) => {
+      await login(page);
+      // Create test
+    });
+
+    test('should create with advanced options', async ({ page }) => {
+      await login(page);
+      // Create test
+    });
+  });
+
+  test.describe('Read', () => {
+    test('should view item details', async ({ page }) => {
+      await login(page);
+      // Read test
+    });
+  });
+
+  test.describe('Update', () => {
+    test('should edit item', async ({ page }) => {
+      await login(page);
+      // Update test
+    });
+  });
+
+  test.describe('Delete', () => {
+    test('should delete item', async ({ page }) => {
+      await login(page);
+      // Delete test
+    });
+  });
+});
