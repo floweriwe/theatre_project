@@ -2,10 +2,9 @@
  * Страница детального просмотра предмета инвентаря
  */
 
-import { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState, useCallback } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import {
-  Package,
   ArrowLeft,
   Edit,
   Trash2,
@@ -21,8 +20,10 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Alert } from '@/components/ui/Alert';
+import { useToastHelpers } from '@/components/ui/Toast';
 import { ROUTES } from '@/utils/constants';
 import { inventoryService } from '@/services/inventory_service';
+import { InventoryPhotoGallery, PhysicalSpecsSection } from '@/components/features/inventory';
 import type { InventoryItem, ItemStatus } from '@/types/inventory_types';
 
 const STATUS_LABELS: Record<ItemStatus, string> = {
@@ -43,34 +44,31 @@ const STATUS_COLORS: Record<ItemStatus, string> = {
 
 export function InventoryItemPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  const toast = useToastHelpers();
   const [item, setItem] = useState<InventoryItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const loadItem = useCallback(async (itemId: number, showLoading = true) => {
+    try {
+      if (showLoading) {
+        setLoading(true);
+      }
+      setError(null);
+      const data = await inventoryService.getItem(itemId);
+      setItem(data);
+    } catch (err) {
+      console.error('Failed to load item:', err);
+      setError('Не удалось загрузить данные предмета');
+    } finally {
+      if (showLoading) {
+        setLoading(false);
+      }
+    }
+  }, []);
 
   useEffect(() => {
-    let isCancelled = false;
-
-    const loadItem = async (itemId: number) => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await inventoryService.getItem(itemId);
-        if (!isCancelled) {
-          setItem(data);
-        }
-      } catch (err) {
-        if (!isCancelled) {
-          console.error('Failed to load item:', err);
-          setError('Не удалось загрузить данные предмета');
-        }
-      } finally {
-        if (!isCancelled) {
-          setLoading(false);
-        }
-      }
-    };
-
     if (id) {
       const itemId = parseInt(id, 10);
       if (isNaN(itemId) || itemId <= 0) {
@@ -80,11 +78,24 @@ export function InventoryItemPage() {
       }
       loadItem(itemId);
     }
+  }, [id, loadItem]);
 
-    return () => {
-      isCancelled = true;
-    };
-  }, [id]);
+  const handlePhotoUpload = async (file: File) => {
+    if (!item) return;
+
+    setIsUploading(true);
+    try {
+      await inventoryService.uploadPhoto(item.id, file);
+      toast.success('Фото загружено', 'Фотография успешно добавлена');
+      // Перезагружаем данные предмета для обновления списка фото
+      await loadItem(item.id, false);
+    } catch (err) {
+      console.error('Failed to upload photo:', err);
+      toast.error('Ошибка загрузки', 'Не удалось загрузить фотографию');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('ru-RU', {
@@ -155,12 +166,20 @@ export function InventoryItemPage() {
               Редактировать
             </Link>
           </Button>
-          <Button variant="destructive">
+          <Button variant="danger">
             <Trash2 className="w-4 h-4 mr-2" />
             Удалить
           </Button>
         </div>
       </div>
+
+      {/* Photo Gallery */}
+      <InventoryPhotoGallery
+        photos={item.photos || []}
+        itemId={item.id}
+        onUpload={handlePhotoUpload}
+        isUploading={isUploading}
+      />
 
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -236,6 +255,13 @@ export function InventoryItemPage() {
 
         {/* Sidebar */}
         <div className="space-y-6">
+          {/* Physical Specs */}
+          <PhysicalSpecsSection
+            dimensions={item.dimensions}
+            weight={item.weight}
+            condition={item.condition}
+          />
+
           {/* Financial Info */}
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-4">

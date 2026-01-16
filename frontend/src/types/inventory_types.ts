@@ -6,16 +6,30 @@
 export type ItemStatus = 'in_stock' | 'reserved' | 'in_use' | 'repair' | 'written_off';
 
 /** Тип перемещения */
-export type MovementType = 
-  | 'receipt' 
-  | 'transfer' 
-  | 'reserve' 
-  | 'release' 
-  | 'issue' 
-  | 'return' 
-  | 'write_off' 
-  | 'repair_start' 
+export type MovementType =
+  | 'receipt'
+  | 'transfer'
+  | 'reserve'
+  | 'release'
+  | 'issue'
+  | 'return'
+  | 'write_off'
+  | 'repair_start'
   | 'repair_end';
+
+/** Физическое состояние предмета */
+export type InventoryCondition = 'new' | 'good' | 'fair' | 'poor' | 'broken';
+
+/** Фотография предмета инвентаря */
+export interface InventoryPhoto {
+  id: number;
+  itemId: number;
+  filePath: string;
+  isPrimary: boolean;
+  caption: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
 
 /** Категория инвентаря */
 export interface InventoryCategory {
@@ -73,6 +87,12 @@ export interface InventoryItem {
   updatedAt: string;
   category: InventoryCategory | null;
   location: StorageLocation | null;
+  // Физические характеристики
+  dimensions: string | null;
+  weight: number | null;
+  condition: InventoryCondition | null;
+  // Фотографии
+  photos: InventoryPhoto[];
 }
 
 /** Предмет инвентаря (для списка) */
@@ -259,4 +279,22 @@ export const MOVEMENT_TYPE_LABELS: Record<MovementType, string> = {
   write_off: 'Списание',
   repair_start: 'В ремонт',
   repair_end: 'Из ремонта',
+};
+
+/** Метки физического состояния */
+export const CONDITION_LABELS: Record<InventoryCondition, string> = {
+  new: 'Новый',
+  good: 'Хорошее',
+  fair: 'Удовл.',
+  poor: 'Плохое',
+  broken: 'Сломан',
+};
+
+/** Варианты бейджа для состояния (используется с Badge variant) */
+export const CONDITION_VARIANTS: Record<InventoryCondition, 'success' | 'info' | 'warning' | 'error' | 'default'> = {
+  new: 'success',
+  good: 'info',
+  fair: 'warning',
+  poor: 'error',
+  broken: 'error',
 };

@@ -16,6 +16,7 @@ import type {
   StorageLocation,
   InventoryMovement,
   InventoryStats,
+  InventoryPhoto,
   PaginatedItems,
   InventoryFilters,
   InventoryItemCreateRequest,
@@ -29,6 +30,18 @@ import type {
 // =============================================================================
 // Transformers (snake_case -> camelCase)
 // =============================================================================
+
+function transformPhoto(data: Record<string, unknown>): InventoryPhoto {
+  return {
+    id: data.id as number,
+    itemId: data.item_id as number,
+    filePath: data.file_path as string,
+    isPrimary: data.is_primary as boolean,
+    caption: data.caption as string | null,
+    createdAt: data.created_at as string,
+    updatedAt: data.updated_at as string,
+  };
+}
 
 function transformItem(data: Record<string, unknown>): InventoryItem {
   return {
@@ -52,6 +65,14 @@ function transformItem(data: Record<string, unknown>): InventoryItem {
     updatedAt: data.updated_at as string,
     category: data.category ? transformCategory(data.category as Record<string, unknown>) : null,
     location: data.location ? transformLocation(data.location as Record<string, unknown>) : null,
+    // Физические характеристики
+    dimensions: data.dimensions as string | null,
+    weight: data.weight as number | null,
+    condition: data.condition as InventoryItem['condition'],
+    // Фотографии
+    photos: Array.isArray(data.photos)
+      ? (data.photos as Record<string, unknown>[]).map(transformPhoto)
+      : [],
   };
 }
 
@@ -396,13 +417,40 @@ export const inventoryService = {
   // ===========================================================================
   // Stats
   // ===========================================================================
-  
+
   /**
    * Получить статистику инвентаря.
    */
   async getStats(): Promise<InventoryStats> {
     const response = await api.get('/inventory/stats');
     return transformStats(response.data);
+  },
+
+  // ===========================================================================
+  // Photos
+  // ===========================================================================
+
+  /**
+   * Загрузить фотографию предмета.
+   */
+  async uploadPhoto(itemId: number, file: File, caption?: string): Promise<InventoryPhoto> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const params = caption ? `?caption=${encodeURIComponent(caption)}` : '';
+    const response = await api.post(`/inventory/items/${itemId}/photos${params}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return transformPhoto(response.data);
+  },
+
+  /**
+   * Удалить фотографию.
+   */
+  async deletePhoto(photoId: number): Promise<void> {
+    await api.delete(`/inventory/photos/${photoId}`);
   },
 };
 
