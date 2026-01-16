@@ -261,7 +261,7 @@ export const RegisterPage: React.FC = () => {
             <div className="w-16 h-16 bg-gradient-to-br from-gold to-gold-dark rounded-xl flex items-center justify-center mb-6 shadow-gold">
               <span className="text-theatre-velvet text-2xl font-bold">T</span>
             </div>
-            <h1 className="text-4xl font-bold text-white mb-4">
+            <h1 className="text-4xl font-bold text-text-primary mb-4">
               Theatre<span className="text-gold">.</span>
             </h1>
             <p className="text-xl text-white/70">
@@ -300,7 +300,7 @@ export const RegisterPage: React.FC = () => {
             <div className="w-14 h-14 bg-gradient-to-br from-gold to-gold-dark rounded-xl flex items-center justify-center mx-auto mb-4 shadow-gold">
               <span className="text-theatre-velvet text-xl font-bold">T</span>
             </div>
-            <h1 className="text-2xl font-bold text-white">
+            <h1 className="text-2xl font-bold text-text-primary">
               Theatre<span className="text-gold">.</span>
             </h1>
           </div>
@@ -309,7 +309,7 @@ export const RegisterPage: React.FC = () => {
           <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
             {/* Ãâ€”ÃÂ°ÃÂ³ÃÂ¾ÃÂ»ÃÂ¾ÃÂ²ÃÂ¾ÃÂº */}
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-white mb-2">ÃÂ ÃÂµÃÂ³ÃÂ¸Ã‘ÂÃ‘â€šÃ‘â‚¬ÃÂ°Ã‘â€ ÃÂ¸Ã‘Â</h2>
+              <h2 className="text-2xl font-bold text-text-primary mb-2">ÃÂ ÃÂµÃÂ³ÃÂ¸Ã‘ÂÃ‘â€šÃ‘â‚¬ÃÂ°Ã‘â€ ÃÂ¸Ã‘Â</h2>
               <p className="text-white/60">
                 {step === 1 ? 'ÃÂ¨ÃÂ°ÃÂ³ 1 ÃÂ¸ÃÂ· 2 Ã¢â‚¬â€ ÃÅ¾Ã‘ÂÃÂ½ÃÂ¾ÃÂ²ÃÂ½ÃÂ°Ã‘Â ÃÂ¸ÃÂ½Ã‘â€žÃÂ¾Ã‘â‚¬ÃÂ¼ÃÂ°Ã‘â€ ÃÂ¸Ã‘Â' : 'ÃÂ¨ÃÂ°ÃÂ³ 2 ÃÂ¸ÃÂ· 2 Ã¢â‚¬â€ ÃÂ¡ÃÂ¾ÃÂ·ÃÂ´ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂ¿ÃÂ°Ã‘â‚¬ÃÂ¾ÃÂ»Ã‘Â'}
               </p>
@@ -348,7 +348,7 @@ export const RegisterPage: React.FC = () => {
                           value={formData.firstName}
                           onChange={handleChange}
                           onBlur={() => handleBlur('firstName')}
-                          className={`w-full bg-white/10 border rounded-xl pl-10 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors ${
+                          className={`w-full bg-white/10 border rounded-xl pl-10 pr-4 py-3 text-text-primary placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors ${
                             touched.firstName && errors.firstName 
                               ? 'border-red-500' 
                               : 'border-white/20'
@@ -371,7 +371,7 @@ export const RegisterPage: React.FC = () => {
                         value={formData.lastName}
                         onChange={handleChange}
                         onBlur={() => handleBlur('lastName')}
-                        className={`w-full bg-white/10 border rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors ${
+                        className={`w-full bg-white/10 border rounded-xl px-4 py-3 text-text-primary placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors ${
                           touched.lastName && errors.lastName 
                             ? 'border-red-500' 
                             : 'border-white/20'
@@ -397,7 +397,7 @@ export const RegisterPage: React.FC = () => {
                         value={formData.email}
                         onChange={handleChange}
                         onBlur={() => handleBlur('email')}
-                        className={`w-full bg-white/10 border rounded-xl pl-10 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors ${
+                        className={`w-full bg-white/10 border rounded-xl pl-10 pr-4 py-3 text-text-primary placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors ${
                           touched.email && errors.email 
                             ? 'border-red-500' 
                             : 'border-white/20'
@@ -423,7 +423,7 @@ export const RegisterPage: React.FC = () => {
                         value={formData.phone}
                         onChange={handleChange}
                         onBlur={() => handleBlur('phone')}
-                        className={`w-full bg-white/10 border rounded-xl pl-10 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors ${
+                        className={`w-full bg-white/10 border rounded-xl pl-10 pr-4 py-3 text-text-primary placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors ${
                           touched.phone && errors.phone 
                             ? 'border-red-500' 
                             : 'border-white/20'
@@ -448,7 +448,7 @@ export const RegisterPage: React.FC = () => {
                         value={formData.theaterId}
                         onChange={handleChange}
                         onBlur={() => handleBlur('theaterId')}
-                        className={`w-full bg-white/10 border rounded-xl pl-10 pr-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors appearance-none cursor-pointer ${
+                        className={`w-full bg-white/10 border rounded-xl pl-10 pr-4 py-3 text-text-primary focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors appearance-none cursor-pointer ${
                           touched.theaterId && errors.theaterId 
                             ? 'border-red-500' 
                             : 'border-white/20'
@@ -456,7 +456,7 @@ export const RegisterPage: React.FC = () => {
                       >
                         <option value="" className="bg-theatre-velvet">Ãâ€™Ã‘â€¹ÃÂ±ÃÂµÃ‘â‚¬ÃÂ¸Ã‘â€šÃÂµ Ã‘â€šÃÂµÃÂ°Ã‘â€šÃ‘â‚¬</option>
                         {theaters.map(theater => (
-                          <option key={theater.id} value={theater.id} className="bg-theatre-velvet text-white">
+                          <option key={theater.id} value={theater.id} className="bg-theatre-velvet text-text-primary">
                             {theater.name}
                           </option>
                         ))}
@@ -492,7 +492,7 @@ export const RegisterPage: React.FC = () => {
                         value={formData.password}
                         onChange={handleChange}
                         onBlur={() => handleBlur('password')}
-                        className={`w-full bg-white/10 border rounded-xl pl-10 pr-12 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors ${
+                        className={`w-full bg-white/10 border rounded-xl pl-10 pr-12 py-3 text-text-primary placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors ${
                           touched.password && errors.password 
                             ? 'border-red-500' 
                             : 'border-white/20'
@@ -502,7 +502,7 @@ export const RegisterPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-text-primary transition-colors"
                       >
                         {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
@@ -541,7 +541,7 @@ export const RegisterPage: React.FC = () => {
                         value={formData.confirmPassword}
                         onChange={handleChange}
                         onBlur={() => handleBlur('confirmPassword')}
-                        className={`w-full bg-white/10 border rounded-xl pl-10 pr-12 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors ${
+                        className={`w-full bg-white/10 border rounded-xl pl-10 pr-12 py-3 text-text-primary placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors ${
                           touched.confirmPassword && errors.confirmPassword 
                             ? 'border-red-500' 
                             : 'border-white/20'
@@ -551,7 +551,7 @@ export const RegisterPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-text-primary transition-colors"
                       >
                         {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
@@ -600,7 +600,7 @@ export const RegisterPage: React.FC = () => {
                       type="button"
                       variant="outline"
                       onClick={() => setStep(1)}
-                      className="flex-1 border-white/20 text-white hover:bg-white/10"
+                      className="flex-1 border-white/20 text-text-primary hover:bg-white/10"
                     >
                       ÃÂÃÂ°ÃÂ·ÃÂ°ÃÂ´
                     </Button>

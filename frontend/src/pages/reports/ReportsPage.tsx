@@ -121,7 +121,7 @@ export function ReportsPage() {
               <BarChart3 className="w-4 h-4" />
               Аналитика и статистика
             </p>
-            <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+            <h1 className="text-2xl lg:text-3xl font-display font-bold text-text-primary mb-2">
               Отчёты
             </h1>
             <p className="text-text-secondary">
@@ -159,7 +159,7 @@ export function ReportsPage() {
               {loading ? (
                 <Skeleton className="h-8 w-16 mb-1" />
               ) : (
-                <p className="text-2xl font-bold text-white">{stats?.inventory.total || 0}</p>
+                <p className="text-2xl font-bold text-text-primary">{stats?.inventory.total || 0}</p>
               )}
               <p className="text-sm text-text-muted">Единиц инвентаря</p>
             </div>
@@ -178,7 +178,7 @@ export function ReportsPage() {
               {loading ? (
                 <Skeleton className="h-8 w-16 mb-1" />
               ) : (
-                <p className="text-2xl font-bold text-white">{stats?.documents.total || 0}</p>
+                <p className="text-2xl font-bold text-text-primary">{stats?.documents.total || 0}</p>
               )}
               <p className="text-sm text-text-muted">Документов</p>
             </div>
@@ -197,7 +197,7 @@ export function ReportsPage() {
               {loading ? (
                 <Skeleton className="h-8 w-16 mb-1" />
               ) : (
-                <p className="text-2xl font-bold text-white">{stats?.performances.total || 0}</p>
+                <p className="text-2xl font-bold text-text-primary">{stats?.performances.total || 0}</p>
               )}
               <p className="text-sm text-text-muted">Спектаклей</p>
             </div>
@@ -216,7 +216,7 @@ export function ReportsPage() {
               {loading ? (
                 <Skeleton className="h-8 w-16 mb-1" />
               ) : (
-                <p className="text-2xl font-bold text-white">{stats?.schedule.total || 0}</p>
+                <p className="text-2xl font-bold text-text-primary">{stats?.schedule.total || 0}</p>
               )}
               <p className="text-sm text-text-muted">Событий</p>
             </div>
@@ -230,25 +230,25 @@ export function ReportsPage() {
       {/* Detailed Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="p-6">
-          <h2 className="text-lg font-medium text-white mb-4">Инвентарь по статусам</h2>
+          <h2 className="text-lg font-medium text-text-primary mb-4">Инвентарь по статусам</h2>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-text-secondary">На складе</span>
-              <span className="text-white font-medium">{loading ? '...' : stats?.inventory.inStock || 0}</span>
+              <span className="text-text-primary font-medium">{loading ? '...' : stats?.inventory.inStock || 0}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-text-secondary">Зарезервировано</span>
-              <span className="text-white font-medium">{loading ? '...' : stats?.inventory.reserved || 0}</span>
+              <span className="text-text-primary font-medium">{loading ? '...' : stats?.inventory.reserved || 0}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-text-secondary">В использовании</span>
-              <span className="text-white font-medium">{loading ? '...' : stats?.inventory.inUse || 0}</span>
+              <span className="text-text-primary font-medium">{loading ? '...' : stats?.inventory.inUse || 0}</span>
             </div>
           </div>
         </Card>
 
         <Card className="p-6">
-          <h2 className="text-lg font-medium text-white mb-4">Спектакли по статусам</h2>
+          <h2 className="text-lg font-medium text-text-primary mb-4">Спектакли по статусам</h2>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-text-secondary">В репертуаре</span>
@@ -260,7 +260,7 @@ export function ReportsPage() {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-text-secondary">Всего</span>
-              <span className="text-white font-medium">{loading ? '...' : stats?.performances.total || 0}</span>
+              <span className="text-text-primary font-medium">{loading ? '...' : stats?.performances.total || 0}</span>
             </div>
           </div>
         </Card>
@@ -269,7 +269,7 @@ export function ReportsPage() {
       {/* Charts Placeholder */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="p-6">
-          <h2 className="text-lg font-medium text-white mb-4">Использование инвентаря</h2>
+          <h2 className="text-lg font-medium text-text-primary mb-4">Использование инвентаря</h2>
           <div className="h-48 flex items-center justify-center bg-surface rounded-lg">
             <div className="text-center">
               <BarChart3 className="w-10 h-10 text-text-muted mx-auto mb-2" />
@@ -279,7 +279,7 @@ export function ReportsPage() {
         </Card>
 
         <Card className="p-6">
-          <h2 className="text-lg font-medium text-white mb-4">Активность по документам</h2>
+          <h2 className="text-lg font-medium text-text-primary mb-4">Активность по документам</h2>
           <div className="h-48 flex items-center justify-center bg-surface rounded-lg">
             <div className="text-center">
               <BarChart3 className="w-10 h-10 text-text-muted mx-auto mb-2" />

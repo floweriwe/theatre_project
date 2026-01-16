@@ -294,7 +294,7 @@ export function InventoryFormPage() {
                 <Package className="w-5 h-5 text-gold-300" />
                 <span className="text-sm text-gold-300 font-medium">Инвентарь</span>
               </div>
-              <h1 className="font-display text-2xl lg:text-3xl font-bold text-white">
+              <h1 className="font-display text-2xl lg:text-3xl font-bold text-text-primary">
                 {isEditing ? 'Редактирование предмета' : 'Новый предмет'}
               </h1>
             </div>
@@ -321,7 +321,7 @@ export function InventoryFormPage() {
           <div className="space-y-6">
             {/* Basic Info */}
             <div>
-              <h2 className="font-display text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                 <Package className="w-5 h-5 text-gold-300" />
                 Основная информация
               </h2>
@@ -356,7 +356,7 @@ export function InventoryFormPage() {
                     onChange={(e) => handleChange('description', e.target.value)}
                     rows={3}
                     className="w-full px-4 py-3 bg-bg-surface-hover border border-border-subtle rounded-xl 
-                      text-white placeholder:text-text-muted
+                      text-text-primary placeholder:text-text-muted
                       focus:outline-none focus:ring-2 focus:ring-gold-300/50 focus:border-gold-300/50
                       transition-all resize-none"
                   />
@@ -366,7 +366,7 @@ export function InventoryFormPage() {
 
             {/* Classification */}
             <div className="pt-6 border-t border-border-subtle">
-              <h2 className="font-display text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                 <Tag className="w-5 h-5 text-gold-300" />
                 Классификация
               </h2>
@@ -399,7 +399,7 @@ export function InventoryFormPage() {
 
             {/* Quantity & Price */}
             <div className="pt-6 border-t border-border-subtle">
-              <h2 className="font-display text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                 <CircleDollarSign className="w-5 h-5 text-gold-300" />
                 Количество и стоимость
               </h2>
@@ -437,7 +437,7 @@ export function InventoryFormPage() {
 
             {/* Dates */}
             <div className="pt-6 border-t border-border-subtle">
-              <h2 className="font-display text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-gold-300" />
                 Даты
               </h2>

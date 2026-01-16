@@ -116,12 +116,12 @@ export function EventFormModal({
       <div className="relative w-full max-w-lg mx-4 bg-surface border border-white/10 rounded-2xl shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-white/5">
-          <h2 className="text-lg font-medium text-white">
+          <h2 className="text-lg font-medium text-text-primary">
             {initialData ? 'Редактировать событие' : 'Новое событие'}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 text-text-muted hover:text-white transition-colors rounded-lg hover:bg-white/5"
+            className="p-2 text-text-muted hover:text-text-primary transition-colors rounded-lg hover:bg-white/5"
           >
             <X className="w-5 h-5" />
           </button>
@@ -230,7 +230,7 @@ export function EventFormModal({
               onChange={(e) => handleChange('description', e.target.value)}
               placeholder="Дополнительная информация о событии..."
               rows={3}
-              className="w-full px-4 py-2 bg-surface-light border border-white/10 rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold resize-none"
+              className="w-full px-4 py-2 bg-surface-light border border-white/10 rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold resize-none"
             />
           </div>
         </form>

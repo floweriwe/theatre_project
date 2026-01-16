@@ -51,7 +51,7 @@ export function ProfilePage() {
           </div>
           
           <div className="flex-1">
-            <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+            <h1 className="text-2xl lg:text-3xl font-display font-bold text-text-primary mb-2">
               {formData.firstName} {formData.lastName}
             </h1>
             <p className="text-text-secondary mb-3">{formData.email}</p>
@@ -76,7 +76,7 @@ export function ProfilePage() {
         {/* Main Info */}
         <div className="lg:col-span-2 space-y-6">
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Личная информация</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Личная информация</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -125,14 +125,14 @@ export function ProfilePage() {
           </Card>
 
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Безопасность</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Безопасность</h2>
             
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 bg-surface rounded-lg">
                 <div className="flex items-center gap-3">
                   <Key className="w-5 h-5 text-text-muted" />
                   <div>
-                    <p className="text-white">Пароль</p>
+                    <p className="text-text-primary">Пароль</p>
                     <p className="text-sm text-text-muted">Последнее изменение: 30 дней назад</p>
                   </div>
                 </div>
@@ -143,7 +143,7 @@ export function ProfilePage() {
                 <div className="flex items-center gap-3">
                   <Shield className="w-5 h-5 text-text-muted" />
                   <div>
-                    <p className="text-white">Двухфакторная аутентификация</p>
+                    <p className="text-text-primary">Двухфакторная аутентификация</p>
                     <p className="text-sm text-text-muted">Не настроена</p>
                   </div>
                 </div>
@@ -156,28 +156,28 @@ export function ProfilePage() {
         {/* Sidebar */}
         <div className="space-y-6">
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Активность</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Активность</h2>
             
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Clock className="w-5 h-5 text-text-muted" />
                 <div>
                   <p className="text-sm text-text-muted">Последний вход</p>
-                  <p className="text-white">Сегодня, 10:30</p>
+                  <p className="text-text-primary">Сегодня, 10:30</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Clock className="w-5 h-5 text-text-muted" />
                 <div>
                   <p className="text-sm text-text-muted">Дата регистрации</p>
-                  <p className="text-white">1 января 2024</p>
+                  <p className="text-text-primary">1 января 2024</p>
                 </div>
               </div>
             </div>
           </Card>
 
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Уведомления</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Уведомления</h2>
             
             <div className="space-y-3">
               <label className="flex items-center justify-between cursor-pointer">

@@ -124,7 +124,7 @@ export function PerformanceViewPage() {
                 <Badge variant="default">{performance.ageRating}</Badge>
               )}
             </div>
-            <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+            <h1 className="text-2xl lg:text-3xl font-display font-bold text-text-primary">
               {performance.title}
             </h1>
             {performance.subtitle && (
@@ -150,43 +150,43 @@ export function PerformanceViewPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Info Card */}
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Основная информация</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Основная информация</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {performance.author && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Автор</p>
-                  <p className="text-white font-medium">{performance.author}</p>
+                  <p className="text-text-primary font-medium">{performance.author}</p>
                 </div>
               )}
               {performance.director && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Режиссёр</p>
-                  <p className="text-white">{performance.director}</p>
+                  <p className="text-text-primary">{performance.director}</p>
                 </div>
               )}
               {performance.composer && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Композитор</p>
-                  <p className="text-white">{performance.composer}</p>
+                  <p className="text-text-primary">{performance.composer}</p>
                 </div>
               )}
               {performance.choreographer && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Хореограф</p>
-                  <p className="text-white">{performance.choreographer}</p>
+                  <p className="text-text-primary">{performance.choreographer}</p>
                 </div>
               )}
               {performance.genre && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Жанр</p>
-                  <p className="text-white">{performance.genre}</p>
+                  <p className="text-text-primary">{performance.genre}</p>
                 </div>
               )}
               {performance.durationMinutes && (
                 <div>
                   <p className="text-sm text-text-muted mb-1">Продолжительность</p>
-                  <p className="text-white">{formatDuration(performance.durationMinutes)}</p>
+                  <p className="text-text-primary">{formatDuration(performance.durationMinutes)}</p>
                 </div>
               )}
             </div>
@@ -201,7 +201,7 @@ export function PerformanceViewPage() {
 
           {/* Technical Passport */}
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Технический паспорт</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Технический паспорт</h2>
             <TechnicalPassport performanceId={performance.id} editable={false} />
           </Card>
 
@@ -209,7 +209,7 @@ export function PerformanceViewPage() {
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <Box className="w-5 h-5 text-text-muted" />
-              <h2 className="text-lg font-medium text-white">Реквизит и оборудование</h2>
+              <h2 className="text-lg font-medium text-text-primary">Реквизит и оборудование</h2>
             </div>
             <PropsEquipmentTab performanceId={performance.id} />
           </Card>
@@ -219,14 +219,14 @@ export function PerformanceViewPage() {
         <div className="space-y-6">
           {/* Quick Info */}
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Информация</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Информация</h2>
             <div className="space-y-4">
               {performance.premiereDate && (
                 <div className="flex items-center gap-3">
                   <Calendar className="w-5 h-5 text-text-muted" />
                   <div>
                     <p className="text-sm text-text-muted">Премьера</p>
-                    <p className="text-white">{formatDate(performance.premiereDate)}</p>
+                    <p className="text-text-primary">{formatDate(performance.premiereDate)}</p>
                   </div>
                 </div>
               )}
@@ -235,7 +235,7 @@ export function PerformanceViewPage() {
                   <Clock className="w-5 h-5 text-text-muted" />
                   <div>
                     <p className="text-sm text-text-muted">Продолжительность</p>
-                    <p className="text-white">{formatDuration(performance.durationMinutes)}</p>
+                    <p className="text-text-primary">{formatDuration(performance.durationMinutes)}</p>
                   </div>
                 </div>
               )}
@@ -244,7 +244,7 @@ export function PerformanceViewPage() {
                   <Clock className="w-5 h-5 text-text-muted" />
                   <div>
                     <p className="text-sm text-text-muted">Антракты</p>
-                    <p className="text-white">{performance.intermissions}</p>
+                    <p className="text-text-primary">{performance.intermissions}</p>
                   </div>
                 </div>
               )}
@@ -253,7 +253,7 @@ export function PerformanceViewPage() {
 
           {/* Documents */}
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Документы</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Документы</h2>
             <p className="text-text-muted text-center py-4">Нет связанных документов</p>
           </Card>
         </div>

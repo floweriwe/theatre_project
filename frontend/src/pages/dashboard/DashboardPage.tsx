@@ -145,7 +145,7 @@ export function DashboardPage() {
               <Sparkles className="w-4 h-4" />
               {dateString}
             </p>
-            <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+            <h1 className="text-2xl lg:text-3xl font-display font-bold text-text-primary mb-2">
               {getGreeting()}, {user?.firstName || 'Администратор'}!
             </h1>
             <p className="text-text-secondary">
@@ -182,12 +182,12 @@ export function DashboardPage() {
               {loading ? (
                 <Skeleton className="w-12 h-8" />
               ) : (
-                <span className="text-2xl font-bold text-white">
+                <span className="text-2xl font-bold text-text-primary">
                   {stats?.inventory.total || 0}
                 </span>
               )}
             </div>
-            <h3 className="font-medium text-white mb-1">Инвентарь</h3>
+            <h3 className="font-medium text-text-primary mb-1">Инвентарь</h3>
             <p className="text-sm text-text-muted">Реквизит, костюмы, декорации</p>
           </Card>
         </Link>
@@ -202,12 +202,12 @@ export function DashboardPage() {
               {loading ? (
                 <Skeleton className="w-12 h-8" />
               ) : (
-                <span className="text-2xl font-bold text-white">
+                <span className="text-2xl font-bold text-text-primary">
                   {stats?.documents.total || 0}
                 </span>
               )}
             </div>
-            <h3 className="font-medium text-white mb-1">Документы</h3>
+            <h3 className="font-medium text-text-primary mb-1">Документы</h3>
             <p className="text-sm text-text-muted">Документооборот театра</p>
           </Card>
         </Link>
@@ -224,7 +224,7 @@ export function DashboardPage() {
                   <Skeleton className="w-12 h-8" />
                 ) : (
                   <>
-                    <span className="text-2xl font-bold text-white">
+                    <span className="text-2xl font-bold text-text-primary">
                       {stats?.performances.total || 0}
                     </span>
                     <span className="px-2 py-0.5 text-xs font-medium bg-gold/20 text-gold rounded">
@@ -234,7 +234,7 @@ export function DashboardPage() {
                 )}
               </div>
             </div>
-            <h3 className="font-medium text-white mb-1">Спектакли</h3>
+            <h3 className="font-medium text-text-primary mb-1">Спектакли</h3>
             <p className="text-sm text-text-muted">Репертуар и паспорта</p>
           </Card>
         </Link>
@@ -249,12 +249,12 @@ export function DashboardPage() {
               {loading ? (
                 <Skeleton className="w-12 h-8" />
               ) : (
-                <span className="text-2xl font-bold text-white">
+                <span className="text-2xl font-bold text-text-primary">
                   {stats?.schedule.total || 0}
                 </span>
               )}
             </div>
-            <h3 className="font-medium text-white mb-1">Расписание</h3>
+            <h3 className="font-medium text-text-primary mb-1">Расписание</h3>
             <p className="text-sm text-text-muted">Календарь событий</p>
           </Card>
         </Link>
@@ -267,7 +267,7 @@ export function DashboardPage() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Package className="w-5 h-5 text-blue-400" />
-              <h3 className="font-medium text-white">Инвентарь</h3>
+              <h3 className="font-medium text-text-primary">Инвентарь</h3>
             </div>
             <Link
               to={ROUTES.INVENTORY}
@@ -318,7 +318,7 @@ export function DashboardPage() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <FileText className="w-5 h-5 text-emerald-400" />
-              <h3 className="font-medium text-white">Документы</h3>
+              <h3 className="font-medium text-text-primary">Документы</h3>
             </div>
             <Link
               to={ROUTES.DOCUMENTS}
@@ -362,7 +362,7 @@ export function DashboardPage() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Theater className="w-5 h-5 text-purple-400" />
-              <h3 className="font-medium text-white">Репертуар</h3>
+              <h3 className="font-medium text-text-primary">Репертуар</h3>
             </div>
             <Link
               to={ROUTES.PERFORMANCES}
@@ -403,7 +403,7 @@ export function DashboardPage() {
             <User className="w-6 h-6 text-gold" />
           </div>
           <div>
-            <h3 className="font-medium text-white">Ваш профиль</h3>
+            <h3 className="font-medium text-text-primary">Ваш профиль</h3>
             <p className="text-sm text-text-muted">Информация об аккаунте</p>
           </div>
         </div>

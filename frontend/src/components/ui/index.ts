@@ -22,6 +22,8 @@ export { Badge } from './Badge';
 export { Alert } from './Alert';
 export { Modal } from './Modal';
 export { Table } from './Table';
+export { PageHero } from './PageHero';
+export { FormField } from './FormField';
 
 // Navigation & Layout
 export { 
@@ -54,10 +56,24 @@ export {
 
 // Loading States
 export { Spinner, ContainerSpinner, FullPageSpinner } from './Spinner';
-export { Skeleton, SkeletonCard, SkeletonTable, SkeletonList, SkeletonStats } from './Skeleton';
+export {
+  Skeleton,
+  SkeletonCard,
+  SkeletonTable,
+  SkeletonList,
+  SkeletonStats,
+  SkeletonInventoryGrid
+} from './Skeleton';
 
 // Feedback
 export { ToastProvider, useToast, useToastHelpers } from './Toast';
+export {
+  ErrorBoundary,
+  PageErrorBoundary,
+  ModuleErrorBoundary,
+  withErrorBoundary,
+} from './ErrorBoundary';
+export { SkipToContent } from './SkipToContent';
 
 // Types re-export
 export type { SelectOption } from './Select';

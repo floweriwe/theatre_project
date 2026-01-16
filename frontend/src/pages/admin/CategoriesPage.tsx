@@ -59,7 +59,7 @@ export function CategoriesPage() {
               <FolderOpen className="w-4 h-4" />
               Настройка системы
             </p>
-            <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+            <h1 className="text-2xl lg:text-3xl font-display font-bold text-text-primary mb-2">
               Категории
             </h1>
             <p className="text-text-secondary">
@@ -130,7 +130,7 @@ export function CategoriesPage() {
                   )}
                 </div>
                 <div>
-                  <h3 className="font-medium text-white">{category.name}</h3>
+                  <h3 className="font-medium text-text-primary">{category.name}</h3>
                   <p className="text-sm text-text-muted">{category.code}</p>
                 </div>
               </div>
@@ -167,7 +167,7 @@ export function CategoriesPage() {
       {filteredCategories.length === 0 && (
         <Card className="p-8 text-center">
           <FolderOpen className="w-12 h-12 text-text-muted mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-white mb-2">Категории не найдены</h3>
+          <h3 className="text-lg font-medium text-text-primary mb-2">Категории не найдены</h3>
           <p className="text-text-muted mb-4">Попробуйте изменить параметры поиска</p>
         </Card>
       )}

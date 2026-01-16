@@ -107,7 +107,7 @@ export function SchedulePage() {
               <Calendar className="w-4 h-4" />
               Планирование и расписание
             </p>
-            <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+            <h1 className="text-2xl lg:text-3xl font-display font-bold text-text-primary mb-2">
               Расписание театра
             </h1>
             <p className="text-text-secondary">
@@ -147,13 +147,13 @@ export function SchedulePage() {
               <Badge className={EVENT_TYPE_COLORS[selectedEvent.eventType]}>
                 {EVENT_TYPE_LABELS[selectedEvent.eventType]}
               </Badge>
-              <h2 className="text-xl font-display font-semibold text-white mt-2">
+              <h2 className="text-xl font-display font-semibold text-text-primary mt-2">
                 {selectedEvent.title}
               </h2>
             </div>
             <button
               onClick={() => setSelectedEvent(null)}
-              className="text-text-muted hover:text-white transition-colors"
+              className="text-text-muted hover:text-text-primary transition-colors"
             >
               ✕
             </button>
@@ -166,7 +166,7 @@ export function SchedulePage() {
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <span className="text-text-muted">Дата</span>
-              <p className="text-white font-medium">
+              <p className="text-text-primary font-medium">
                 {new Date(selectedEvent.eventDate).toLocaleDateString('ru-RU', {
                   day: 'numeric',
                   month: 'long',
@@ -176,7 +176,7 @@ export function SchedulePage() {
             </div>
             <div>
               <span className="text-text-muted">Время</span>
-              <p className="text-white font-medium">
+              <p className="text-text-primary font-medium">
                 {formatTime(selectedEvent.startTime)}
                 {selectedEvent.endTime && ` — ${formatTime(selectedEvent.endTime)}`}
               </p>
@@ -184,7 +184,7 @@ export function SchedulePage() {
             {selectedEvent.venue && (
               <div>
                 <span className="text-text-muted">Место</span>
-                <p className="text-white font-medium flex items-center gap-2">
+                <p className="text-text-primary font-medium flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
                   {selectedEvent.venue}
                 </p>
@@ -193,7 +193,7 @@ export function SchedulePage() {
             {selectedEvent.performanceTitle && (
               <div>
                 <span className="text-text-muted">Спектакль</span>
-                <p className="text-white font-medium">{selectedEvent.performanceTitle}</p>
+                <p className="text-text-primary font-medium">{selectedEvent.performanceTitle}</p>
               </div>
             )}
           </div>
@@ -206,7 +206,7 @@ export function SchedulePage() {
               <div className="space-y-2">
                 {selectedEvent.participants.map((participant) => (
                   <div key={participant.id} className="flex items-center justify-between text-sm">
-                    <span className="text-white">{participant.userName || `User #${participant.userId}`}</span>
+                    <span className="text-text-primary">{participant.userName || `User #${participant.userId}`}</span>
                     <Badge className="bg-white/5 text-text-secondary border-white/10">
                       {participant.role}
                     </Badge>

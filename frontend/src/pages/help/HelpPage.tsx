@@ -93,7 +93,7 @@ export function HelpPage() {
           <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
             <HelpCircle className="w-8 h-8 text-emerald-400" />
           </div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-4">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-text-primary mb-4">
             Центр помощи
           </h1>
           <p className="text-text-secondary mb-6">
@@ -122,7 +122,7 @@ export function HelpPage() {
                   <link.icon className="w-5 h-5 text-gold" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-white mb-1">{link.title}</h3>
+                  <h3 className="font-medium text-text-primary mb-1">{link.title}</h3>
                   <p className="text-sm text-text-muted">{link.description}</p>
                 </div>
               </div>
@@ -135,7 +135,7 @@ export function HelpPage() {
         {/* FAQ */}
         <div className="lg:col-span-2">
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
+            <h2 className="text-lg font-medium text-text-primary mb-4 flex items-center gap-2">
               <Book className="w-5 h-5 text-text-muted" />
               Часто задаваемые вопросы
             </h2>
@@ -156,7 +156,7 @@ export function HelpPage() {
                       onClick={() => setExpandedFaq(expandedFaq === item.id ? null : item.id)}
                       className="w-full flex items-center justify-between p-4 text-left hover:bg-white/5 transition-colors"
                     >
-                      <span className="font-medium text-white pr-4">{item.question}</span>
+                      <span className="font-medium text-text-primary pr-4">{item.question}</span>
                       {expandedFaq === item.id ? (
                         <ChevronUp className="w-5 h-5 text-text-muted flex-shrink-0" />
                       ) : (
@@ -178,7 +178,7 @@ export function HelpPage() {
         {/* Contact */}
         <div className="space-y-6">
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
+            <h2 className="text-lg font-medium text-text-primary mb-4 flex items-center gap-2">
               <MessageCircle className="w-5 h-5 text-text-muted" />
               Связаться с нами
             </h2>
@@ -190,7 +190,7 @@ export function HelpPage() {
               >
                 <Mail className="w-5 h-5 text-blue-400" />
                 <div>
-                  <p className="text-white">Email поддержки</p>
+                  <p className="text-text-primary">Email поддержки</p>
                   <p className="text-sm text-text-muted">support@theatre.test</p>
                 </div>
               </a>
@@ -201,7 +201,7 @@ export function HelpPage() {
               >
                 <Phone className="w-5 h-5 text-emerald-400" />
                 <div>
-                  <p className="text-white">Телефон</p>
+                  <p className="text-text-primary">Телефон</p>
                   <p className="text-sm text-text-muted">+7 (495) 123-45-67</p>
                 </div>
               </a>
@@ -209,26 +209,26 @@ export function HelpPage() {
           </Card>
 
           <Card className="p-6">
-            <h2 className="text-lg font-medium text-white mb-4">Полезные ссылки</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-4">Полезные ссылки</h2>
             
             <div className="space-y-2">
               <a
                 href="#"
-                className="flex items-center justify-between p-2 text-text-secondary hover:text-white transition-colors"
+                className="flex items-center justify-between p-2 text-text-secondary hover:text-text-primary transition-colors"
               >
                 <span>Документация API</span>
                 <ExternalLink className="w-4 h-4" />
               </a>
               <a
                 href="#"
-                className="flex items-center justify-between p-2 text-text-secondary hover:text-white transition-colors"
+                className="flex items-center justify-between p-2 text-text-secondary hover:text-text-primary transition-colors"
               >
                 <span>Руководство пользователя</span>
                 <ExternalLink className="w-4 h-4" />
               </a>
               <a
                 href="#"
-                className="flex items-center justify-between p-2 text-text-secondary hover:text-white transition-colors"
+                className="flex items-center justify-between p-2 text-text-secondary hover:text-text-primary transition-colors"
               >
                 <span>Обновления системы</span>
                 <ExternalLink className="w-4 h-4" />

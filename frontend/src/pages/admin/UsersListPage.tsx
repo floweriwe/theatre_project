@@ -165,7 +165,7 @@ export function UsersListPage() {
               <Users className="w-4 h-4" />
               Управление пользователями
             </p>
-            <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+            <h1 className="text-2xl lg:text-3xl font-display font-bold text-text-primary mb-2">
               Пользователи
             </h1>
             <p className="text-text-secondary">
@@ -188,7 +188,7 @@ export function UsersListPage() {
               <Users className="w-5 h-5 text-blue-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats.total}</p>
+              <p className="text-2xl font-bold text-text-primary">{stats.total}</p>
               <p className="text-sm text-text-muted">Всего</p>
             </div>
           </div>
@@ -199,7 +199,7 @@ export function UsersListPage() {
               <UserCheck className="w-5 h-5 text-emerald-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats.active}</p>
+              <p className="text-2xl font-bold text-text-primary">{stats.active}</p>
               <p className="text-sm text-text-muted">Активных</p>
             </div>
           </div>
@@ -210,7 +210,7 @@ export function UsersListPage() {
               <Clock className="w-5 h-5 text-purple-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats.recentlyActive}</p>
+              <p className="text-2xl font-bold text-text-primary">{stats.recentlyActive}</p>
               <p className="text-sm text-text-muted">Недавно активны</p>
             </div>
           </div>
@@ -221,7 +221,7 @@ export function UsersListPage() {
               <UserX className="w-5 h-5 text-red-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats.inactive}</p>
+              <p className="text-2xl font-bold text-text-primary">{stats.inactive}</p>
               <p className="text-sm text-text-muted">Неактивных</p>
             </div>
           </div>
@@ -304,7 +304,7 @@ export function UsersListPage() {
                         </span>
                       </div>
                       <div>
-                        <p className="font-medium text-white">{user.first_name} {user.last_name}</p>
+                        <p className="font-medium text-text-primary">{user.first_name} {user.last_name}</p>
                         <p className="text-sm text-text-muted">{user.email}</p>
                       </div>
                     </div>

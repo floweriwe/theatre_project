@@ -137,7 +137,7 @@ export function DocumentsListPage() {
               <FileText className="w-4 h-4" />
               Документооборот театра
             </p>
-            <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+            <h1 className="text-2xl lg:text-3xl font-display font-bold text-text-primary mb-2">
               Документы
             </h1>
             <p className="text-text-secondary">
@@ -169,7 +169,7 @@ export function DocumentsListPage() {
               <FileText className="w-5 h-5 text-emerald-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats?.totalDocuments || 0}</p>
+              <p className="text-2xl font-bold text-text-primary">{stats?.totalDocuments || 0}</p>
               <p className="text-sm text-text-muted">Всего</p>
             </div>
           </div>
@@ -180,7 +180,7 @@ export function DocumentsListPage() {
               <FileText className="w-5 h-5 text-blue-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats?.active || 0}</p>
+              <p className="text-2xl font-bold text-text-primary">{stats?.active || 0}</p>
               <p className="text-sm text-text-muted">Активных</p>
             </div>
           </div>
@@ -191,7 +191,7 @@ export function DocumentsListPage() {
               <FileText className="w-5 h-5 text-amber-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats?.draft || 0}</p>
+              <p className="text-2xl font-bold text-text-primary">{stats?.draft || 0}</p>
               <p className="text-sm text-text-muted">Черновиков</p>
             </div>
           </div>
@@ -202,7 +202,7 @@ export function DocumentsListPage() {
               <FileText className="w-5 h-5 text-purple-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{formatBytes(stats?.totalSize)}</p>
+              <p className="text-2xl font-bold text-text-primary">{formatBytes(stats?.totalSize)}</p>
               <p className="text-sm text-text-muted">Размер</p>
             </div>
           </div>
@@ -266,7 +266,7 @@ export function DocumentsListPage() {
             </Select>
             <button
               onClick={toggleSortOrder}
-              className="p-2 rounded-lg border border-white/10 hover:bg-white/5 text-text-muted hover:text-white transition-colors"
+              className="p-2 rounded-lg border border-white/10 hover:bg-white/5 text-text-muted hover:text-text-primary transition-colors"
               title={sortOrder === 'asc' ? 'По возрастанию' : 'По убыванию'}
             >
               {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
@@ -279,7 +279,7 @@ export function DocumentsListPage() {
               onClick={() => setViewMode('grid')}
               className={cn(
                 'p-2 rounded transition-colors',
-                viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-text-muted hover:text-white'
+                viewMode === 'grid' ? 'bg-white/10 text-text-primary' : 'text-text-muted hover:text-text-primary'
               )}
               title="Плитки"
             >
@@ -289,7 +289,7 @@ export function DocumentsListPage() {
               onClick={() => setViewMode('list')}
               className={cn(
                 'p-2 rounded transition-colors',
-                viewMode === 'list' ? 'bg-white/10 text-white' : 'text-text-muted hover:text-white'
+                viewMode === 'list' ? 'bg-white/10 text-text-primary' : 'text-text-muted hover:text-text-primary'
               )}
               title="Таблица"
             >
@@ -315,7 +315,7 @@ export function DocumentsListPage() {
       ) : sortedDocuments.length === 0 ? (
         <Card className="p-8 text-center">
           <FileText className="w-12 h-12 text-text-muted mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-white mb-2">Нет документов</h3>
+          <h3 className="text-lg font-medium text-text-primary mb-2">Нет документов</h3>
           <p className="text-text-muted mb-4">Документы не найдены</p>
           <Button asChild>
             <Link to={`${ROUTES.DOCUMENTS}/new`}>
@@ -335,7 +335,7 @@ export function DocumentsListPage() {
                     <FileText className="w-5 h-5 text-emerald-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-white text-sm leading-tight line-clamp-2" title={doc.name}>
+                    <h3 className="font-medium text-text-primary text-sm leading-tight line-clamp-2" title={doc.name}>
                       {doc.name}
                     </h3>
                     <p className="text-xs text-text-muted mt-1 truncate" title={doc.fileName}>
@@ -387,7 +387,7 @@ export function DocumentsListPage() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <FileText className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                        <span className="text-white font-medium truncate max-w-[200px]" title={doc.name}>
+                        <span className="text-text-primary font-medium truncate max-w-[200px]" title={doc.name}>
                           {doc.name}
                         </span>
                       </div>

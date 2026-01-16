@@ -139,7 +139,7 @@ export function PropsEquipmentTab({ performanceId }: PropsEquipmentTabProps) {
                 >
                   <td className="py-3 px-4">
                     <div>
-                      <p className="text-white font-medium">{item.itemName}</p>
+                      <p className="text-text-primary font-medium">{item.itemName}</p>
                       <p className="text-sm text-text-muted">
                         {item.itemInventoryNumber}
                       </p>
@@ -150,7 +150,7 @@ export function PropsEquipmentTab({ performanceId }: PropsEquipmentTabProps) {
                       {STATUS_LABELS[item.itemStatus] || item.itemStatus}
                     </Badge>
                   </td>
-                  <td className="py-3 px-4 text-center text-white">
+                  <td className="py-3 px-4 text-center text-text-primary">
                     {item.quantityRequired}
                   </td>
                   <td className="py-3 px-4 text-text-secondary">

@@ -45,7 +45,7 @@ export function NotFoundPage() {
 
         {/* Content */}
         <div className="relative z-10 space-y-4 mb-8">
-          <h2 className="font-display text-2xl md:text-3xl font-bold text-white">
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary">
             Занавес опущен
           </h2>
           <p className="text-text-secondary text-lg max-w-md mx-auto">
@@ -78,31 +78,31 @@ export function NotFoundPage() {
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link 
               to={ROUTES.INVENTORY}
-              className="px-4 py-2 bg-bg-surface hover:bg-bg-surface-hover border border-border-subtle rounded-lg text-text-secondary hover:text-white transition-colors text-sm"
+              className="px-4 py-2 bg-bg-surface hover:bg-bg-surface-hover border border-border-subtle rounded-lg text-text-secondary hover:text-text-primary transition-colors text-sm"
             >
               Инвентарь
             </Link>
             <Link 
               to={ROUTES.DOCUMENTS}
-              className="px-4 py-2 bg-bg-surface hover:bg-bg-surface-hover border border-border-subtle rounded-lg text-text-secondary hover:text-white transition-colors text-sm"
+              className="px-4 py-2 bg-bg-surface hover:bg-bg-surface-hover border border-border-subtle rounded-lg text-text-secondary hover:text-text-primary transition-colors text-sm"
             >
               Документы
             </Link>
             <Link 
               to={ROUTES.PERFORMANCES}
-              className="px-4 py-2 bg-bg-surface hover:bg-bg-surface-hover border border-border-subtle rounded-lg text-text-secondary hover:text-white transition-colors text-sm"
+              className="px-4 py-2 bg-bg-surface hover:bg-bg-surface-hover border border-border-subtle rounded-lg text-text-secondary hover:text-text-primary transition-colors text-sm"
             >
               Спектакли
             </Link>
             <Link 
               to={ROUTES.SCHEDULE}
-              className="px-4 py-2 bg-bg-surface hover:bg-bg-surface-hover border border-border-subtle rounded-lg text-text-secondary hover:text-white transition-colors text-sm"
+              className="px-4 py-2 bg-bg-surface hover:bg-bg-surface-hover border border-border-subtle rounded-lg text-text-secondary hover:text-text-primary transition-colors text-sm"
             >
               Расписание
             </Link>
             <Link 
               to={ROUTES.HELP}
-              className="px-4 py-2 bg-bg-surface hover:bg-bg-surface-hover border border-border-subtle rounded-lg text-text-secondary hover:text-white transition-colors text-sm flex items-center gap-1"
+              className="px-4 py-2 bg-bg-surface hover:bg-bg-surface-hover border border-border-subtle rounded-lg text-text-secondary hover:text-text-primary transition-colors text-sm flex items-center gap-1"
             >
               <HelpCircle className="w-4 h-4" />
               Помощь

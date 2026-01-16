@@ -55,7 +55,7 @@ export const ForgotPasswordPage: React.FC = () => {
         </div>
 
         {/* Контент левой панели */}
-        <div className="relative z-10 flex flex-col justify-center px-16 text-white">
+        <div className="relative z-10 flex flex-col justify-center px-16 text-text-primary">
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-6">
               <div 
@@ -87,7 +87,7 @@ export const ForgotPasswordPage: React.FC = () => {
               </svg>
             </div>
             <div>
-              <div className="text-white font-medium">Безопасный сброс</div>
+              <div className="text-text-primary font-medium">Безопасный сброс</div>
               <div className="text-sm">Ссылка действует 1 час</div>
             </div>
           </div>
@@ -108,7 +108,7 @@ export const ForgotPasswordPage: React.FC = () => {
             >
               🎭
             </div>
-            <span className="text-xl font-bold text-white">Theatre</span>
+            <span className="text-xl font-bold text-text-primary">Theatre</span>
           </div>
 
           <Card variant="elevated" className="p-8">
@@ -121,7 +121,7 @@ export const ForgotPasswordPage: React.FC = () => {
                         d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                     </svg>
                   </div>
-                  <h2 className="text-2xl font-bold text-white mb-2">
+                  <h2 className="text-2xl font-bold text-text-primary mb-2">
                     Восстановление пароля
                   </h2>
                   <p className="text-white/60">
@@ -176,7 +176,7 @@ export const ForgotPasswordPage: React.FC = () => {
                   </svg>
                 </div>
                 
-                <h2 className="text-2xl font-bold text-white mb-3">
+                <h2 className="text-2xl font-bold text-text-primary mb-3">
                   Проверьте почту
                 </h2>
                 
@@ -188,7 +188,7 @@ export const ForgotPasswordPage: React.FC = () => {
                 </p>
                 
                 <div className="bg-white/5 rounded-xl p-4 mb-6 text-left">
-                  <h4 className="text-white font-medium mb-2">Что делать дальше:</h4>
+                  <h4 className="text-text-primary font-medium mb-2">Что делать дальше:</h4>
                   <ul className="text-white/60 text-sm space-y-2">
                     <li className="flex items-start gap-2">
                       <span className="text-amber-400 mt-0.5">1.</span>

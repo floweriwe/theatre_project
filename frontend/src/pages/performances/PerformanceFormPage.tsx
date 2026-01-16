@@ -243,7 +243,7 @@ export function PerformanceFormPage() {
                 <Clapperboard className="w-5 h-5 text-gold-300" />
                 <span className="text-sm text-gold-300 font-medium">Репертуар</span>
               </div>
-              <h1 className="font-display text-2xl lg:text-3xl font-bold text-white">
+              <h1 className="font-display text-2xl lg:text-3xl font-bold text-text-primary">
                 {isEditing ? 'Редактирование спектакля' : 'Новый спектакль'}
               </h1>
             </div>
@@ -270,7 +270,7 @@ export function PerformanceFormPage() {
           <div className="space-y-6">
             {/* Basic Info */}
             <div>
-              <h2 className="font-display text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                 <Clapperboard className="w-5 h-5 text-gold-300" />
                 Основная информация
               </h2>
@@ -303,7 +303,7 @@ export function PerformanceFormPage() {
                     onChange={(e) => handleChange('description', e.target.value)}
                     rows={4}
                     className="w-full px-4 py-3 bg-bg-surface-hover border border-border-subtle rounded-xl 
-                      text-white placeholder:text-text-muted
+                      text-text-primary placeholder:text-text-muted
                       focus:outline-none focus:ring-2 focus:ring-gold-300/50 focus:border-gold-300/50
                       transition-all resize-none"
                   />
@@ -313,7 +313,7 @@ export function PerformanceFormPage() {
 
             {/* Classification */}
             <div className="pt-6 border-t border-border-subtle">
-              <h2 className="font-display text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                 <Theater className="w-5 h-5 text-gold-300" />
                 Классификация
               </h2>
@@ -346,7 +346,7 @@ export function PerformanceFormPage() {
 
             {/* Timing */}
             <div className="pt-6 border-t border-border-subtle">
-              <h2 className="font-display text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-gold-300" />
                 Время и даты
               </h2>

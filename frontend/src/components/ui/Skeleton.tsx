@@ -1,3 +1,10 @@
+/**
+ * Skeleton Components — Modern Theatre Elegance v3
+ *
+ * Loading state components that mimic content layout.
+ * Uses dark theme with subtle animation.
+ */
+
 import { cn } from '../../utils/cn';
 
 interface SkeletonProps {
@@ -9,8 +16,20 @@ interface SkeletonProps {
 }
 
 /**
- * Компонент-скелетон для отображения состояния загрузки.
- * Поддерживает различные варианты формы и размеров.
+ * Base Skeleton component for loading states.
+ * Supports various shapes and sizes.
+ *
+ * @example
+ * // Simple text skeleton
+ * <Skeleton />
+ *
+ * @example
+ * // Circular avatar skeleton
+ * <Skeleton variant="circular" width={48} height={48} />
+ *
+ * @example
+ * // Multiple lines
+ * <Skeleton lines={3} />
  */
 export function Skeleton({
   className,
@@ -19,8 +38,8 @@ export function Skeleton({
   height,
   lines = 1,
 }: SkeletonProps) {
-  const baseStyles = 'animate-pulse bg-gradient-to-r from-warm-100 via-warm-200 to-warm-100 bg-[length:200%_100%]';
-  
+  const baseStyles = 'animate-pulse bg-white/5 rounded';
+
   const variantStyles = {
     text: 'h-4 rounded',
     circular: 'rounded-full',
@@ -58,11 +77,21 @@ export function Skeleton({
   );
 }
 
-/* Пресеты скелетонов для типичных элементов */
+/* ============================================================================
+ * Preset Skeletons — for common UI patterns
+ * ============================================================================ */
 
+/**
+ * SkeletonCard - mimics a Card component during loading
+ */
 export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn('bg-white rounded-xl border border-warm-200 p-6 space-y-4', className)}>
+    <div
+      className={cn(
+        'bg-bg-surface rounded-xl border border-border-subtle p-6 space-y-4',
+        className
+      )}
+    >
       <div className="flex items-center gap-4">
         <Skeleton variant="circular" width={48} height={48} />
         <div className="flex-1 space-y-2">
@@ -79,18 +108,30 @@ export function SkeletonCard({ className }: { className?: string }) {
   );
 }
 
-export function SkeletonTable({ rows = 5, columns = 4 }: { rows?: number; columns?: number }) {
+/**
+ * SkeletonTable - mimics a data table during loading
+ */
+export function SkeletonTable({
+  rows = 5,
+  columns = 4,
+}: {
+  rows?: number;
+  columns?: number;
+}) {
   return (
-    <div className="bg-white rounded-xl border border-warm-200 overflow-hidden">
+    <div className="bg-bg-surface rounded-xl border border-border-subtle overflow-hidden">
       {/* Header */}
-      <div className="bg-warm-100 px-6 py-4 flex gap-4">
+      <div className="bg-bg-surface-hover px-6 py-4 flex gap-4">
         {Array.from({ length: columns }).map((_, i) => (
           <Skeleton key={i} width={`${100 / columns}%`} height={16} />
         ))}
       </div>
       {/* Rows */}
       {Array.from({ length: rows }).map((_, rowIndex) => (
-        <div key={rowIndex} className="px-6 py-4 flex gap-4 border-t border-warm-100">
+        <div
+          key={rowIndex}
+          className="px-6 py-4 flex gap-4 border-t border-border-subtle"
+        >
           {Array.from({ length: columns }).map((_, colIndex) => (
             <Skeleton key={colIndex} width={`${100 / columns}%`} height={16} />
           ))}
@@ -100,11 +141,17 @@ export function SkeletonTable({ rows = 5, columns = 4 }: { rows?: number; column
   );
 }
 
+/**
+ * SkeletonList - mimics a list of items during loading
+ */
 export function SkeletonList({ items = 5 }: { items?: number }) {
   return (
     <div className="space-y-4">
       {Array.from({ length: items }).map((_, i) => (
-        <div key={i} className="bg-white rounded-xl border border-warm-200 p-4 flex items-center gap-4">
+        <div
+          key={i}
+          className="bg-bg-surface rounded-xl border border-border-subtle p-4 flex items-center gap-4"
+        >
           <Skeleton variant="rounded" width={48} height={48} />
           <div className="flex-1 space-y-2">
             <Skeleton width="40%" height={18} />
@@ -117,11 +164,17 @@ export function SkeletonList({ items = 5 }: { items?: number }) {
   );
 }
 
+/**
+ * SkeletonStats - mimics stats cards during loading
+ */
 export function SkeletonStats({ count = 4 }: { count?: number }) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="bg-white rounded-xl border border-warm-200 p-6">
+        <div
+          key={i}
+          className="bg-bg-surface rounded-xl border border-border-subtle p-6"
+        >
           <div className="flex items-center justify-between mb-4">
             <Skeleton variant="circular" width={40} height={40} />
             <Skeleton variant="rounded" width={60} height={24} />
@@ -133,3 +186,37 @@ export function SkeletonStats({ count = 4 }: { count?: number }) {
     </div>
   );
 }
+
+/**
+ * SkeletonInventoryGrid - mimics the inventory cards grid
+ */
+export function SkeletonInventoryGrid({ count = 8 }: { count?: number }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {Array.from({ length: count }).map((_, i) => (
+        <div
+          key={i}
+          className="bg-bg-surface rounded-xl border border-border-subtle p-4"
+        >
+          <div className="flex items-start justify-between mb-3">
+            <Skeleton width="70%" height={20} />
+            <Skeleton variant="rounded" width={80} height={24} />
+          </div>
+          <Skeleton width="50%" height={14} className="mb-3" />
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Skeleton variant="circular" width={16} height={16} />
+              <Skeleton width="60%" height={14} />
+            </div>
+            <div className="flex items-center gap-2">
+              <Skeleton variant="circular" width={16} height={16} />
+              <Skeleton width="40%" height={14} />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default Skeleton;

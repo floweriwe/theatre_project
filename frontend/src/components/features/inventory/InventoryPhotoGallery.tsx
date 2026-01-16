@@ -74,7 +74,7 @@ export function InventoryPhotoGallery({
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-medium text-white">Фотографии</h2>
+        <h2 className="text-lg font-medium text-text-primary">Фотографии</h2>
         <Button
           variant="outline"
           size="sm"
@@ -131,7 +131,7 @@ export function InventoryPhotoGallery({
               )}
               {photo.caption && (
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
-                  <p className="text-white text-sm truncate">{photo.caption}</p>
+                  <p className="text-text-primary text-sm truncate">{photo.caption}</p>
                 </div>
               )}
             </div>
@@ -146,7 +146,7 @@ export function InventoryPhotoGallery({
           onClick={() => setPreviewUrl(null)}
         >
           <button
-            className="absolute top-4 right-4 text-white hover:text-gold transition-colors"
+            className="absolute top-4 right-4 text-text-primary hover:text-gold transition-colors"
             onClick={() => setPreviewUrl(null)}
           >
             <X className="w-8 h-8" />
