@@ -26,6 +26,14 @@ from app.schemas.performance import (
     PerformanceInventoryItemResponse,
     PerformanceInventoryResponse,
 )
+from app.schemas.checklist import (
+    ChecklistCreate,
+    ChecklistResponse,
+    ChecklistWithItemsResponse,
+    ChecklistItemCreate,
+    ChecklistItemResponse,
+    ChecklistItemUpdate,
+)
 from app.models.performance_inventory import PerformanceInventory
 from app.models.inventory import InventoryItem
 from app.services.performance_service import PerformanceService
@@ -628,7 +636,7 @@ async def remove_performance_inventory(
 
 @router.get(
     "/{performance_id}/checklists",
-    response_model=list["ChecklistWithItemsResponse"],
+    response_model=list[ChecklistWithItemsResponse],
     summary="Получить чеклисты спектакля",
 )
 async def get_performance_checklists(
@@ -637,7 +645,6 @@ async def get_performance_checklists(
     service: PerformanceService = PerformanceServiceDep,
 ):
     """Получить все чеклисты готовности спектакля."""
-    from app.schemas.checklist import ChecklistWithItemsResponse, ChecklistItemResponse
 
     try:
         await service.get_performance(performance_id)
@@ -680,18 +687,17 @@ async def get_performance_checklists(
 
 @router.post(
     "/{performance_id}/checklists",
-    response_model="ChecklistResponse",
+    response_model=ChecklistResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Создать чеклист",
 )
 async def create_checklist(
     performance_id: int,
-    data: "ChecklistCreate",
+    data: ChecklistCreate,
     current_user: CurrentUserDep,
     service: PerformanceService = PerformanceServiceDep,
 ):
     """Создать новый чеклист для спектакля."""
-    from app.schemas.checklist import ChecklistCreate, ChecklistResponse
 
     try:
         checklist = await service.create_checklist(
@@ -733,18 +739,17 @@ async def delete_checklist(
 
 @router.post(
     "/checklists/{checklist_id}/items",
-    response_model="ChecklistItemResponse",
+    response_model=ChecklistItemResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Добавить элемент в чеклист",
 )
 async def add_checklist_item(
     checklist_id: int,
-    data: "ChecklistItemCreate",
+    data: ChecklistItemCreate,
     current_user: CurrentUserDep,
     service: PerformanceService = PerformanceServiceDep,
 ):
     """Добавить элемент в чеклист."""
-    from app.schemas.checklist import ChecklistItemCreate, ChecklistItemResponse
 
     try:
         item = await service.add_checklist_item(
@@ -767,17 +772,16 @@ async def add_checklist_item(
 
 @router.patch(
     "/checklist-items/{item_id}",
-    response_model="ChecklistItemResponse",
+    response_model=ChecklistItemResponse,
     summary="Обновить элемент чеклиста",
 )
 async def update_checklist_item(
     item_id: int,
-    data: "ChecklistItemUpdate",
+    data: ChecklistItemUpdate,
     current_user: CurrentUserDep,
     service: PerformanceService = PerformanceServiceDep,
 ):
     """Обновить элемент чеклиста (например, отметить выполненным)."""
-    from app.schemas.checklist import ChecklistItemUpdate, ChecklistItemResponse
 
     try:
         item = await service.update_checklist_item(

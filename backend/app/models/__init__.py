@@ -23,6 +23,10 @@ from app.models.performance import (
     PerformanceStatus,
     SectionType,
 )
+from app.models.checklist import (
+    PerformanceChecklist,
+    ChecklistItem,
+)
 from app.models.document import (
     DocumentCategory,
     Document,
@@ -64,6 +68,9 @@ __all__ = [
     "PerformanceSection",
     "PerformanceStatus",
     "SectionType",
+    # Checklists
+    "PerformanceChecklist",
+    "ChecklistItem",
     # Documents
     "DocumentCategory",
     "Document",
