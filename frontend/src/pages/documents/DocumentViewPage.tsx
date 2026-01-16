@@ -21,6 +21,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { Alert } from '@/components/ui/Alert';
 import { ROUTES } from '@/utils/constants';
 import { documentService } from '@/services/document_service';
+import { PDFPreviewModal } from '@/components/documents/PDFPreviewModal';
 import type { Document, DocumentStatus } from '@/types/document_types';
 
 const STATUS_LABELS: Record<DocumentStatus, string> = {
@@ -40,6 +41,7 @@ export function DocumentViewPage() {
   const [document, setDocument] = useState<Document | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showPDFPreview, setShowPDFPreview] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -76,6 +78,19 @@ export function DocumentViewPage() {
       year: 'numeric',
     });
   };
+
+  const handlePreviewClick = () => {
+    setShowPDFPreview(true);
+  };
+
+  const handleDownloadClick = () => {
+    if (document) {
+      const downloadUrl = documentService.getDownloadUrl(document.id);
+      window.open(downloadUrl, '_blank');
+    }
+  };
+
+  const isPDF = document?.mimeType === 'application/pdf';
 
   if (loading) {
     return (
@@ -133,7 +148,13 @@ export function DocumentViewPage() {
           </div>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline">
+          {isPDF && (
+            <Button variant="primary" onClick={handlePreviewClick}>
+              <Eye className="w-4 h-4 mr-2" />
+              Предпросмотр
+            </Button>
+          )}
+          <Button variant="outline" onClick={handleDownloadClick}>
             <Download className="w-4 h-4 mr-2" />
             Скачать
           </Button>
@@ -183,13 +204,29 @@ export function DocumentViewPage() {
           {/* Preview */}
           <Card className="p-6">
             <h2 className="text-lg font-medium text-white mb-4">Предпросмотр</h2>
-            <div className="bg-surface rounded-lg p-8 text-center">
-              <FileText className="w-16 h-16 text-text-muted mx-auto mb-4" />
-              <p className="text-text-muted">Предпросмотр недоступен</p>
-              <Button variant="outline" className="mt-4">
-                <Eye className="w-4 h-4 mr-2" />
-                Открыть в новой вкладке
-              </Button>
+            <div className="bg-[#0F1419] rounded-lg p-8 text-center border border-[#D4A574]/20">
+              <FileText className="w-16 h-16 text-[#D4A574] mx-auto mb-4" />
+              {isPDF ? (
+                <>
+                  <p className="text-[#94A3B8] mb-4">
+                    PDF документ готов к предпросмотру
+                  </p>
+                  <Button variant="outline" onClick={handlePreviewClick}>
+                    <Eye className="w-4 h-4 mr-2" />
+                    Открыть предпросмотр
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <p className="text-[#64748B]">
+                    Предпросмотр доступен только для PDF файлов
+                  </p>
+                  <Button variant="outline" className="mt-4" onClick={handleDownloadClick}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Скачать файл
+                  </Button>
+                </>
+              )}
             </div>
           </Card>
         </div>
@@ -199,13 +236,23 @@ export function DocumentViewPage() {
           <Card className="p-6">
             <h2 className="text-lg font-medium text-white mb-4">Действия</h2>
             <div className="space-y-2">
-              <Button variant="outline" className="w-full justify-start">
+              {isPDF && (
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={handlePreviewClick}
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  Предпросмотр PDF
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={handleDownloadClick}
+              >
                 <Download className="w-4 h-4 mr-2" />
                 Скачать файл
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <Eye className="w-4 h-4 mr-2" />
-                Открыть в браузере
               </Button>
             </div>
           </Card>
@@ -244,6 +291,16 @@ export function DocumentViewPage() {
           )}
         </div>
       </div>
+
+      {/* PDF Preview Modal */}
+      {isPDF && document && (
+        <PDFPreviewModal
+          isOpen={showPDFPreview}
+          onClose={() => setShowPDFPreview(false)}
+          fileUrl={documentService.getDownloadUrl(document.id)}
+          fileName={document.fileName}
+        />
+      )}
     </div>
   );
 }

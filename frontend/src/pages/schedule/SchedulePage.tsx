@@ -1,27 +1,24 @@
 /**
  * Страница расписания — Modern Theatre Elegance v3
+ *
+ * Enhanced with CalendarView component supporting Month, Week, and Day views.
  */
 
 import { useEffect, useState } from 'react';
 import {
   Calendar,
   Plus,
-  ChevronLeft,
-  ChevronRight,
-  Grid,
-  List,
   RefreshCw,
-  Clock,
   MapPin,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Skeleton } from '@/components/ui/Skeleton';
 import { Alert } from '@/components/ui/Alert';
 import { cn } from '@/utils/helpers';
 import { scheduleService } from '@/services/schedule_service';
-import type { ScheduleEventListItem, EventType } from '@/types/schedule_types';
+import { CalendarView } from '@/components/schedule';
+import type { ScheduleEvent, EventType } from '@/types/schedule_types';
 
 const EVENT_TYPE_LABELS: Record<EventType, string> = {
   performance: 'Спектакль',
@@ -43,19 +40,12 @@ const EVENT_TYPE_COLORS: Record<EventType, string> = {
   other: 'bg-gray-500/10 text-gray-400 border-gray-500/20',
 };
 
-const DAYS_OF_WEEK = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-const MONTHS = [
-  'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-  'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
-];
-
 export function SchedulePage() {
-  const [events, setEvents] = useState<ScheduleEventListItem[]>([]);
+  const [events, setEvents] = useState<ScheduleEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
 
   useEffect(() => {
     loadEvents();
@@ -66,15 +56,16 @@ export function SchedulePage() {
       setLoading(true);
       setError(null);
 
-      const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+      // Calculate date range: +/- 2 months for better navigation experience
+      const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 2, 1);
+      const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 3, 0);
 
-      const data = await scheduleService.getEvents({
-        dateFrom: startDate.toISOString().split('T')[0],
-        dateTo: endDate.toISOString().split('T')[0],
+      const data = await scheduleService.getEventsForPeriod({
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
       });
 
-      setEvents(data.items || []);
+      setEvents(data);
     } catch (err) {
       console.error('Failed to load events:', err);
       setError('Не удалось загрузить события расписания');
@@ -83,77 +74,21 @@ export function SchedulePage() {
     }
   };
 
-  const getDaysInMonth = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    
-    // Get day of week for first day (0 = Sunday, adjust for Monday start)
-    let startDayOfWeek = firstDay.getDay() - 1;
-    if (startDayOfWeek < 0) startDayOfWeek = 6;
-
-    const days: (number | null)[] = [];
-    
-    // Add empty cells for days before first day
-    for (let i = 0; i < startDayOfWeek; i++) {
-      days.push(null);
-    }
-    
-    // Add days of month
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push(i);
-    }
-
-    return days;
+  // Event handlers
+  const handleSelectEvent = (event: ScheduleEvent) => {
+    setSelectedEvent(event);
+    console.log('Selected event:', event);
+    // TODO: Open event detail modal or navigate to event details page
   };
 
-  const getEventsForDay = (day: number) => {
-    return events.filter((event) => {
-      const date = new Date(event.eventDate);
-      return (
-        date.getDate() === day &&
-        date.getMonth() === currentDate.getMonth() &&
-        date.getFullYear() === currentDate.getFullYear()
-      );
-    });
+  const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
+    console.log('Selected slot:', slotInfo);
+    // TODO: Open create event modal with pre-filled date/time
   };
 
-  const goToPrevMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+  const handleNavigate = (date: Date) => {
+    setCurrentDate(date);
   };
-
-  const goToNextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-  };
-
-  const goToToday = () => {
-    setCurrentDate(new Date());
-    setSelectedDate(new Date());
-  };
-
-  const isToday = (day: number) => {
-    const today = new Date();
-    return (
-      day === today.getDate() &&
-      currentDate.getMonth() === today.getMonth() &&
-      currentDate.getFullYear() === today.getFullYear()
-    );
-  };
-
-  const isSelected = (day: number) => {
-    if (!selectedDate) return false;
-    return (
-      day === selectedDate.getDate() &&
-      currentDate.getMonth() === selectedDate.getMonth() &&
-      currentDate.getFullYear() === selectedDate.getFullYear()
-    );
-  };
-
-  const selectedDayEvents = selectedDate
-    ? getEventsForDay(selectedDate.getDate())
-    : [];
 
   const formatTime = (timeString: string) => {
     return timeString.slice(0, 5);
@@ -161,10 +96,11 @@ export function SchedulePage() {
 
   return (
     <div className="space-y-6">
-      {/* Hero */}
+      {/* Hero Section */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-light to-surface p-6 lg:p-8">
+        {/* Golden blur effect - ArtMechanics style */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        
+
         <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <p className="text-amber-400 text-sm flex items-center gap-2 mb-2">
@@ -172,16 +108,16 @@ export function SchedulePage() {
               Планирование и расписание
             </p>
             <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
-              Расписание
+              Расписание театра
             </h1>
             <p className="text-text-secondary">
-              Спектакли, репетиции и технические мероприятия театра
+              Спектакли, репетиции и технические мероприятия. Месяц, неделя или день.
             </p>
           </div>
 
           <div className="flex gap-3">
-            <Button variant="outline" onClick={loadEvents}>
-              <RefreshCw className="w-4 h-4 mr-2" />
+            <Button variant="outline" onClick={loadEvents} disabled={loading}>
+              <RefreshCw className={cn("w-4 h-4 mr-2", loading && "animate-spin")} />
               Обновить
             </Button>
             <Button>
@@ -194,186 +130,93 @@ export function SchedulePage() {
 
       {error && <Alert variant="error">{error}</Alert>}
 
-      {/* Calendar Header */}
-      <Card className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+      {/* Calendar View */}
+      <CalendarView
+        events={events}
+        onSelectEvent={handleSelectEvent}
+        onSelectSlot={handleSelectSlot}
+        onNavigate={handleNavigate}
+        loading={loading}
+      />
+
+      {/* Selected Event Details (if any) */}
+      {selectedEvent && (
+        <Card className="p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <Badge className={EVENT_TYPE_COLORS[selectedEvent.eventType]}>
+                {EVENT_TYPE_LABELS[selectedEvent.eventType]}
+              </Badge>
+              <h2 className="text-xl font-display font-semibold text-white mt-2">
+                {selectedEvent.title}
+              </h2>
+            </div>
             <button
-              onClick={goToPrevMonth}
-              className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+              onClick={() => setSelectedEvent(null)}
+              className="text-text-muted hover:text-white transition-colors"
             >
-              <ChevronLeft className="w-5 h-5 text-text-secondary" />
-            </button>
-            <h2 className="text-lg font-medium text-white min-w-[200px] text-center">
-              {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
-            </h2>
-            <button
-              onClick={goToNextMonth}
-              className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-            >
-              <ChevronRight className="w-5 h-5 text-text-secondary" />
-            </button>
-            <Button variant="outline" size="sm" onClick={goToToday}>
-              Сегодня
-            </Button>
-          </div>
-          <div className="flex gap-1 border border-white/10 rounded-lg p-1">
-            <button
-              onClick={() => setViewMode('calendar')}
-              className={cn(
-                'p-2 rounded',
-                viewMode === 'calendar' ? 'bg-white/10 text-white' : 'text-text-muted'
-              )}
-            >
-              <Grid className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={cn(
-                'p-2 rounded',
-                viewMode === 'list' ? 'bg-white/10 text-white' : 'text-text-muted'
-              )}
-            >
-              <List className="w-4 h-4" />
+              ✕
             </button>
           </div>
-        </div>
-      </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Calendar Grid */}
-        <div className="lg:col-span-3">
-          <Card className="p-4">
-            {loading ? (
-              <Skeleton className="h-96" />
-            ) : (
-              <>
-                {/* Days of week header */}
-                <div className="grid grid-cols-7 gap-1 mb-2">
-                  {DAYS_OF_WEEK.map((day) => (
-                    <div
-                      key={day}
-                      className="p-2 text-center text-sm font-medium text-text-muted"
-                    >
-                      {day}
-                    </div>
-                  ))}
-                </div>
+          {selectedEvent.description && (
+            <p className="text-text-secondary mb-4">{selectedEvent.description}</p>
+          )}
 
-                {/* Calendar days */}
-                <div className="grid grid-cols-7 gap-1">
-                  {getDaysInMonth().map((day, index) => {
-                    if (day === null) {
-                      return <div key={`empty-${index}`} className="p-2 h-24" />;
-                    }
-
-                    const dayEvents = getEventsForDay(day);
-
-                    return (
-                      <button
-                        key={day}
-                        onClick={() => setSelectedDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), day))}
-                        className={cn(
-                          'p-2 h-24 rounded-lg border text-left transition-colors overflow-hidden',
-                          isToday(day)
-                            ? 'border-gold bg-gold/5'
-                            : isSelected(day)
-                            ? 'border-white/20 bg-white/5'
-                            : 'border-transparent hover:bg-white/5'
-                        )}
-                      >
-                        <span
-                          className={cn(
-                            'text-sm font-medium',
-                            isToday(day) ? 'text-gold' : 'text-white'
-                          )}
-                        >
-                          {day}
-                        </span>
-                        <div className="mt-1 space-y-1">
-                          {dayEvents.slice(0, 2).map((event) => (
-                            <div
-                              key={event.id}
-                              className={cn(
-                                'text-xs px-1 py-0.5 rounded truncate',
-                                EVENT_TYPE_COLORS[event.eventType]
-                              )}
-                            >
-                              {event.title}
-                            </div>
-                          ))}
-                          {dayEvents.length > 2 && (
-                            <div className="text-xs text-text-muted">
-                              +{dayEvents.length - 2} ещё
-                            </div>
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-          </Card>
-        </div>
-
-        {/* Selected Day Events */}
-        <div className="space-y-4">
-          <Card className="p-4">
-            <h3 className="font-medium text-white mb-4">
-              {selectedDate?.toLocaleDateString('ru-RU', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-              })}
-            </h3>
-
-            {selectedDayEvents.length === 0 ? (
-              <div className="text-center py-8">
-                <Calendar className="w-10 h-10 text-text-muted mx-auto mb-3" />
-                <p className="text-text-muted">Нет событий</p>
-                <Button variant="outline" size="sm" className="mt-3">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Добавить
-                </Button>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span className="text-text-muted">Дата</span>
+              <p className="text-white font-medium">
+                {new Date(selectedEvent.eventDate).toLocaleDateString('ru-RU', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                })}
+              </p>
+            </div>
+            <div>
+              <span className="text-text-muted">Время</span>
+              <p className="text-white font-medium">
+                {formatTime(selectedEvent.startTime)}
+                {selectedEvent.endTime && ` — ${formatTime(selectedEvent.endTime)}`}
+              </p>
+            </div>
+            {selectedEvent.venue && (
+              <div>
+                <span className="text-text-muted">Место</span>
+                <p className="text-white font-medium flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  {selectedEvent.venue}
+                </p>
               </div>
-            ) : (
-              <div className="space-y-3">
-                {selectedDayEvents.map((event) => (
-                  <div
-                    key={event.id}
-                    className="p-3 rounded-lg bg-surface hover:bg-white/5 transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <Badge className={EVENT_TYPE_COLORS[event.eventType]}>
-                        {EVENT_TYPE_LABELS[event.eventType]}
-                      </Badge>
-                      {event.startTime && (
-                        <span className="text-sm text-text-muted">
-                          {formatTime(event.startTime)}
-                        </span>
-                      )}
-                    </div>
-                    <h4 className="font-medium text-white mb-1">{event.title}</h4>
-                    {event.venue && (
-                      <div className="flex items-center gap-1 text-sm text-text-muted">
-                        <MapPin className="w-3 h-3" />
-                        {event.venue}
-                      </div>
-                    )}
-                    {event.endTime && (
-                      <div className="flex items-center gap-1 text-sm text-text-muted mt-1">
-                        <Clock className="w-3 h-3" />
-                        {formatTime(event.startTime)} — {formatTime(event.endTime)}
-                      </div>
-                    )}
+            )}
+            {selectedEvent.performanceTitle && (
+              <div>
+                <span className="text-text-muted">Спектакль</span>
+                <p className="text-white font-medium">{selectedEvent.performanceTitle}</p>
+              </div>
+            )}
+          </div>
+
+          {selectedEvent.participants && selectedEvent.participants.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-sm text-text-muted mb-2">
+                Участники ({selectedEvent.participants.length})
+              </h3>
+              <div className="space-y-2">
+                {selectedEvent.participants.map((participant) => (
+                  <div key={participant.id} className="flex items-center justify-between text-sm">
+                    <span className="text-white">{participant.userName || `User #${participant.userId}`}</span>
+                    <Badge className="bg-white/5 text-text-secondary border-white/10">
+                      {participant.role}
+                    </Badge>
                   </div>
                 ))}
               </div>
-            )}
-          </Card>
-        </div>
-      </div>
+            </div>
+          )}
+        </Card>
+      )}
     </div>
   );
 }

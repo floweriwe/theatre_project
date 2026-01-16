@@ -11,10 +11,6 @@ import {
   Clock,
   Calendar,
   AlertCircle,
-  FileText,
-  Lightbulb,
-  Volume2,
-  Shirt,
   Box,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
@@ -22,10 +18,9 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Alert } from '@/components/ui/Alert';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import { ROUTES } from '@/utils/constants';
 import { performanceService } from '@/services/performance_service';
-import { PropsEquipmentTab } from '@/components/features/performances';
+import { PropsEquipmentTab, TechnicalPassport } from '@/components/features/performances';
 import type { Performance, PerformanceStatus } from '@/types/performance_types';
 
 const STATUS_LABELS: Record<PerformanceStatus, string> = {
@@ -40,14 +35,6 @@ const STATUS_COLORS: Record<PerformanceStatus, string> = {
   in_repertoire: 'bg-emerald-500/10 text-emerald-400',
   paused: 'bg-blue-500/10 text-blue-400',
   archived: 'bg-gray-500/10 text-gray-400',
-};
-
-const SECTION_ICONS: Record<string, typeof Lightbulb> = {
-  lighting: Lightbulb,
-  sound: Volume2,
-  scenery: Box,
-  props: Box,
-  costumes: Shirt,
 };
 
 export function PerformanceViewPage() {
@@ -212,34 +199,11 @@ export function PerformanceViewPage() {
             )}
           </Card>
 
-          {/* Sections (Passport) */}
-          {performance.sections && performance.sections.length > 0 && (
-            <Card className="p-6">
-              <h2 className="text-lg font-medium text-white mb-4">Паспорт спектакля</h2>
-              <Tabs defaultValue={performance.sections[0]?.sectionType}>
-                <TabsList>
-                  {performance.sections.map((section) => {
-                    const Icon = SECTION_ICONS[section.sectionType] || FileText;
-                    return (
-                      <TabsTrigger key={section.id} value={section.sectionType}>
-                        <Icon className="w-4 h-4 mr-2" />
-                        {section.title}
-                      </TabsTrigger>
-                    );
-                  })}
-                </TabsList>
-                {performance.sections.map((section) => (
-                  <TabsContent key={section.id} value={section.sectionType}>
-                    <div className="p-4 bg-surface rounded-lg">
-                      <p className="text-text-secondary whitespace-pre-wrap">
-                        {section.content || 'Содержимое не заполнено'}
-                      </p>
-                    </div>
-                  </TabsContent>
-                ))}
-              </Tabs>
-            </Card>
-          )}
+          {/* Technical Passport */}
+          <Card className="p-6">
+            <h2 className="text-lg font-medium text-white mb-4">Технический паспорт</h2>
+            <TechnicalPassport performanceId={performance.id} editable={false} />
+          </Card>
 
           {/* Props & Equipment */}
           <Card className="p-6">

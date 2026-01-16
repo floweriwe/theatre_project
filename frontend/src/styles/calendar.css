@@ -1,0 +1,377 @@
+/**
+ * Custom Calendar Styles - Modern Theatre Elegance v3
+ *
+ * Dark theme styling for react-big-calendar with golden accents.
+ * Follows the ArtMechanics aesthetic from CLAUDE.md design system.
+ */
+
+/* =============================================================================
+   Calendar Container
+   ============================================================================= */
+
+.calendar-container .rbc-calendar {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #F1F5F9;
+}
+
+/* =============================================================================
+   Header & Toolbar
+   ============================================================================= */
+
+.rbc-header {
+  padding: 12px 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #94A3B8;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rbc-header + .rbc-header {
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* =============================================================================
+   Month View
+   ============================================================================= */
+
+.rbc-month-view {
+  background-color: transparent;
+  border: none;
+}
+
+.rbc-month-row {
+  background-color: transparent;
+  border: none;
+  overflow: visible;
+}
+
+.rbc-day-bg {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s;
+}
+
+.rbc-day-bg:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.rbc-off-range-bg {
+  background-color: rgba(15, 20, 25, 0.5);
+}
+
+.rbc-today {
+  background-color: rgba(212, 165, 116, 0.08) !important;
+}
+
+.rbc-date-cell {
+  padding: 8px;
+  text-align: right;
+}
+
+.rbc-date-cell > a {
+  color: #F1F5F9;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.rbc-now > a {
+  color: #D4A574;
+  font-weight: 600;
+}
+
+.rbc-off-range {
+  color: #64748B;
+}
+
+/* =============================================================================
+   Week & Day Views
+   ============================================================================= */
+
+.rbc-time-view {
+  background-color: transparent;
+  border: none;
+}
+
+.rbc-time-header {
+  background-color: transparent;
+}
+
+.rbc-time-header-content {
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rbc-time-content {
+  background-color: transparent;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rbc-time-column {
+  background-color: transparent;
+}
+
+.rbc-time-gutter {
+  background-color: transparent;
+}
+
+.rbc-timeslot-group {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  min-height: 60px;
+}
+
+.rbc-time-slot {
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.rbc-current-time-indicator {
+  background-color: #D4A574;
+  height: 2px;
+}
+
+.rbc-current-time-indicator::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  background-color: #D4A574;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(212, 165, 116, 0.5);
+}
+
+/* =============================================================================
+   Day Headers
+   ============================================================================= */
+
+.rbc-day-slot .rbc-time-slot {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.rbc-day-slot .rbc-events-container {
+  margin-right: 0;
+}
+
+/* =============================================================================
+   Events
+   ============================================================================= */
+
+.rbc-event {
+  border: none !important;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rbc-event:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.rbc-event:focus {
+  outline: 2px solid #D4A574;
+  outline-offset: 2px;
+}
+
+.rbc-event-label {
+  font-size: 0.75rem;
+  color: inherit;
+  opacity: 0.9;
+}
+
+.rbc-event-content {
+  font-weight: 500;
+}
+
+.rbc-selected {
+  box-shadow: 0 0 0 2px #D4A574;
+}
+
+/* =============================================================================
+   Show More Link
+   ============================================================================= */
+
+.rbc-show-more {
+  color: #D4A574;
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 4px;
+  border-radius: 4px;
+  background-color: rgba(212, 165, 116, 0.1);
+  margin: 2px 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.rbc-show-more:hover {
+  background-color: rgba(212, 165, 116, 0.2);
+  text-decoration: none;
+}
+
+/* =============================================================================
+   Overlay (Popup for "Show More")
+   ============================================================================= */
+
+.rbc-overlay {
+  background-color: #1A2332;
+  border: 1px solid rgba(212, 165, 116, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding: 12px;
+  max-width: 300px;
+}
+
+.rbc-overlay-header {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin: -12px -12px 12px -12px;
+  font-weight: 600;
+  color: #D4A574;
+  background-color: rgba(212, 165, 116, 0.05);
+  border-radius: 8px 8px 0 0;
+}
+
+/* =============================================================================
+   Selection
+   ============================================================================= */
+
+.rbc-slot-selecting {
+  background-color: rgba(212, 165, 116, 0.2);
+  cursor: crosshair;
+}
+
+.rbc-slot-selection {
+  background-color: rgba(212, 165, 116, 0.15);
+  border: 1px dashed #D4A574;
+}
+
+/* =============================================================================
+   Agenda View (Optional)
+   ============================================================================= */
+
+.rbc-agenda-view {
+  background-color: transparent;
+}
+
+.rbc-agenda-table {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.rbc-agenda-date-cell,
+.rbc-agenda-time-cell,
+.rbc-agenda-event-cell {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.rbc-agenda-date-cell {
+  color: #D4A574;
+  font-weight: 600;
+}
+
+.rbc-agenda-time-cell {
+  color: #94A3B8;
+  font-size: 0.875rem;
+}
+
+.rbc-agenda-event-cell {
+  color: #F1F5F9;
+}
+
+/* =============================================================================
+   Scrollbars
+   ============================================================================= */
+
+.rbc-time-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.rbc-time-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.rbc-time-content::-webkit-scrollbar-thumb {
+  background: rgba(212, 165, 116, 0.3);
+  border-radius: 4px;
+}
+
+.rbc-time-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 165, 116, 0.5);
+}
+
+/* =============================================================================
+   Accessibility
+   ============================================================================= */
+
+.rbc-calendar button:focus {
+  outline: 2px solid #D4A574;
+  outline-offset: 2px;
+}
+
+.rbc-addons-dnd .rbc-addons-dnd-resizable {
+  cursor: ns-resize;
+}
+
+/* =============================================================================
+   Responsive Design
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  .rbc-toolbar {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .rbc-toolbar-label {
+    text-align: center;
+  }
+
+  .rbc-event {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+  }
+
+  .rbc-show-more {
+    font-size: 0.6875rem;
+  }
+}
+
+/* =============================================================================
+   Dark Theme Specific Adjustments
+   ============================================================================= */
+
+/* Grid lines */
+.rbc-time-header-cell,
+.rbc-day-bg + .rbc-day-bg,
+.rbc-month-row + .rbc-month-row {
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Ensure text is readable */
+.rbc-label,
+.rbc-time-slot {
+  color: #94A3B8;
+}
+
+/* Week/Day view all-day section */
+.rbc-allday-cell {
+  background-color: rgba(26, 35, 50, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* =============================================================================
+   Performance Enhancements
+   ============================================================================= */
+
+.rbc-event,
+.rbc-day-bg,
+.rbc-show-more {
+  will-change: transform;
+}

@@ -45,6 +45,13 @@ export {
   DropdownTriggerButton
 } from './Dropdown';
 
+export {
+  Accordion,
+  AccordionItem,
+  AccordionHeader,
+  AccordionContent
+} from './Accordion';
+
 // Loading States
 export { Spinner, ContainerSpinner, FullPageSpinner } from './Spinner';
 export { Skeleton, SkeletonCard, SkeletonTable, SkeletonList, SkeletonStats } from './Skeleton';
