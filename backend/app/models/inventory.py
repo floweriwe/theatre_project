@@ -29,6 +29,7 @@ from app.database.base import Base, AuditMixin
 if TYPE_CHECKING:
     from app.models.user import User
     from app.models.theater import Theater
+    from app.models.inventory_photo import InventoryPhoto
 
 
 class ItemStatus(str, PyEnum):
@@ -263,7 +264,13 @@ class InventoryItem(Base, AuditMixin):
         order_by="desc(InventoryMovement.created_at)"
     )
     theater: Mapped["Theater | None"] = relationship("Theater")
-    
+    photos: Mapped[list["InventoryPhoto"]] = relationship(
+        "InventoryPhoto",
+        back_populates="item",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+    )
+
     def __repr__(self) -> str:
         return f"<InventoryItem(id={self.id}, name='{self.name}', number='{self.inventory_number}')>"
 
