@@ -199,12 +199,45 @@ class PerformanceFilter(BaseModel):
 
 class PerformanceStats(BaseModel):
     """Статистика спектаклей."""
-    
+
     total_performances: int
     preparation: int
     in_repertoire: int
     paused: int
     archived: int
-    
+
     # По жанрам (топ-5)
     genres: list[dict] = []
+
+
+# =============================================================================
+# Performance Inventory Schemas
+# =============================================================================
+
+class PerformanceInventoryCreate(BaseModel):
+    """Схема для привязки предмета инвентаря к спектаклю."""
+
+    item_id: int = Field(..., description="ID предмета инвентаря")
+    note: str | None = Field(None, max_length=1000, description="Примечание (например, 'Только в 1 акте')")
+    quantity_required: int = Field(1, ge=1, description="Требуемое количество")
+
+
+class PerformanceInventoryItemResponse(BaseModel):
+    """Информация о предмете инвентаря в контексте спектакля."""
+
+    item_id: int
+    item_name: str
+    item_inventory_number: str
+    item_status: str
+    note: str | None
+    quantity_required: int
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PerformanceInventoryResponse(BaseModel):
+    """Ответ со списком привязанного инвентаря."""
+
+    performance_id: int
+    items: list[PerformanceInventoryItemResponse] = []

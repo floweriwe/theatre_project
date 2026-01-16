@@ -22,7 +22,12 @@ from app.schemas.performance import (
     SectionUpdate,
     SectionResponse,
     PerformanceStats,
+    PerformanceInventoryCreate,
+    PerformanceInventoryItemResponse,
+    PerformanceInventoryResponse,
 )
+from app.models.performance_inventory import PerformanceInventory
+from app.models.inventory import InventoryItem
 from app.services.performance_service import PerformanceService
 
 router = APIRouter(prefix="/performances", tags=["Спектакли"])
@@ -454,3 +459,164 @@ def _section_to_response(s) -> SectionResponse:
         created_at=s.created_at,
         updated_at=s.updated_at,
     )
+
+
+# =============================================================================
+# Performance Inventory Endpoints
+# =============================================================================
+
+@router.get(
+    "/{performance_id}/inventory",
+    response_model=PerformanceInventoryResponse,
+    summary="Получить инвентарь спектакля",
+)
+async def get_performance_inventory(
+    performance_id: int,
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Получить список предметов инвентаря, привязанных к спектаклю."""
+    from sqlalchemy import select
+    from sqlalchemy.orm import selectinload
+
+    # Проверяем существование спектакля
+    try:
+        await service.get_performance(performance_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    # Получаем привязанный инвентарь
+    result = await service._session.execute(
+        select(PerformanceInventory)
+        .where(PerformanceInventory.performance_id == performance_id)
+        .options(selectinload(PerformanceInventory.item))
+    )
+    links = result.scalars().all()
+
+    items = []
+    for link in links:
+        if link.item:
+            items.append(PerformanceInventoryItemResponse(
+                item_id=link.item_id,
+                item_name=link.item.name,
+                item_inventory_number=link.item.inventory_number,
+                item_status=link.item.status.value,
+                note=link.note,
+                quantity_required=link.quantity_required,
+                created_at=link.created_at,
+            ))
+
+    return PerformanceInventoryResponse(
+        performance_id=performance_id,
+        items=items,
+    )
+
+
+@router.post(
+    "/{performance_id}/inventory",
+    response_model=PerformanceInventoryItemResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Привязать инвентарь к спектаклю",
+)
+async def add_performance_inventory(
+    performance_id: int,
+    data: PerformanceInventoryCreate,
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Привязать предмет инвентаря к спектаклю."""
+    from sqlalchemy import select
+
+    # Проверяем существование спектакля
+    try:
+        await service.get_performance(performance_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    # Проверяем существование предмета инвентаря
+    item_result = await service._session.execute(
+        select(InventoryItem).where(InventoryItem.id == data.item_id)
+    )
+    item = item_result.scalar_one_or_none()
+    if not item:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Предмет инвентаря не найден")
+
+    # Проверяем, нет ли уже такой связи
+    existing_result = await service._session.execute(
+        select(PerformanceInventory).where(
+            PerformanceInventory.performance_id == performance_id,
+            PerformanceInventory.item_id == data.item_id,
+        )
+    )
+    if existing_result.scalar_one_or_none():
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            "Этот предмет уже привязан к спектаклю"
+        )
+
+    # Создаём связь
+    link = PerformanceInventory(
+        performance_id=performance_id,
+        item_id=data.item_id,
+        note=data.note,
+        quantity_required=data.quantity_required,
+    )
+    service._session.add(link)
+    await service._session.commit()
+    await service._session.refresh(link)
+
+    return PerformanceInventoryItemResponse(
+        item_id=item.id,
+        item_name=item.name,
+        item_inventory_number=item.inventory_number,
+        item_status=item.status.value,
+        note=link.note,
+        quantity_required=link.quantity_required,
+        created_at=link.created_at,
+    )
+
+
+@router.delete(
+    "/{performance_id}/inventory/{item_id}",
+    response_model=MessageResponse,
+    summary="Отвязать инвентарь от спектакля",
+)
+async def remove_performance_inventory(
+    performance_id: int,
+    item_id: int,
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Удалить привязку предмета инвентаря от спектакля."""
+    from sqlalchemy import select, delete
+
+    # Проверяем существование спектакля
+    try:
+        await service.get_performance(performance_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    # Проверяем существование связи
+    existing_result = await service._session.execute(
+        select(PerformanceInventory).where(
+            PerformanceInventory.performance_id == performance_id,
+            PerformanceInventory.item_id == item_id,
+        )
+    )
+    link = existing_result.scalar_one_or_none()
+    if not link:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND,
+            "Связь между спектаклем и предметом не найдена"
+        )
+
+    # Удаляем связь
+    await service._session.execute(
+        delete(PerformanceInventory).where(
+            PerformanceInventory.performance_id == performance_id,
+            PerformanceInventory.item_id == item_id,
+        )
+    )
+    await service._session.commit()
+
+    return MessageResponse(message="Предмет успешно отвязан от спектакля")
