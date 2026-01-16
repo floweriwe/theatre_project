@@ -188,9 +188,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     // Если asChild, клонируем дочерний элемент с нашими стилями
     if (asChild && isValidElement(children)) {
-      return cloneElement(children as ReactElement<any>, {
-        className: cn(buttonClasses, (children as ReactElement<any>).props.className),
-        ref,
+      const childElement = children as ReactElement<{ className?: string }>;
+      return cloneElement(childElement, {
+        className: cn(buttonClasses, childElement.props.className),
         ...props,
       });
     }

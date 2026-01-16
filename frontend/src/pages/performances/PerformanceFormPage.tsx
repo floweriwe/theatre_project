@@ -20,6 +20,7 @@ import {
 import { Button, Input, Card, Alert, ContainerSpinner, Select } from '@/components/ui';
 import { performanceService } from '@/services/performance_service';
 import { ROUTES } from '@/utils/constants';
+import { getErrorMessage } from '@/services/api';
 import type { PerformanceStatus } from '@/types';
 
 // =============================================================================
@@ -128,9 +129,9 @@ export function PerformanceFormPage() {
         status: perf.status,
         premiereDate: perf.premiereDate || '',
       });
-    } catch (err: any) {
+    } catch (err) {
       console.error('Failed to load performance:', err);
-      setError('Ошибка загрузки данных');
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -210,9 +211,9 @@ export function PerformanceFormPage() {
           navigate(`${ROUTES.PERFORMANCES}/${newPerf.id}`);
         }, 1000);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Failed to save:', err);
-      setError('Ошибка сохранения. Попробуйте ещё раз.');
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }

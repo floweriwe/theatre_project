@@ -25,6 +25,7 @@ import { Button, Input, Card, Alert, ContainerSpinner, Select, Badge } from '@/c
 import { documentService } from '@/services/document_service';
 import { ROUTES } from '@/utils/constants';
 import { cn } from '@/utils/helpers';
+import { getErrorMessage } from '@/services/api';
 import type { Document, DocumentCategory } from '@/types';
 
 // =============================================================================
@@ -118,9 +119,9 @@ export function DocumentFormPage() {
           isPublic: doc.isPublic,
         });
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Failed to load data:', err);
-      setError('Ошибка загрузки данных');
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -249,9 +250,9 @@ export function DocumentFormPage() {
           navigate(`${ROUTES.DOCUMENTS}/${newDoc.id}`);
         }, 1000);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Failed to save:', err);
-      setError('Ошибка сохранения. Попробуйте ещё раз.');
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }

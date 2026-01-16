@@ -21,6 +21,7 @@ import {
 import { Button, Input, Card, Alert, ContainerSpinner, Select } from '@/components/ui';
 import { inventoryService } from '@/services/inventory_service';
 import { ROUTES } from '@/utils/constants';
+import { getErrorMessage } from '@/services/api';
 import type {
   InventoryCategory,
   StorageLocation,
@@ -134,9 +135,9 @@ export function InventoryFormPage() {
           warrantyUntil: item.warrantyUntil || '',
         });
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Failed to load data:', err);
-      setError('Ошибка загрузки данных');
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -245,13 +246,9 @@ export function InventoryFormPage() {
           navigate(`${ROUTES.INVENTORY}/${newItem.id}`);
         }, 1000);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Failed to save:', err);
-      if (err.response?.status === 409) {
-        setError('Предмет с таким инвентарным номером уже существует');
-      } else {
-        setError('Ошибка сохранения. Попробуйте ещё раз.');
-      }
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }
