@@ -2,8 +2,8 @@
 
 > **BrainGrid Requirement:** REQ-1
 > **Последнее обновление:** 2026-01-17
-> **Текущая фаза:** Phase 6 завершена (Enhancement)
-> **Общая готовность:** 100% MVP + Enhancements
+> **Текущая фаза:** Phase 8 завершена (Document Storage)
+> **Общая готовность:** 100% MVP + Phases 6-8
 > **Итоговый отчёт:** см. `docs/PHASE_1-4_SUMMARY.md`
 
 ---
@@ -296,6 +296,38 @@
 ---
 
 ## Лог прогресса
+
+### 2026-01-17 (Phase 8 завершена - Document Storage & Upload)
+**Phase 8 Performance Document Storage & Upload завершена:**
+- Реализованы все 6 задач из REQ-11
+- **Backend:**
+  - PerformanceDocument model с section/category enums
+  - Migration 013_performance_documents
+  - PerformanceDocumentStorageService для MinIO
+  - DocumentCategorizationService (автокатегоризация по имени файла)
+  - API endpoints: GET/POST/PATCH/DELETE /performances/{id}/documents
+  - Pydantic schemas для документов
+- **Frontend:**
+  - TypeScript types для документов спектакля
+  - React Query hooks (usePerformanceDocuments)
+  - DocumentUploader (drag-n-drop, multiple files)
+  - DocumentCard (preview, download, delete)
+  - PerformanceDocumentsTab (grouped by sections)
+- **Особенности:**
+  - Документы группируются по разделам паспорта (1.0-4.0)
+  - 26 категорий документов на основе реального анализа
+  - Автоопределение категории по ключевым словам и расширениям
+- **Статистика:**
+  - 19 файлов изменено
+  - +3,755 строк кода
+- **PR:** https://github.com/floweriwe/theatre_project/pull/6
+
+### 2026-01-17 (Phase 7 завершена - Document Templates)
+**Phase 7 Document Templates & Generation завершена:**
+- Модели DocumentTemplate и DocumentTemplateVariable
+- API для шаблонов и генерации DOCX
+- Frontend компонент GenerateDocumentModal
+- **PR:** https://github.com/floweriwe/theatre_project/pull/5
 
 ### 2026-01-17 (Phase 6 завершена - File Handling Enhancement)
 **Phase 6 File Handling Enhancement завершена:**
