@@ -17,7 +17,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
   /** Убрать внутренние отступы */
   noPadding?: boolean;
   /** Вариант стилизации */
-  variant?: 'default' | 'elevated' | 'interactive' | 'glass';
+  variant?: 'default' | 'elevated' | 'interactive' | 'glass' | 'bordered';
   /** Иконка рядом с заголовком */
   icon?: ReactNode;
   /** Декоративная полоска сверху */
@@ -52,6 +52,13 @@ const variantStyles = {
     'backdrop-blur-xl',
     'border border-border-default',
     'rounded-2xl'
+  ),
+  bordered: cn(
+    'bg-bg-surface',
+    'border-2 border-gold-300/30',
+    'rounded-2xl',
+    'hover:border-gold-300/50',
+    'transition-colors duration-200'
   ),
 };
 

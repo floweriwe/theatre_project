@@ -22,6 +22,12 @@ export { Badge } from './Badge';
 export { Alert } from './Alert';
 export { Modal } from './Modal';
 export { Table } from './Table';
+export { VirtualTable } from './VirtualTable';
+export { SearchableSelect } from './SearchableSelect';
+export { MultiSelect } from './MultiSelect';
+export { ProgressRing } from './ProgressRing';
+export { StepWizard, StepNavigation } from './StepWizard';
+export { ImageGallery } from './ImageGallery';
 export { PageHero } from './PageHero';
 export { FormField } from './FormField';
 
@@ -77,3 +83,8 @@ export { SkipToContent } from './SkipToContent';
 
 // Types re-export
 export type { SelectOption } from './Select';
+export type { SelectOption as SearchableSelectOption, SelectGroup } from './SearchableSelect';
+export type { MultiSelectOption } from './MultiSelect';
+export type { VirtualColumn, VirtualTableProps } from './VirtualTable';
+export type { WizardStep } from './StepWizard';
+export type { GalleryImage } from './ImageGallery';
