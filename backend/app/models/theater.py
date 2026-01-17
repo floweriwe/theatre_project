@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from app.models.user import User
     from app.models.department import Department
     from app.models.venue import Venue
+    from app.models.analytics import ReportTemplate, ScheduledReport, AnalyticsSnapshot
 
 
 class Theater(Base, TimestampMixin):
@@ -76,6 +77,21 @@ class Theater(Base, TimestampMixin):
     )
     venues: Mapped[list["Venue"]] = relationship(
         "Venue",
+        back_populates="theater",
+        lazy="selectin",
+    )
+    report_templates: Mapped[list["ReportTemplate"]] = relationship(
+        "ReportTemplate",
+        back_populates="theater",
+        lazy="selectin",
+    )
+    scheduled_reports: Mapped[list["ScheduledReport"]] = relationship(
+        "ScheduledReport",
+        back_populates="theater",
+        lazy="selectin",
+    )
+    analytics_snapshots: Mapped[list["AnalyticsSnapshot"]] = relationship(
+        "AnalyticsSnapshot",
         back_populates="theater",
         lazy="selectin",
     )

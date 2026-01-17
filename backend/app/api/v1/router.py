@@ -6,6 +6,7 @@
 from fastapi import APIRouter
 
 from app.api.v1.auth import router as auth_router
+from app.api.v1.analytics import router as analytics_router
 from app.api.v1.departments import router as departments_router
 from app.api.v1.document_generation import router as generation_router
 from app.api.v1.inventory import router as inventory_router
@@ -21,6 +22,7 @@ api_router = APIRouter()
 
 # Подключаем роутеры модулей
 api_router.include_router(auth_router)
+api_router.include_router(analytics_router)
 api_router.include_router(departments_router)
 api_router.include_router(generation_router)
 api_router.include_router(inventory_router)

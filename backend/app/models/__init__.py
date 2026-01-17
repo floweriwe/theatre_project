@@ -65,6 +65,15 @@ from app.models.performance_document import (
     PerformanceDocumentCategory,
     ReportInclusion,
 )
+from app.models.analytics import (
+    ReportTemplate,
+    ScheduledReport,
+    AnalyticsSnapshot,
+    ReportCategory,
+    ReportFormat,
+    ScheduleFrequency,
+    AnalyticsMetricType,
+)
 
 __all__ = [
     # User
@@ -128,4 +137,12 @@ __all__ = [
     "DocumentSection",
     "PerformanceDocumentCategory",
     "ReportInclusion",
+    # Analytics
+    "ReportTemplate",
+    "ScheduledReport",
+    "AnalyticsSnapshot",
+    "ReportCategory",
+    "ReportFormat",
+    "ScheduleFrequency",
+    "AnalyticsMetricType",
 ]
