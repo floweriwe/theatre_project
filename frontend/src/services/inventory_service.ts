@@ -36,8 +36,13 @@ function transformPhoto(data: Record<string, unknown>): InventoryPhoto {
     id: data.id as number,
     itemId: data.item_id as number,
     filePath: data.file_path as string,
+    thumbnailPath: data.thumbnail_path as string | null,
     isPrimary: data.is_primary as boolean,
+    sortOrder: data.sort_order as number,
     caption: data.caption as string | null,
+    width: data.width as number | null,
+    height: data.height as number | null,
+    fileSize: data.file_size as number | null,
     createdAt: data.created_at as string,
     updatedAt: data.updated_at as string,
   };

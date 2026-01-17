@@ -2,18 +2,14 @@
  * Типы модуля документооборота.
  */
 
+// Tag and TagCreateRequest types are defined in inventory_types.ts
+import type { Tag } from './inventory_types';
+
 /** Статус документа */
 export type DocumentStatus = 'draft' | 'active' | 'archived';
 
 /** Тип файла */
 export type FileType = 'pdf' | 'document' | 'spreadsheet' | 'image' | 'other';
-
-/** Тег */
-export interface Tag {
-  id: number;
-  name: string;
-  color: string | null;
-}
 
 /** Категория документов */
 export interface DocumentCategory {
@@ -117,11 +113,7 @@ export interface DocCategoryCreateRequest {
   sortOrder?: number;
 }
 
-/** Создание тега */
-export interface TagCreateRequest {
-  name: string;
-  color?: string;
-}
+// TagCreateRequest is defined in inventory_types.ts (with icon and description fields)
 
 /** Фильтры для документов */
 export interface DocumentFilters {

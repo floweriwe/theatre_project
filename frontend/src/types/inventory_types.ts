@@ -25,8 +25,13 @@ export interface InventoryPhoto {
   id: number;
   itemId: number;
   filePath: string;
+  thumbnailPath: string | null;
   isPrimary: boolean;
+  sortOrder: number;
   caption: string | null;
+  width: number | null;
+  height: number | null;
+  fileSize: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -93,6 +98,8 @@ export interface InventoryItem {
   condition: InventoryCondition | null;
   // Фотографии
   photos: InventoryPhoto[];
+  // Теги (Phase 13)
+  tags?: Tag[];
 }
 
 /** Предмет инвентаря (для списка) */
@@ -298,3 +305,99 @@ export const CONDITION_VARIANTS: Record<InventoryCondition, 'success' | 'info' |
   poor: 'error',
   broken: 'error',
 };
+
+// =============================================================================
+// Tag Types (Phase 13)
+// =============================================================================
+
+/** Тег для инвентаря и документов */
+export interface Tag {
+  id: number;
+  name: string;
+  color: string | null;
+  icon: string | null;
+  description: string | null;
+  theaterId: number | null;
+}
+
+/** Создание тега */
+export interface TagCreateRequest {
+  name: string;
+  color?: string;
+  icon?: string;
+  description?: string;
+}
+
+/** Обновление тега */
+export interface TagUpdateRequest {
+  name?: string;
+  color?: string;
+  icon?: string;
+  description?: string;
+}
+
+// =============================================================================
+// Bulk Operations Types (Phase 13)
+// =============================================================================
+
+/** Результат массовой операции */
+export interface BulkOperationResult {
+  successCount: number;
+  failedCount: number;
+  failedIds: number[];
+  errors: Array<{
+    itemId: number;
+    error: string;
+  }>;
+  totalProcessed: number;
+}
+
+/** Запрос на массовое изменение статуса */
+export interface BulkStatusChangeRequest {
+  itemIds: number[];
+  newStatus: ItemStatus;
+  comment?: string;
+}
+
+/** Запрос на массовое перемещение */
+export interface BulkTransferRequest {
+  itemIds: number[];
+  toLocationId: number;
+  comment?: string;
+}
+
+/** Запрос на массовое удаление */
+export interface BulkDeleteRequest {
+  itemIds: number[];
+  comment?: string;
+}
+
+/** Запрос на массовое назначение тегов */
+export interface BulkTagsRequest {
+  itemIds: number[];
+  tagIds: number[];
+  replace?: boolean;
+}
+
+/** Запрос на массовое изменение категории */
+export interface BulkCategoryRequest {
+  itemIds: number[];
+  categoryId: number | null;
+}
+
+// =============================================================================
+// QR Code Types (Phase 13)
+// =============================================================================
+
+/** Результат генерации QR-кода */
+export interface QRCodeBatchItem {
+  itemId: number;
+  inventoryNumber?: string;
+  qrBase64?: string;
+  error?: string;
+}
+
+/** Ответ пакетной генерации QR-кодов */
+export interface QRCodeBatchResponse {
+  items: QRCodeBatchItem[];
+}

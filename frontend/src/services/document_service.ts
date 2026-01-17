@@ -88,6 +88,9 @@ function transformTag(data: Record<string, unknown>): Tag {
     id: data.id as number,
     name: data.name as string,
     color: data.color as string | null,
+    icon: data.icon as string | null,
+    description: data.description as string | null,
+    theaterId: data.theater_id as number | null,
   };
 }
 

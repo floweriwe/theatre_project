@@ -119,30 +119,36 @@ class DocumentCategory(Base, AuditMixin):
 
 class Tag(Base):
     """
-    Тег для документов.
-    
-    Позволяет гибко классифицировать документы.
+    Универсальный тег для документов и инвентаря.
+
+    Позволяет гибко классифицировать документы и предметы инвентаря.
     """
-    
+
     __tablename__ = "tags"
-    
+
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
-    color: Mapped[str | None] = mapped_column(String(7), nullable=True)
-    
+    color: Mapped[str | None] = mapped_column(String(7), nullable=True)  # HEX цвет
+    icon: Mapped[str | None] = mapped_column(String(50), nullable=True)  # Название иконки
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+
     # Мульти-тенантность
     theater_id: Mapped[int | None] = mapped_column(
         ForeignKey("theaters.id", ondelete="CASCADE"),
         nullable=True
     )
-    
+
     # Связь с документами
     documents: Mapped[list["Document"]] = relationship(
         "Document",
         secondary=document_tags,
         back_populates="tags"
     )
-    
+
+    # Связь с инвентарём (через inventory_item_tags таблицу из inventory.py)
+    # Примечание: relationship определён без back_populates,
+    # т.к. InventoryItem.tags уже связан через secondary
+
     def __repr__(self) -> str:
         return f"<Tag(id={self.id}, name='{self.name}')>"
 
