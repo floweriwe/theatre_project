@@ -29,8 +29,9 @@ if TYPE_CHECKING:
     from app.models.user import User
     from app.models.theater import Theater
     from app.models.performance_inventory import PerformanceInventory
-    from app.models.checklist import PerformanceChecklist
+    from app.models.checklist import PerformanceChecklist, ChecklistInstance
     from app.models.performance_document import PerformanceDocument
+    from app.models.performance_cast import PerformanceCast
 
 
 class PerformanceStatus(str, PyEnum):
@@ -89,7 +90,11 @@ class Performance(Base, AuditMixin):
     
     # Флаги
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    
+    is_template: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    # Версионирование конфигурации
+    configuration_version: Mapped[int] = mapped_column(Integer, default=1)
+
     # Мульти-тенантность
     theater_id: Mapped[int | None] = mapped_column(
         ForeignKey("theaters.id", ondelete="CASCADE"),
@@ -117,6 +122,18 @@ class Performance(Base, AuditMixin):
     )
     documents: Mapped[list["PerformanceDocument"]] = relationship(
         "PerformanceDocument",
+        back_populates="performance",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+    )
+    cast_crew: Mapped[list["PerformanceCast"]] = relationship(
+        "PerformanceCast",
+        back_populates="performance",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+    )
+    checklist_instances: Mapped[list["ChecklistInstance"]] = relationship(
+        "ChecklistInstance",
         back_populates="performance",
         cascade="all, delete-orphan",
         lazy="selectin",

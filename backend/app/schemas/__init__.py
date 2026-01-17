@@ -89,6 +89,41 @@ from app.schemas.performance import (
     # Enums
     PerformanceStatus,
     SectionType,
+    # Performance Hub
+    PerformanceInventoryLinkCreate,
+    PerformanceInventoryLinkUpdate,
+    PerformanceInventoryLinkResponse,
+    PerformanceSnapshotCreate,
+    PerformanceSnapshotResponse,
+    PerformanceStructureResponse,
+)
+from app.schemas.checklist_hub import (
+    # Enums
+    ChecklistType,
+    ChecklistStatus,
+    # Item schemas
+    ChecklistItemDefinition,
+    ChecklistItemCompletion,
+    ChecklistItemUpdate,
+    # Template schemas
+    ChecklistTemplateCreate,
+    ChecklistTemplateUpdate,
+    ChecklistTemplateResponse,
+    ChecklistTemplateListResponse,
+    # Instance schemas
+    ChecklistInstanceCreate,
+    ChecklistInstanceResponse,
+    ChecklistInstanceListResponse,
+)
+from app.schemas.performance_cast import (
+    # Enums
+    CastRoleType,
+    # Cast schemas
+    PerformanceCastCreate,
+    PerformanceCastUpdate,
+    PerformanceCastResponse,
+    PerformanceCastListResponse,
+    PerformanceCastGroupedResponse,
 )
 
 __all__ = [
@@ -161,4 +196,31 @@ __all__ = [
     "PerformanceFilter",
     "PerformanceStatus",
     "SectionType",
+    # Performance Hub
+    "PerformanceInventoryLinkCreate",
+    "PerformanceInventoryLinkUpdate",
+    "PerformanceInventoryLinkResponse",
+    "PerformanceSnapshotCreate",
+    "PerformanceSnapshotResponse",
+    "PerformanceStructureResponse",
+    # Checklist Hub
+    "ChecklistType",
+    "ChecklistStatus",
+    "ChecklistItemDefinition",
+    "ChecklistItemCompletion",
+    "ChecklistItemUpdate",
+    "ChecklistTemplateCreate",
+    "ChecklistTemplateUpdate",
+    "ChecklistTemplateResponse",
+    "ChecklistTemplateListResponse",
+    "ChecklistInstanceCreate",
+    "ChecklistInstanceResponse",
+    "ChecklistInstanceListResponse",
+    # Performance Cast
+    "CastRoleType",
+    "PerformanceCastCreate",
+    "PerformanceCastUpdate",
+    "PerformanceCastResponse",
+    "PerformanceCastListResponse",
+    "PerformanceCastGroupedResponse",
 ]

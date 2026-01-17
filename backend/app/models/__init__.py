@@ -26,6 +26,14 @@ from app.models.performance import (
 from app.models.checklist import (
     PerformanceChecklist,
     ChecklistItem,
+    ChecklistTemplate,
+    ChecklistInstance,
+    ChecklistType,
+    ChecklistStatus,
+)
+from app.models.performance_cast import (
+    PerformanceCast,
+    CastRoleType,
 )
 from app.models.document import (
     DocumentCategory,
@@ -83,6 +91,13 @@ __all__ = [
     # Checklists
     "PerformanceChecklist",
     "ChecklistItem",
+    "ChecklistTemplate",
+    "ChecklistInstance",
+    "ChecklistType",
+    "ChecklistStatus",
+    # Performance Cast
+    "PerformanceCast",
+    "CastRoleType",
     # Documents
     "DocumentCategory",
     "Document",

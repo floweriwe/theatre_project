@@ -134,19 +134,21 @@ class PerformanceUpdate(BaseModel):
 
 class PerformanceResponse(PerformanceBase):
     """Схема ответа спектакля."""
-    
+
     id: int
     status: PerformanceStatus
     poster_path: str | None
     metadata: dict | None
     is_active: bool
+    is_template: bool = False
+    configuration_version: int = 1
     theater_id: int | None
     created_at: datetime
     updated_at: datetime
-    
+
     # Вложенные объекты
     sections: list[SectionResponse] = []
-    
+
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -241,3 +243,91 @@ class PerformanceInventoryResponse(BaseModel):
 
     performance_id: int
     items: list[PerformanceInventoryItemResponse] = []
+
+
+# =============================================================================
+# Performance Hub Schemas (Phase 10)
+# =============================================================================
+
+from uuid import UUID
+
+
+class PerformanceInventoryLinkCreate(BaseModel):
+    """Схема создания связи инвентаря со спектаклем (Performance Hub)."""
+
+    item_id: int = Field(..., description="ID предмета инвентаря")
+    scene_id: int | None = Field(None, description="ID сцены/раздела (опционально)")
+    quantity: int = Field(1, ge=1, description="Требуемое количество")
+    notes: str | None = Field(None, max_length=2000, description="Примечание")
+
+
+class PerformanceInventoryLinkUpdate(BaseModel):
+    """Схема обновления связи инвентаря."""
+
+    quantity: int | None = Field(None, ge=1)
+    notes: str | None = None
+    scene_id: int | None = None
+
+
+class PerformanceInventoryLinkResponse(BaseModel):
+    """Ответ с детальной информацией о связи инвентаря."""
+
+    id: UUID
+    performance_id: int
+    item_id: int
+    scene_id: int | None
+    quantity: int
+    notes: str | None
+    created_at: datetime
+    updated_at: datetime
+
+    # Вложенная информация о предмете
+    item_name: str | None = None
+    item_inventory_number: str | None = None
+    item_category: str | None = None
+    item_photo_url: str | None = None
+
+    # Вложенная информация о сцене
+    scene_title: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PerformanceSnapshotCreate(BaseModel):
+    """Схема создания снапшота конфигурации."""
+
+    description: str | None = Field(None, max_length=500, description="Описание версии")
+
+
+class PerformanceSnapshotResponse(BaseModel):
+    """Ответ о созданном снапшоте."""
+
+    performance_id: int
+    version: int
+    created_at: datetime
+    description: str | None = None
+
+
+class PerformanceStructureResponse(BaseModel):
+    """Полная структура спектакля для Performance Hub."""
+
+    id: int
+    title: str
+    subtitle: str | None
+    status: PerformanceStatus
+    configuration_version: int
+    is_template: bool
+
+    # Разделы/сцены
+    sections: list[SectionResponse] = []
+
+    # Привязанный инвентарь
+    inventory_items: list[PerformanceInventoryLinkResponse] = []
+
+    # Каст и персонал (будет добавлен после создания cast schemas)
+    # cast_crew: list[PerformanceCastResponse] = []
+
+    # Чеклисты (будет добавлен после создания checklist schemas)
+    # checklist_instances: list[ChecklistInstanceResponse] = []
+
+    model_config = ConfigDict(from_attributes=True)

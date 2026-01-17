@@ -1,9 +1,9 @@
 # Theatre MVP Refactoring Plan
 
 > **BrainGrid Requirement:** REQ-1
-> **Последнее обновление:** 2026-01-17
-> **Текущая фаза:** Phase 9 завершена, Phases 10-15 запланированы
-> **Общая готовность:** 100% MVP + Phases 6-9 + Planning
+> **Последнее обновление:** 2026-01-18
+> **Текущая фаза:** Phase 10 завершена, Phases 11-15 запланированы
+> **Общая готовность:** 100% MVP + Phases 6-10
 > **Итоговый отчёт:** см. `docs/PHASE_1-4_SUMMARY.md`
 > **Расширенная спецификация:** см. `docs/MVP_PHASE_10_PLUS_SPECIFICATION.md`
 
@@ -309,30 +309,41 @@
 
 ---
 
-## Phase 10: Performance Management Hub (~65 часов) ⏳
+## Phase 10: Performance Management Hub (~65 часов) ✅
 
 **BrainGrid:** REQ-13
 **Цель:** Центр управления спектаклем с чеклистами, инвентарём, расписанием и персоналом.
 **Подробная спецификация:** `docs/MVP_PHASE_10_PLUS_SPECIFICATION.md`
+**Завершено:** 2026-01-18
 
 ### Backend (25h)
 | # | Задача | Статус |
 |---|--------|--------|
-| 10.1 | PerformanceHubService (агрегация данных) | ⏳ |
-| 10.2 | ChecklistService improvements (templates, assignments) | ⏳ |
-| 10.3 | PersonnelAssignment models & service | ⏳ |
-| 10.4 | Performance-Equipment relations | ⏳ |
-| 10.5 | Hub API endpoints | ⏳ |
+| 10.1 | PerformanceHubService (агрегация данных) | ✅ |
+| 10.2 | ChecklistService improvements (templates, assignments) | ✅ |
+| 10.3 | PersonnelAssignment models & service (PerformanceCast) | ✅ |
+| 10.4 | Performance-Equipment relations (inventory links) | ✅ |
+| 10.5 | Hub API endpoints | ✅ |
 
 ### Frontend (40h)
 | # | Задача | Статус |
 |---|--------|--------|
-| 10.6 | PerformanceHubPage (multi-tab layout) | ⏳ |
-| 10.7 | ReadinessOverview component | ⏳ |
-| 10.8 | ChecklistManager (drag-drop, progress) | ⏳ |
-| 10.9 | InventoryAssignment component | ⏳ |
-| 10.10 | PersonnelSchedule component | ⏳ |
-| 10.11 | TimelineView (horizontal schedule) | ⏳ |
+| 10.6 | PerformanceConstructor (3-column layout) | ✅ |
+| 10.7 | ResourceLibrary component | ✅ |
+| 10.8 | PerformanceTree (structure view) | ✅ |
+| 10.9 | InspectorPanel (edit selected item) | ✅ |
+| 10.10 | Checklist execution interface | ✅ |
+| 10.11 | Tab integration in PerformanceViewPage | ✅ |
+
+### Критерии завершения Phase 10
+- [x] DB схема: performance_cast, checklist_templates, checklist_instances
+- [x] Alembic миграция: 014_performance_hub_schema
+- [x] Pydantic схемы: performance_cast, checklist_hub
+- [x] Service: PerformanceHubService со всеми методами
+- [x] API: /performances/{id}/structure, /snapshot, /inventory, /cast, /checklists
+- [x] Frontend: PerformanceConstructor с ResourceLibrary, PerformanceTree, InspectorPanel
+- [x] TypeScript типы: performance_hub.ts
+- [x] Интеграция в PerformanceViewPage с табами
 
 ---
 

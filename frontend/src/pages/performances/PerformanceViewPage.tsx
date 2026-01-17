@@ -12,6 +12,8 @@ import {
   Calendar,
   AlertCircle,
   Box,
+  Layers,
+  Info,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -21,7 +23,10 @@ import { Alert } from '@/components/ui/Alert';
 import { ROUTES } from '@/utils/constants';
 import { performanceService } from '@/services/performance_service';
 import { PropsEquipmentTab, TechnicalPassport } from '@/components/features/performances';
+import { PerformanceConstructor } from '@/components/PerformanceHub';
 import type { Performance, PerformanceStatus } from '@/types/performance_types';
+
+type ViewTab = 'overview' | 'constructor';
 
 const STATUS_LABELS: Record<PerformanceStatus, string> = {
   preparation: 'В подготовке',
@@ -42,6 +47,7 @@ export function PerformanceViewPage() {
   const [performance, setPerformance] = useState<Performance | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<ViewTab>('overview');
 
   useEffect(() => {
     if (id) {
@@ -145,6 +151,36 @@ export function PerformanceViewPage() {
         </div>
       </div>
 
+      {/* Tabs */}
+      <div className="flex gap-1 border-b border-white/10 pb-0">
+        <button
+          onClick={() => setActiveTab('overview')}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-t-lg transition-colors ${
+            activeTab === 'overview'
+              ? 'bg-[#1A2332] text-[#D4A574] border-b-2 border-[#D4A574]'
+              : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#1A2332]/50'
+          }`}
+        >
+          <Info className="w-4 h-4" />
+          Обзор
+        </button>
+        <button
+          onClick={() => setActiveTab('constructor')}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-t-lg transition-colors ${
+            activeTab === 'constructor'
+              ? 'bg-[#1A2332] text-[#D4A574] border-b-2 border-[#D4A574]'
+              : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#1A2332]/50'
+          }`}
+        >
+          <Layers className="w-4 h-4" />
+          Конструктор
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === 'constructor' ? (
+        <PerformanceConstructor performanceId={performance.id} />
+      ) : (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
@@ -258,6 +294,7 @@ export function PerformanceViewPage() {
           </Card>
         </div>
       </div>
+      )}
     </div>
   );
 }
