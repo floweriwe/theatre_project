@@ -2,9 +2,10 @@
 
 > **BrainGrid Requirement:** REQ-1
 > **Последнее обновление:** 2026-01-17
-> **Текущая фаза:** Phase 9 завершена (Document Organization)
-> **Общая готовность:** 100% MVP + Phases 6-9
+> **Текущая фаза:** Phase 9 завершена, Phases 10-15 запланированы
+> **Общая готовность:** 100% MVP + Phases 6-9 + Planning
 > **Итоговый отчёт:** см. `docs/PHASE_1-4_SUMMARY.md`
+> **Расширенная спецификация:** см. `docs/MVP_PHASE_10_PLUS_SPECIFICATION.md`
 
 ---
 
@@ -308,7 +309,160 @@
 
 ---
 
+## Phase 10: Performance Management Hub (~65 часов) ⏳
+
+**BrainGrid:** REQ-13
+**Цель:** Центр управления спектаклем с чеклистами, инвентарём, расписанием и персоналом.
+**Подробная спецификация:** `docs/MVP_PHASE_10_PLUS_SPECIFICATION.md`
+
+### Backend (25h)
+| # | Задача | Статус |
+|---|--------|--------|
+| 10.1 | PerformanceHubService (агрегация данных) | ⏳ |
+| 10.2 | ChecklistService improvements (templates, assignments) | ⏳ |
+| 10.3 | PersonnelAssignment models & service | ⏳ |
+| 10.4 | Performance-Equipment relations | ⏳ |
+| 10.5 | Hub API endpoints | ⏳ |
+
+### Frontend (40h)
+| # | Задача | Статус |
+|---|--------|--------|
+| 10.6 | PerformanceHubPage (multi-tab layout) | ⏳ |
+| 10.7 | ReadinessOverview component | ⏳ |
+| 10.8 | ChecklistManager (drag-drop, progress) | ⏳ |
+| 10.9 | InventoryAssignment component | ⏳ |
+| 10.10 | PersonnelSchedule component | ⏳ |
+| 10.11 | TimelineView (horizontal schedule) | ⏳ |
+
+---
+
+## Phase 11: Advanced Analytics & Reporting (~55 часов) ⏳
+
+**BrainGrid:** REQ-15
+**Цель:** Аналитика и генерация отчётов.
+
+### Backend (20h)
+| # | Задача | Статус |
+|---|--------|--------|
+| 11.1 | AnalyticsAggregationService (Redis caching) | ⏳ |
+| 11.2 | ReportTemplateEngine (Jinja2 + WeasyPrint) | ⏳ |
+| 11.3 | ScheduledReportService (background tasks) | ⏳ |
+| 11.4 | Analytics API endpoints | ⏳ |
+
+### Frontend (35h)
+| # | Задача | Статус |
+|---|--------|--------|
+| 11.5 | AnalyticsDashboard (widget-based) | ⏳ |
+| 11.6 | PerformanceReadinessWidget | ⏳ |
+| 11.7 | InventoryUsageChart (Recharts) | ⏳ |
+| 11.8 | IdleEquipmentReport | ⏳ |
+| 11.9 | ReportBuilder UI (block-based) | ⏳ |
+| 11.10 | ReportPreview + Download | ⏳ |
+
+---
+
+## Phase 12: UI/UX Overhaul (~70 часов) ⏳
+
+**BrainGrid:** REQ-18
+**Цель:** Полная переработка интерфейса по Design System v3.
+
+### Components (45h)
+| # | Задача | Статус |
+|---|--------|--------|
+| 12.1 | Tailwind config tokens update | ⏳ |
+| 12.2 | Typography system (Cormorant/Inter) | ⏳ |
+| 12.3 | MultiSelect with Tags component | ⏳ |
+| 12.4 | DragDropList component | ⏳ |
+| 12.5 | ImageGallery with Lightbox | ⏳ |
+| 12.6 | VirtualizedTable (tanstack-virtual) | ⏳ |
+| 12.7 | DateRangePicker | ⏳ |
+| 12.8 | KanbanBoard component | ⏳ |
+
+### Global Features (25h)
+| # | Задача | Статус |
+|---|--------|--------|
+| 12.9 | Command Center (Cmd+K modal) | ⏳ |
+| 12.10 | Advanced filter system | ⏳ |
+| 12.11 | Responsive layouts refactor | ⏳ |
+| 12.12 | Animation system (transitions) | ⏳ |
+
+---
+
+## Phase 13: Inventory & Equipment Enhancement (~50 часов) ⏳
+
+**BrainGrid:** REQ-14
+**Цель:** Визуальный каталог инвентаря с bulk операциями.
+
+### Backend (15h)
+| # | Задача | Статус |
+|---|--------|--------|
+| 13.1 | InventoryImage model (multi-photo) | ⏳ |
+| 13.2 | BulkOperationsService | ⏳ |
+| 13.3 | Tag system (colors, hierarchy) | ⏳ |
+| 13.4 | QR code generation | ⏳ |
+
+### Frontend (35h)
+| # | Задача | Статус |
+|---|--------|--------|
+| 13.5 | Grid/List/Table/Gallery views | ⏳ |
+| 13.6 | ImageUploader (crop, rotate) | ⏳ |
+| 13.7 | BulkActionBar component | ⏳ |
+| 13.8 | CategoryTreeFilter | ⏳ |
+| 13.9 | TagManager component | ⏳ |
+
+---
+
+## Phase 14: Schedule & Calendar Pro (~40 часов) ⏳
+
+**BrainGrid:** REQ-16
+**Цель:** Продвинутый календарь с типами событий и ресурсами.
+
+### Backend (12h)
+| # | Задача | Статус |
+|---|--------|--------|
+| 14.1 | EventType enum (6 types with colors) | ⏳ |
+| 14.2 | RecurrenceService (RFC 5545 RRule) | ⏳ |
+| 14.3 | ConflictDetectionService v2 | ⏳ |
+| 14.4 | ResourceCalendarService | ⏳ |
+
+### Frontend (28h)
+| # | Задача | Статус |
+|---|--------|--------|
+| 14.5 | CalendarPro (react-big-calendar customized) | ⏳ |
+| 14.6 | QuickEventPopover | ⏳ |
+| 14.7 | ResourceTimelineView | ⏳ |
+| 14.8 | EventColorCoding | ⏳ |
+| 14.9 | DragDrop scheduling | ⏳ |
+
+---
+
+## Phase 15: System Polish & Branding (~40 часов) ⏳
+
+**BrainGrid:** REQ-17
+**Цель:** Финальная полировка, брендинг, dashboard.
+
+### Design & Assets (15h)
+| # | Задача | Статус |
+|---|--------|--------|
+| 15.1 | Logo assets (full, icon, monochrome) | ⏳ |
+| 15.2 | Custom SVG icon set (theatre-themed) | ⏳ |
+| 15.3 | Login page redesign | ⏳ |
+
+### Dashboard & Features (25h)
+| # | Задача | Статус |
+|---|--------|--------|
+| 15.4 | DashboardPage (widgets) | ⏳ |
+| 15.5 | WelcomeWidget + MyTasksWidget | ⏳ |
+| 15.6 | UpcomingEventsWidget | ⏳ |
+| 15.7 | KeyMetricsWidget | ⏳ |
+| 15.8 | KeyboardShortcuts modal | ⏳ |
+| 15.9 | Onboarding tooltips | ⏳ |
+
+---
+
 ## Сводка по фазам
+
+### Completed (MVP + Enhancements)
 
 | Phase | Название | Часы | Результат | Статус |
 |-------|----------|------|-----------|--------|
@@ -321,7 +475,27 @@
 | 7 | Document Templates | 6h | Enhancement | ✅ Готово |
 | 8 | Document Storage | 8h | Enhancement | ✅ Готово |
 | 9 | Document Organization | 6h | Enhancement | ✅ Готово |
-| **Σ** | **ИТОГО** | **119h** | **100% + Enh** | **MVP + PHASE 9** |
+| **Σ** | **MVP Complete** | **119h** | **100%** | **✅** |
+
+### Planned (Extended MVP - Phases 10-15)
+
+| Phase | Название | Часы | BrainGrid | Приоритет | Статус |
+|-------|----------|------|-----------|-----------|--------|
+| 10 | Performance Management Hub | ~65h | REQ-13 | P0 | ⏳ Planned |
+| 11 | Advanced Analytics & Reporting | ~55h | REQ-15 | P1 | ⏳ Planned |
+| 12 | UI/UX Overhaul | ~70h | REQ-18 | P1 | ⏳ Planned |
+| 13 | Inventory & Equipment Enhancement | ~50h | REQ-14 | P2 | ⏳ Planned |
+| 14 | Schedule & Calendar Pro | ~40h | REQ-16 | P2 | ⏳ Planned |
+| 15 | System Polish & Branding | ~40h | REQ-17 | P3 | ⏳ Planned |
+| **Σ** | **Extended MVP** | **~320h** | | | **⏳** |
+
+### Total Project Estimate
+
+| Category | Часы | Статус |
+|----------|------|--------|
+| MVP (Phases 1-9) | 119h | ✅ Завершено |
+| Extended MVP (Phases 10-15) | ~320h | ⏳ Запланировано |
+| **ИТОГО** | **~439h** | ~55 рабочих дней |
 
 ---
 

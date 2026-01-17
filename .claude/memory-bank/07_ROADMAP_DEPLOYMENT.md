@@ -2,10 +2,11 @@
 
 ## 🗺️ Roadmap разработки
 
-> **Текущий статус:** Phase 4 завершена, готово к Phase 5 (Testing & QA)
-> **Общая готовность:** 80% (Backend 78%, Frontend 85-90%)
-> **Последнее обновление:** 2026-01-16
+> **Текущий статус:** MVP завершён (Phases 1-9), Extended MVP запланирован (Phases 10-15)
+> **Общая готовность:** 100% MVP + Enhancements
+> **Последнее обновление:** 2026-01-17
 > **Итоговый отчёт:** см. `docs/PHASE_1-4_SUMMARY.md`
+> **Расширенная спецификация:** см. `docs/MVP_PHASE_10_PLUS_SPECIFICATION.md`
 
 ### Phase 0: Стабилизация ✅
 
@@ -94,32 +95,124 @@
 | Toast notifications system | ✅ |
 | PDF Preview компонент | ✅ |
 
-### Phase 5: Testing & QA 🔄 **СЛЕДУЮЩАЯ**
+### Phase 5: Testing & QA ✅
 
 **Цель:** Покрытие тестами и QA проверка
+**BrainGrid:** REQ-8 (10 tasks completed)
 
-| Задача | Приоритет |
-|--------|-----------|
-| Unit тесты backend (pytest) | P0 |
-| Integration тесты API | P0 |
-| E2E тесты frontend (Playwright) | P1 |
-| Typecheck CI/CD | P1 |
-| Performance тестирование | P2 |
-| Security audit | P2 |
+| Задача | Статус |
+|--------|--------|
+| Unit тесты backend (pytest) | ✅ 183+ тестов |
+| Integration тесты API | ✅ 30 тестов |
+| E2E тесты frontend (Playwright) | ✅ 69 тестов |
+| Typecheck CI/CD | ✅ 0 errors |
+| Performance тестирование | ✅ p95 < 500ms |
+| Security audit | ✅ 0 vulnerabilities |
 
-### Phase 6: File Handling Enhancement (планируется)
+### Phase 6: File Handling Enhancement ✅
 
-**Цель:** Расширенная работа с файлами на основе реальных архивов
+**Цель:** Расширенная работа с файлами
+**BrainGrid:** REQ-9 (9 tasks completed)
 
-| Задача | Приоритет |
-|--------|-----------|
-| DOCX/DOC preview | P1 |
-| XLSX preview (SheetJS) | P1 |
-| Audio player (MP3/WAV) | P2 |
-| Video player (MP4) | P2 |
-| Световые партитуры (.cues) | P2 |
-| Departments API endpoints | P1 |
-| Venues API endpoints | P1 |
+| Задача | Статус |
+|--------|--------|
+| DOCX/DOC preview | ✅ |
+| XLSX preview (SheetJS) | ✅ |
+| Audio player (MP3/WAV) | ✅ |
+| Video player (MP4) | ✅ |
+| Departments CRUD API | ✅ |
+| Venues CRUD API | ✅ |
+
+### Phase 7-9: Document Management ✅
+
+**Phases 7-9 завершены:**
+- Phase 7: Document Templates & Generation (REQ-10)
+- Phase 8: Performance Document Storage (REQ-11)
+- Phase 9: Document Organization & Reports (REQ-12)
+
+---
+
+## 🚀 Extended MVP Roadmap (Phases 10-15)
+
+> **Полная спецификация:** `docs/MVP_PHASE_10_PLUS_SPECIFICATION.md`
+
+### Phase 10: Performance Management Hub ⏳
+
+**BrainGrid:** REQ-13
+**Цель:** Центр управления спектаклем
+
+| Модуль | Описание |
+|--------|----------|
+| PerformanceHubPage | Multi-tab интерфейс управления |
+| ChecklistManager | Drag-drop чеклисты с прогрессом |
+| InventoryAssignment | Привязка реквизита к спектаклю |
+| PersonnelSchedule | Расписание персонала |
+| TimelineView | Горизонтальная шкала событий |
+
+### Phase 11: Advanced Analytics & Reporting ⏳
+
+**BrainGrid:** REQ-15
+**Цель:** Аналитика и генерация отчётов
+
+| Модуль | Описание |
+|--------|----------|
+| AnalyticsDashboard | Widget-based dashboard |
+| ReportBuilder | Визуальный конструктор отчётов |
+| ScheduledReports | Автоматическая генерация по расписанию |
+| InventoryUsageChart | Графики использования инвентаря |
+| IdleEquipmentReport | Отчёт о простаивающем оборудовании |
+
+### Phase 12: UI/UX Overhaul ⏳
+
+**BrainGrid:** REQ-18
+**Цель:** Полная переработка интерфейса
+
+| Модуль | Описание |
+|--------|----------|
+| Design System v3 | Tailwind tokens, typography |
+| MultiSelect with Tags | Компонент множественного выбора |
+| VirtualizedTable | Таблица с виртуализацией (1000+ строк) |
+| Command Center | Глобальный поиск (Cmd+K) |
+| KanbanBoard | Kanban-доска для задач |
+
+### Phase 13: Inventory & Equipment Enhancement ⏳
+
+**BrainGrid:** REQ-14
+**Цель:** Визуальный каталог инвентаря
+
+| Модуль | Описание |
+|--------|----------|
+| Visual Catalog | Grid/List/Table/Gallery views |
+| Multi-image Upload | Crop, rotate, drag-drop |
+| BulkOperations | Массовые операции с инвентарём |
+| TagSystem | Теги с цветами и иерархией |
+| QRCodePrint | Печать QR-кодов |
+
+### Phase 14: Schedule & Calendar Pro ⏳
+
+**BrainGrid:** REQ-16
+**Цель:** Продвинутый календарь
+
+| Модуль | Описание |
+|--------|----------|
+| EventTypes | 6 типов событий с цветовым кодированием |
+| ResourceCalendar | Просмотр по ресурсам (venues, staff) |
+| RecurrenceSupport | Повторяющиеся события (RFC 5545) |
+| ConflictDetection v2 | Улучшенное определение конфликтов |
+| DragDropScheduling | Перетаскивание событий |
+
+### Phase 15: System Polish & Branding ⏳
+
+**BrainGrid:** REQ-17
+**Цель:** Финальная полировка
+
+| Модуль | Описание |
+|--------|----------|
+| Branding Assets | Логотипы, иконки, цветовая схема |
+| LoginPage Redesign | Новый дизайн страницы входа |
+| DashboardWidgets | Персонализированная главная страница |
+| KeyboardShortcuts | Система горячих клавиш |
+| OnboardingTooltips | Подсказки для новых пользователей |
 
 ---
 
