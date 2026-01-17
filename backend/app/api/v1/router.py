@@ -11,6 +11,7 @@ from app.api.v1.document_generation import router as generation_router
 from app.api.v1.inventory import router as inventory_router
 from app.api.v1.documents import router as documents_router
 from app.api.v1.performances import router as performances_router
+from app.api.v1.performance_hub import router as performance_hub_router
 from app.api.v1.schedule import router as schedule_router
 from app.api.v1.templates import router as templates_router
 from app.api.v1.venues import router as venues_router
@@ -25,6 +26,7 @@ api_router.include_router(generation_router)
 api_router.include_router(inventory_router)
 api_router.include_router(documents_router)
 api_router.include_router(performances_router)
+api_router.include_router(performance_hub_router)
 api_router.include_router(schedule_router)
 api_router.include_router(templates_router)
 api_router.include_router(venues_router)
