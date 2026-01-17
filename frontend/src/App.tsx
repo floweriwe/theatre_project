@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { MainLayout } from './components/layout/MainLayout';
 import { useAuthStore } from './store/authStore';
+import { LiveAnnouncerProvider, SkipToContent } from './components/ui';
 // Auth pages
 import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
@@ -57,8 +58,12 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
+    <LiveAnnouncerProvider>
+      <BrowserRouter>
+        {/* Skip to content link for keyboard users */}
+        <SkipToContent />
+
+        <Routes>
         {/* ÃÅ¸Ã‘Æ’ÃÂ±ÃÂ»ÃÂ¸Ã‘â€¡ÃÂ½Ã‘â€¹ÃÂµ ÃÂ¼ÃÂ°Ã‘â‚¬Ã‘Ë†Ã‘â‚¬Ã‘Æ’Ã‘â€šÃ‘â€¹ */}
         <Route
           path="/login"
@@ -164,5 +169,6 @@ export default function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
+    </LiveAnnouncerProvider>
   );
 }

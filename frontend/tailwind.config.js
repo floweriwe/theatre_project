@@ -13,11 +13,32 @@ export default {
         mono: ['JetBrains Mono', 'Consolas', 'monospace'],
       },
 
-      // === FONT SIZES ===
+      // === FONT SIZES (responsive display sizes) ===
       fontSize: {
+        // Display sizes with responsive scaling
         'display-lg': ['2.5rem', { lineHeight: '1.2', fontWeight: '600' }],
         'display-md': ['2rem', { lineHeight: '1.25', fontWeight: '600' }],
         'display-sm': ['1.5rem', { lineHeight: '1.3', fontWeight: '500' }],
+        // Responsive text sizes
+        'responsive-xs': ['0.75rem', { lineHeight: '1.4' }],
+        'responsive-sm': ['0.875rem', { lineHeight: '1.5' }],
+        'responsive-base': ['1rem', { lineHeight: '1.5' }],
+        'responsive-lg': ['1.125rem', { lineHeight: '1.5' }],
+        'responsive-xl': ['1.25rem', { lineHeight: '1.4' }],
+        'responsive-2xl': ['1.5rem', { lineHeight: '1.3' }],
+      },
+
+      // === SCREENS (explicit breakpoints) ===
+      screens: {
+        'xs': '475px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+        // Touch-specific breakpoints
+        'touch': { 'raw': '(hover: none)' },
+        'hover': { 'raw': '(hover: hover)' },
       },
 
       // === COLORS (with CSS variables support) ===

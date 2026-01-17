@@ -991,6 +991,255 @@ module.exports = {
 
 ---
 
+## 🔍 Command Center (Cmd+K)
+
+Глобальный поиск и навигация по приложению:
+
+```tsx
+// Открытие: Cmd+K (Mac) / Ctrl+K (Win)
+// Компоненты:
+// - CommandCenter.tsx - модальное окно с поиском
+// - useCommandCenter.ts - глобальный хук для shortcut
+// - commandCenterStore.ts - Zustand store
+
+const CommandCenter = () => (
+  <div className="
+    fixed inset-0 z-50
+    bg-black/50 backdrop-blur-sm
+    flex items-start justify-center pt-[20vh]
+  ">
+    <div className="
+      w-full max-w-2xl
+      bg-bg-secondary
+      rounded-2xl border border-border
+      shadow-2xl
+      overflow-hidden
+    ">
+      {/* Search Input */}
+      <div className="p-4 border-b border-border">
+        <div className="flex items-center gap-3">
+          <Search className="w-5 h-5 text-text-muted" />
+          <input
+            className="flex-1 bg-transparent text-text-primary"
+            placeholder="Поиск по приложению..."
+          />
+        </div>
+      </div>
+
+      {/* Results */}
+      <div className="max-h-[400px] overflow-y-auto p-2">
+        {/* Links and search results */}
+      </div>
+
+      {/* Footer с подсказками */}
+      <div className="px-4 py-2 border-t border-border text-xs text-text-muted">
+        ↑↓ навигация • Enter выбор • Esc закрыть
+      </div>
+    </div>
+  </div>
+);
+```
+
+---
+
+## 🎛️ FilterBar (Advanced Filters)
+
+Система фильтрации с chips, presets и поиском:
+
+```tsx
+// Компоненты:
+// - FilterBar.tsx - панель фильтров
+// - useTableFilters.ts - хук управления состоянием
+
+interface FilterChip {
+  id: string;
+  label: string;
+  field: string;
+  value: string | string[];
+  removable?: boolean;
+}
+
+interface FilterPreset {
+  id: string;
+  name: string;
+  filters: FilterChip[];
+  searchQuery?: string;
+}
+
+const FilterBar = () => (
+  <div className="flex items-center gap-4 flex-wrap">
+    {/* Search */}
+    <div className="relative">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+      <input className="pl-10 h-9 bg-bg-tertiary border border-border rounded-lg" />
+    </div>
+
+    {/* Filter Chips */}
+    <div className="flex items-center gap-2 flex-wrap">
+      {filters.map(filter => (
+        <div className="
+          flex items-center gap-1.5 px-3 py-1
+          bg-gold/10 text-gold rounded-full text-sm
+        ">
+          <span className="text-text-muted">{filter.label}:</span>
+          <span>{filter.value}</span>
+          <button className="hover:text-white">×</button>
+        </div>
+      ))}
+    </div>
+
+    {/* Presets */}
+    <button className="text-sm text-text-secondary hover:text-text-primary">
+      Пресеты
+    </button>
+
+    {/* Clear All */}
+    <button className="text-sm text-error hover:text-red-400">
+      Сбросить
+    </button>
+  </div>
+);
+```
+
+---
+
+## 📐 Responsive Layout Primitives
+
+### ResponsiveContainer
+
+```tsx
+type ContainerSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
+
+const sizeClasses = {
+  sm: 'max-w-screen-sm',     // 640px
+  md: 'max-w-screen-md',     // 768px
+  lg: 'max-w-screen-lg',     // 1024px
+  xl: 'max-w-screen-xl',     // 1280px
+  '2xl': 'max-w-screen-2xl', // 1536px
+  full: 'max-w-full',
+};
+
+<ResponsiveContainer size="xl" padding centered>
+  {/* Max 1280px, centered, with horizontal padding */}
+</ResponsiveContainer>
+```
+
+### Stack / HStack / VStack
+
+```tsx
+// Flexbox primitives для простой компоновки
+
+<Stack direction="column" gap="md" align="stretch">
+  {/* Vertical stack with medium gap */}
+</Stack>
+
+<HStack gap="sm" justify="between" align="center">
+  {/* Horizontal with space-between */}
+</HStack>
+
+<VStack gap="lg">
+  {/* Vertical with large gap */}
+</VStack>
+
+// Gap sizes: none, xs, sm, md, lg, xl
+```
+
+### ResponsiveGrid
+
+```tsx
+// Auto-fit grid для карточек
+
+<ResponsiveGrid minItemWidth={280} gap="md">
+  {items.map(item => <Card key={item.id} />)}
+</ResponsiveGrid>
+
+// Creates: grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))
+```
+
+### PageLayout
+
+```tsx
+// Структура страницы с опциональным sidebar
+
+<PageLayout
+  header={<PageHeader title="Инвентарь" />}
+  sidebar={<FilterSidebar />}  // optional
+  sidebarPosition="right"      // 'left' | 'right'
+  sidebarWidth="md"            // 'sm' | 'md' | 'lg'
+>
+  {/* Main content */}
+</PageLayout>
+```
+
+---
+
+## ♿ Accessibility Components
+
+### VisuallyHidden
+
+```tsx
+// Скрытый контент для screen readers
+
+<VisuallyHidden>
+  Дополнительная информация для screen reader
+</VisuallyHidden>
+
+// focusable=true позволяет элементу получать фокус
+<VisuallyHidden focusable>
+  Skip to main content
+</VisuallyHidden>
+```
+
+### LiveAnnouncer
+
+```tsx
+// ARIA live regions для объявлений
+
+<LiveAnnouncerProvider>
+  <App />
+</LiveAnnouncerProvider>
+
+// В компонентах:
+const { announce } = useLiveAnnouncer();
+announce('Загружено 10 элементов', 'polite');
+announce('Ошибка при сохранении!', 'assertive');
+```
+
+### AccessibleIcon / IconButton
+
+```tsx
+// Декоративная иконка (скрыта от screen readers)
+<AccessibleIcon>
+  <SearchIcon />
+</AccessibleIcon>
+
+// Иконка со значением (читается screen reader)
+<AccessibleIcon label="Статус: активен">
+  <CheckIcon />
+</AccessibleIcon>
+
+// Кнопка-иконка с обязательным label
+<IconButton label="Закрыть меню" onClick={close}>
+  <XIcon />
+</IconButton>
+```
+
+### Focus Management Hooks
+
+```tsx
+// Сохранение и восстановление фокуса (для модальных окон)
+const { saveFocus, restoreFocus } = useFocusReturn();
+
+// Фокус при монтировании
+const inputRef = useFocusOnMount<HTMLInputElement>();
+
+// Auto-focus ref callback
+const autoFocusRef = useAutoFocus({ enabled: true, delay: 0 });
+<input ref={autoFocusRef} />
+```
+
+---
+
 ## ✅ Accessibility (a11y)
 
 ### Требования
@@ -1012,5 +1261,5 @@ module.exports = {
 
 ---
 
-*Документ обновлён: Январь 2026*
-*Версия: 3.0*
+*Документ обновлён: 18 Января 2026*
+*Версия: 3.1 (Phase 12: Command Center, FilterBar, Layout Primitives, Accessibility)*

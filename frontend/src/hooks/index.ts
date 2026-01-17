@@ -13,3 +13,15 @@ export {
   useEscapeKey,
   focusRingClasses,
 } from './useKeyboardNavigation';
+
+// Table filters
+export { useTableFilters } from './useTableFilters';
+export type { SortConfig, UseTableFiltersOptions, UseTableFiltersReturn } from './useTableFilters';
+
+// Focus management (accessibility)
+export {
+  useRouteFocus,
+  useFocusReturn,
+  useFocusOnMount,
+  useAutoFocus,
+} from './useFocusManagement';
