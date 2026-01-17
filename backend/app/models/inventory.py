@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     Boolean,
+    Column,
     DateTime,
     Enum,
     Float,
@@ -20,6 +21,7 @@ from sqlalchemy import (
     Integer,
     Numeric,
     String,
+    Table,
     Text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
@@ -32,6 +34,16 @@ if TYPE_CHECKING:
     from app.models.theater import Theater
     from app.models.inventory_photo import InventoryPhoto
     from app.models.performance_inventory import PerformanceInventory
+    from app.models.document import Tag
+
+
+# Таблица связи инвентаря и тегов (многие-ко-многим)
+inventory_item_tags = Table(
+    "inventory_item_tags",
+    Base.metadata,
+    Column("item_id", Integer, ForeignKey("inventory_items.id", ondelete="CASCADE"), primary_key=True),
+    Column("tag_id", Integer, ForeignKey("tags.id", ondelete="CASCADE"), primary_key=True),
+)
 
 
 class ItemStatus(str, PyEnum):
@@ -303,6 +315,11 @@ class InventoryItem(Base, AuditMixin):
         "PerformanceInventory",
         back_populates="item",
         cascade="all, delete-orphan",
+        lazy="selectin",
+    )
+    tags: Mapped[list["Tag"]] = relationship(
+        "Tag",
+        secondary=inventory_item_tags,
         lazy="selectin",
     )
 

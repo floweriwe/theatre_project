@@ -38,11 +38,22 @@ class InventoryPhoto(Base, TimestampMixin):
     # Путь к файлу (относительный путь в хранилище)
     file_path: Mapped[str] = mapped_column(String(500), nullable=False)
 
+    # Путь к миниатюре (генерируется автоматически)
+    thumbnail_path: Mapped[str | None] = mapped_column(String(500), nullable=True)
+
     # Флаг основного изображения
     is_primary: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
+    # Порядок сортировки (для ручного упорядочивания)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
     # Подпись/описание фото
     caption: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Метаданные изображения (EXIF, размеры и т.д.)
+    width: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    height: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    file_size: Mapped[int | None] = mapped_column(Integer, nullable=True)  # bytes
 
     # Связи
     item: Mapped["InventoryItem"] = relationship(

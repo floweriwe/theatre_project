@@ -864,3 +864,286 @@ async def delete_photo(
     await service._session.commit()
 
     return MessageResponse(message="Фото успешно удалено")
+
+
+# =============================================================================
+# Bulk Operations Endpoints
+# =============================================================================
+
+@router.post(
+    "/bulk/status",
+    summary="Массовое изменение статуса",
+    description="Изменить статус нескольких предметов одновременно",
+)
+async def bulk_update_status(
+    item_ids: list[int],
+    new_status: ItemStatus,
+    current_user: CurrentUserDep,
+    session: SessionDep,
+    comment: str | None = None,
+):
+    """Массовое изменение статуса предметов."""
+    from app.services.bulk_operations_service import BulkOperationsService
+
+    service = BulkOperationsService(session)
+    try:
+        result = await service.bulk_update_status(
+            item_ids=item_ids,
+            new_status=new_status,
+            user_id=current_user.id,
+            comment=comment,
+            theater_id=current_user.theater_id,
+        )
+        return result.to_dict()
+    except ValidationError as e:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, str(e))
+
+
+@router.post(
+    "/bulk/transfer",
+    summary="Массовое перемещение",
+    description="Переместить несколько предметов в новую локацию",
+)
+async def bulk_transfer(
+    item_ids: list[int],
+    to_location_id: int,
+    current_user: CurrentUserDep,
+    session: SessionDep,
+    comment: str | None = None,
+):
+    """Массовое перемещение предметов."""
+    from app.services.bulk_operations_service import BulkOperationsService
+
+    service = BulkOperationsService(session)
+    result = await service.bulk_transfer(
+        item_ids=item_ids,
+        to_location_id=to_location_id,
+        user_id=current_user.id,
+        comment=comment,
+        theater_id=current_user.theater_id,
+    )
+    return result.to_dict()
+
+
+@router.post(
+    "/bulk/delete",
+    summary="Массовое удаление",
+    description="Удалить (деактивировать) несколько предметов",
+)
+async def bulk_delete(
+    item_ids: list[int],
+    current_user: CurrentUserDep,
+    session: SessionDep,
+    comment: str | None = None,
+):
+    """Массовое удаление (soft delete) предметов."""
+    from app.services.bulk_operations_service import BulkOperationsService
+
+    service = BulkOperationsService(session)
+    result = await service.bulk_delete(
+        item_ids=item_ids,
+        user_id=current_user.id,
+        hard_delete=False,
+        comment=comment,
+        theater_id=current_user.theater_id,
+    )
+    return result.to_dict()
+
+
+@router.post(
+    "/bulk/tags",
+    summary="Массовое назначение тегов",
+    description="Назначить теги нескольким предметам",
+)
+async def bulk_assign_tags(
+    item_ids: list[int],
+    tag_ids: list[int],
+    current_user: CurrentUserDep,
+    session: SessionDep,
+    replace: bool = False,
+):
+    """Массовое назначение тегов предметам."""
+    from app.services.bulk_operations_service import BulkOperationsService
+
+    service = BulkOperationsService(session)
+    try:
+        result = await service.bulk_assign_tags(
+            item_ids=item_ids,
+            tag_ids=tag_ids,
+            replace=replace,
+            user_id=current_user.id,
+            theater_id=current_user.theater_id,
+        )
+        return result.to_dict()
+    except ValidationError as e:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, str(e))
+
+
+@router.delete(
+    "/bulk/tags",
+    summary="Массовое удаление тегов",
+    description="Удалить теги с нескольких предметов",
+)
+async def bulk_remove_tags(
+    item_ids: list[int],
+    tag_ids: list[int],
+    current_user: CurrentUserDep,
+    session: SessionDep,
+):
+    """Массовое удаление тегов с предметов."""
+    from app.services.bulk_operations_service import BulkOperationsService
+
+    service = BulkOperationsService(session)
+    result = await service.bulk_remove_tags(
+        item_ids=item_ids,
+        tag_ids=tag_ids,
+        user_id=current_user.id,
+        theater_id=current_user.theater_id,
+    )
+    return result.to_dict()
+
+
+@router.post(
+    "/bulk/category",
+    summary="Массовое изменение категории",
+    description="Изменить категорию нескольких предметов",
+)
+async def bulk_update_category(
+    item_ids: list[int],
+    category_id: int | None,
+    current_user: CurrentUserDep,
+    session: SessionDep,
+):
+    """Массовое изменение категории предметов."""
+    from app.services.bulk_operations_service import BulkOperationsService
+
+    service = BulkOperationsService(session)
+    result = await service.bulk_update_category(
+        item_ids=item_ids,
+        category_id=category_id,
+        user_id=current_user.id,
+        theater_id=current_user.theater_id,
+    )
+    return result.to_dict()
+
+
+# =============================================================================
+# QR Code Endpoints
+# =============================================================================
+
+@router.get(
+    "/items/{item_id}/qr",
+    summary="Получить QR-код предмета",
+    description="Генерирует QR-код для предмета инвентаря",
+    responses={200: {"content": {"image/png": {}}}},
+)
+async def get_item_qr_code(
+    item_id: int,
+    current_user: CurrentUserDep,
+    service: InventoryService = InventoryServiceDep,
+    size: int = Query(300, ge=100, le=1000, description="Размер QR-кода в пикселях"),
+    style: str = Query("rounded", description="Стиль: square или rounded"),
+):
+    """Получить QR-код для предмета инвентаря."""
+    from fastapi.responses import Response
+    from app.services.qr_code_service import QRCodeService
+    from app.core.config import settings
+
+    # Проверяем существование предмета
+    try:
+        item = await service.get_item(item_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    # Генерируем QR-код
+    qr_service = QRCodeService(base_url=str(settings.FRONTEND_URL) if hasattr(settings, 'FRONTEND_URL') else None)
+    qr_bytes = qr_service.generate_inventory_qr(
+        item_id=item.id,
+        inventory_number=item.inventory_number,
+        style=style if style in ("square", "rounded") else "rounded",
+        size=size,
+    )
+
+    return Response(content=qr_bytes, media_type="image/png")
+
+
+@router.post(
+    "/qr/batch",
+    summary="Генерация QR-кодов пакетом",
+    description="Генерирует QR-коды для нескольких предметов",
+)
+async def generate_batch_qr_codes(
+    item_ids: list[int],
+    current_user: CurrentUserDep,
+    service: InventoryService = InventoryServiceDep,
+    size: int = Query(200, ge=100, le=500),
+):
+    """Генерация QR-кодов пакетом (возвращает base64)."""
+    import base64
+    from app.services.qr_code_service import QRCodeService
+    from app.core.config import settings
+
+    qr_service = QRCodeService(base_url=str(settings.FRONTEND_URL) if hasattr(settings, 'FRONTEND_URL') else None)
+
+    results = []
+    for item_id in item_ids:
+        try:
+            item = await service.get_item(item_id)
+            qr_bytes = qr_service.generate_inventory_qr(
+                item_id=item.id,
+                inventory_number=item.inventory_number,
+                size=size,
+            )
+            results.append({
+                "item_id": item.id,
+                "inventory_number": item.inventory_number,
+                "qr_base64": base64.b64encode(qr_bytes).decode("utf-8"),
+            })
+        except NotFoundError:
+            results.append({
+                "item_id": item_id,
+                "error": "Предмет не найден",
+            })
+
+    return {"items": results}
+
+
+@router.post(
+    "/qr/labels",
+    summary="Генерация листа этикеток",
+    description="Генерирует лист с QR-кодами для печати",
+    responses={200: {"content": {"image/png": {}}}},
+)
+async def generate_label_sheet(
+    item_ids: list[int],
+    current_user: CurrentUserDep,
+    service: InventoryService = InventoryServiceDep,
+    cols: int = Query(3, ge=1, le=5),
+    rows: int = Query(8, ge=1, le=12),
+):
+    """Генерация листа этикеток для печати."""
+    from fastapi.responses import Response
+    from app.services.qr_code_service import QRCodeService
+
+    qr_service = QRCodeService()
+
+    # Собираем данные о предметах
+    items_data = []
+    for item_id in item_ids:
+        try:
+            item = await service.get_item(item_id)
+            items_data.append((item.id, item.inventory_number, item.name))
+        except NotFoundError:
+            continue
+
+    if not items_data:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Предметы не найдены")
+
+    # Генерируем лист
+    sheet_bytes = qr_service.generate_label_sheet(
+        items=items_data,
+        cols=cols,
+        rows=rows,
+    )
+
+    return Response(content=sheet_bytes, media_type="image/png")
