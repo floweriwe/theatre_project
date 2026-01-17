@@ -28,6 +28,10 @@ from app.schemas.schedule import (
     ScheduleStats,
 )
 from app.services.schedule_service import ScheduleService
+from app.services.recurrence_service import RecurrenceService
+from app.services.conflict_detection_service import ConflictDetectionService
+from app.services.resource_calendar_service import ResourceCalendarService
+from app.models.schedule import EVENT_TYPE_CONFIG
 
 router = APIRouter(prefix="/schedule", tags=["Расписание"])
 
@@ -477,6 +481,365 @@ async def get_schedule_stats(
 ):
     """Получить статистику расписания."""
     return await service.get_stats(current_user.theater_id)
+
+
+# =============================================================================
+# Event Types Configuration (Phase 14)
+# =============================================================================
+
+@router.get(
+    "/event-types",
+    summary="Конфигурация типов событий",
+)
+async def get_event_types(
+    current_user: CurrentUserDep,
+):
+    """
+    Получить конфигурацию типов событий с цветами и метками.
+
+    Возвращает список всех типов событий с их цветами и русскими названиями.
+    """
+    return [
+        {
+            "value": event_type.value,
+            "label": config["label"],
+            "color": config["color"],
+            "icon": config["icon"],
+        }
+        for event_type, config in EVENT_TYPE_CONFIG.items()
+    ]
+
+
+# =============================================================================
+# Recurrence Endpoints (Phase 14)
+# =============================================================================
+
+@router.post(
+    "/recurrence/parse",
+    summary="Распарсить RRule строку",
+)
+async def parse_recurrence_rule(
+    rrule: str,
+    current_user: CurrentUserDep,
+):
+    """
+    Распарсить RFC 5545 RRule строку и вернуть человекочитаемое описание.
+    """
+    service = RecurrenceService()
+    try:
+        pattern = service.parse_rrule(rrule)
+        description = service.describe_pattern(rrule)
+        return {
+            "frequency": pattern.frequency,
+            "interval": pattern.interval,
+            "count": pattern.count,
+            "until": pattern.until.isoformat() if pattern.until else None,
+            "by_day": pattern.by_day,
+            "by_month_day": pattern.by_month_day,
+            "by_month": pattern.by_month,
+            "description": description,
+        }
+    except Exception as e:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, str(e))
+
+
+@router.post(
+    "/recurrence/build",
+    summary="Создать RRule строку",
+)
+async def build_recurrence_rule(
+    frequency: str,
+    current_user: CurrentUserDep,
+    interval: int = 1,
+    count: int | None = None,
+    until: date | None = None,
+    by_day: str | None = Query(None, description="Дни недели через запятую (MO,TU,WE)"),
+):
+    """
+    Создать RFC 5545 RRule строку из параметров.
+    """
+    from app.services.recurrence_service import RecurrencePattern
+
+    service = RecurrenceService()
+    try:
+        pattern = RecurrencePattern(
+            frequency=frequency.upper(),
+            interval=interval,
+            count=count,
+            until=until,
+            by_day=by_day.split(",") if by_day else None,
+        )
+        rrule = service.build_rrule(pattern)
+        description = service.describe_pattern(rrule)
+        return {
+            "rrule": rrule,
+            "description": description,
+        }
+    except Exception as e:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, str(e))
+
+
+@router.post(
+    "/recurrence/expand",
+    summary="Развернуть повторения",
+)
+async def expand_recurrence(
+    rrule: str,
+    start_date: date,
+    start_time: str,
+    range_start: date,
+    range_end: date,
+    current_user: CurrentUserDep,
+    end_time: str | None = None,
+):
+    """
+    Сгенерировать даты повторяющегося события за указанный период.
+    """
+    from datetime import time as dt_time
+
+    service = RecurrenceService()
+
+    # Parse times
+    try:
+        start_h, start_m = map(int, start_time.split(":"))
+        st = dt_time(start_h, start_m)
+        et = None
+        if end_time:
+            end_h, end_m = map(int, end_time.split(":"))
+            et = dt_time(end_h, end_m)
+    except (ValueError, AttributeError):
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Неверный формат времени")
+
+    try:
+        instances = service.generate_instances(
+            rrule_string=rrule,
+            start_date=start_date,
+            start_time=st,
+            end_time=et,
+            range_start=range_start,
+            range_end=range_end,
+        )
+        return {
+            "count": len(instances),
+            "instances": [
+                {
+                    "date": inst.date.isoformat(),
+                    "start_time": inst.start_time.isoformat(),
+                    "end_time": inst.end_time.isoformat() if inst.end_time else None,
+                }
+                for inst in instances
+            ],
+        }
+    except Exception as e:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, str(e))
+
+
+# =============================================================================
+# Enhanced Conflict Detection (Phase 14)
+# =============================================================================
+
+@router.post(
+    "/conflicts/check",
+    summary="Расширенная проверка конфликтов",
+)
+async def check_conflicts_enhanced(
+    event_date: date,
+    start_time: str,
+    end_time: str,
+    current_user: CurrentUserDep,
+    session: SessionDep,
+    venue_id: int | None = None,
+    event_id: int | None = None,
+    buffer_minutes: int = 15,
+):
+    """
+    Расширенная проверка конфликтов с уровнями серьёзности и буферным временем.
+
+    Возвращает:
+    - hard_conflicts: Жёсткие конфликты (невозможно провести)
+    - warnings: Предупреждения (недостаточный буфер между событиями)
+    - can_proceed: Можно ли продолжить (нет жёстких конфликтов)
+    """
+    from datetime import time as dt_time
+
+    # Parse times
+    try:
+        start_h, start_m = map(int, start_time.split(":"))
+        end_h, end_m = map(int, end_time.split(":"))
+        st = dt_time(start_h, start_m)
+        et = dt_time(end_h, end_m)
+    except (ValueError, AttributeError):
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Неверный формат времени")
+
+    service = ConflictDetectionService(session)
+    result = await service.check_all_conflicts(
+        venue_id=venue_id,
+        event_date=event_date,
+        start_time=st,
+        end_time=et,
+        exclude_event_id=event_id,
+        theater_id=current_user.theater_id,
+        buffer_minutes=buffer_minutes,
+    )
+
+    return {
+        "has_conflicts": result.has_conflicts,
+        "can_proceed": result.can_proceed,
+        "hard_conflicts": [
+            {
+                "severity": c.severity.value,
+                "type": c.conflict_type.value,
+                "message": c.message,
+                "event_id": c.conflicting_event_id,
+                "event_title": c.conflicting_event_title,
+                "event_date": c.conflicting_event_date.isoformat(),
+                "start_time": c.conflicting_event_start.isoformat(),
+                "end_time": c.conflicting_event_end.isoformat() if c.conflicting_event_end else None,
+            }
+            for c in result.hard_conflicts
+        ],
+        "warnings": [
+            {
+                "severity": c.severity.value,
+                "type": c.conflict_type.value,
+                "message": c.message,
+                "event_id": c.conflicting_event_id,
+                "event_title": c.conflicting_event_title,
+                "event_date": c.conflicting_event_date.isoformat(),
+                "start_time": c.conflicting_event_start.isoformat(),
+                "end_time": c.conflicting_event_end.isoformat() if c.conflicting_event_end else None,
+            }
+            for c in result.warnings
+        ],
+    }
+
+
+# =============================================================================
+# Resource Calendar Endpoints (Phase 14)
+# =============================================================================
+
+@router.get(
+    "/resources/venues/timeline",
+    summary="Таймлайн площадок",
+)
+async def get_venues_timeline(
+    date_from: date,
+    date_to: date,
+    current_user: CurrentUserDep,
+    session: SessionDep,
+    venue_ids: str | None = Query(None, description="ID площадок через запятую"),
+):
+    """
+    Получить таймлайн использования площадок за период.
+
+    Если venue_ids не указан, возвращает все активные площадки.
+    """
+    service = ResourceCalendarService(session)
+
+    if venue_ids:
+        ids = [int(x) for x in venue_ids.split(",")]
+        timelines = await service.get_multiple_venue_timelines(
+            venue_ids=ids,
+            date_from=date_from,
+            date_to=date_to,
+            theater_id=current_user.theater_id,
+        )
+    else:
+        timelines = await service.get_all_venues_timeline(
+            date_from=date_from,
+            date_to=date_to,
+            theater_id=current_user.theater_id,
+        )
+
+    return [
+        {
+            "resource_id": t.resource_id,
+            "resource_type": t.resource_type,
+            "resource_name": t.resource_name,
+            "days": [
+                {
+                    "date": d.date.isoformat(),
+                    "total_hours": d.total_hours,
+                    "is_fully_booked": d.is_fully_booked,
+                    "slots": [
+                        {
+                            "event_id": s.event_id,
+                            "event_title": s.event_title,
+                            "event_type": s.event_type,
+                            "status": s.status,
+                            "start_time": s.start_time.isoformat(),
+                            "end_time": s.end_time.isoformat() if s.end_time else None,
+                            "color": s.color,
+                            "performance_id": s.performance_id,
+                        }
+                        for s in d.slots
+                    ],
+                }
+                for d in t.days
+            ],
+        }
+        for t in timelines
+    ]
+
+
+@router.get(
+    "/resources/venues/{venue_id}/availability",
+    summary="Свободные слоты площадки",
+)
+async def get_venue_availability(
+    venue_id: int,
+    event_date: date,
+    current_user: CurrentUserDep,
+    session: SessionDep,
+):
+    """
+    Получить свободные временные слоты площадки на указанную дату.
+    """
+    service = ResourceCalendarService(session)
+
+    free_slots = await service.get_venue_availability(
+        venue_id=venue_id,
+        event_date=event_date,
+        theater_id=current_user.theater_id,
+    )
+
+    return {
+        "venue_id": venue_id,
+        "date": event_date.isoformat(),
+        "free_slots": [
+            {
+                "start_time": slot[0].isoformat(),
+                "end_time": slot[1].isoformat(),
+            }
+            for slot in free_slots
+        ],
+    }
+
+
+@router.get(
+    "/resources/venues/{venue_id}/utilization",
+    summary="Статистика использования площадки",
+)
+async def get_venue_utilization(
+    venue_id: int,
+    date_from: date,
+    date_to: date,
+    current_user: CurrentUserDep,
+    session: SessionDep,
+):
+    """
+    Получить статистику использования площадки за период.
+    """
+    service = ResourceCalendarService(session)
+
+    stats = await service.get_venue_utilization(
+        venue_id=venue_id,
+        date_from=date_from,
+        date_to=date_to,
+        theater_id=current_user.theater_id,
+    )
+
+    return stats
 
 
 # =============================================================================

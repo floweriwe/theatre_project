@@ -261,3 +261,159 @@ export function formatTime(time: string): string {
 export function getEventColor(event: { eventType: EventType; color?: string | null }): string {
   return event.color || EVENT_TYPE_COLORS[event.eventType] || '#9CA3AF';
 }
+
+// =============================================================================
+// Phase 14: Resource Calendar Types
+// =============================================================================
+
+/** Конфигурация типа события */
+export interface EventTypeConfig {
+  value: EventType;
+  label: string;
+  color: string;
+  icon: string;
+}
+
+/** Слот использования ресурса */
+export interface ResourceSlot {
+  eventId: number;
+  eventTitle: string;
+  eventType: string;
+  status: string;
+  startTime: string;
+  endTime: string | null;
+  color: string | null;
+  performanceId: number | null;
+}
+
+/** День в календаре ресурса */
+export interface ResourceDay {
+  date: string;
+  totalHours: number;
+  isFullyBooked: boolean;
+  slots: ResourceSlot[];
+}
+
+/** Таймлайн ресурса */
+export interface ResourceTimeline {
+  resourceId: number;
+  resourceType: string;
+  resourceName: string;
+  days: ResourceDay[];
+}
+
+/** Свободный слот площадки */
+export interface FreeSlot {
+  startTime: string;
+  endTime: string;
+}
+
+/** Доступность площадки */
+export interface VenueAvailability {
+  venueId: number;
+  date: string;
+  freeSlots: FreeSlot[];
+}
+
+/** Статистика использования площадки */
+export interface VenueUtilization {
+  venueId: number;
+  venueName: string;
+  periodStart: string;
+  periodEnd: string;
+  totalDays: number;
+  usedDays: number;
+  usageDaysPct: number;
+  totalHours: number;
+  utilizationPct: number;
+  totalEvents: number;
+  eventsByType: Record<string, number>;
+}
+
+// =============================================================================
+// Phase 14: Recurrence Types
+// =============================================================================
+
+/** Паттерн повторения */
+export interface RecurrencePattern {
+  frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
+  interval: number;
+  count: number | null;
+  until: string | null;
+  byDay: string[] | null;
+  byMonthDay: number[] | null;
+  byMonth: number[] | null;
+  description: string;
+}
+
+/** Экземпляр повторяющегося события */
+export interface RecurrenceInstance {
+  date: string;
+  startTime: string;
+  endTime: string | null;
+}
+
+/** Метки частоты повторения */
+export const RECURRENCE_FREQUENCY_LABELS: Record<string, string> = {
+  DAILY: 'Ежедневно',
+  WEEKLY: 'Еженедельно',
+  MONTHLY: 'Ежемесячно',
+  YEARLY: 'Ежегодно',
+};
+
+/** Метки дней недели */
+export const DAY_LABELS: Record<string, string> = {
+  MO: 'Пн',
+  TU: 'Вт',
+  WE: 'Ср',
+  TH: 'Чт',
+  FR: 'Пт',
+  SA: 'Сб',
+  SU: 'Вс',
+};
+
+// =============================================================================
+// Phase 14: Conflict Detection Types
+// =============================================================================
+
+/** Уровень серьёзности конфликта */
+export type ConflictSeverity = 'hard' | 'warning' | 'info';
+
+/** Тип конфликта */
+export type ConflictType = 'venue' | 'resource' | 'participant' | 'buffer';
+
+/** Конфликт расписания */
+export interface ScheduleConflict {
+  severity: ConflictSeverity;
+  type: ConflictType;
+  message: string;
+  eventId: number;
+  eventTitle: string;
+  eventDate: string;
+  startTime: string;
+  endTime: string | null;
+  resourceId?: number;
+  resourceType?: string;
+}
+
+/** Результат проверки конфликтов */
+export interface ConflictCheckResult {
+  hasConflicts: boolean;
+  canProceed: boolean;
+  hardConflicts: ScheduleConflict[];
+  warnings: ScheduleConflict[];
+}
+
+/** Метки серьёзности конфликтов */
+export const CONFLICT_SEVERITY_LABELS: Record<ConflictSeverity, string> = {
+  hard: 'Критический',
+  warning: 'Предупреждение',
+  info: 'Информация',
+};
+
+/** Цвета серьёзности конфликтов */
+export const CONFLICT_SEVERITY_COLORS: Record<ConflictSeverity, string> = {
+  hard: '#EF4444',
+  warning: '#F59E0B',
+  info: '#3B82F6',
+};
