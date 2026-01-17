@@ -89,6 +89,38 @@ export interface PerformanceDocumentUpdate {
   sort_order?: number;
 }
 
+// Готовность раздела паспорта
+export interface PassportSectionReadiness {
+  section: string;
+  section_name: string;
+  progress: number;
+  status: 'EMPTY' | 'IN_PROGRESS' | 'COMPLETE';
+  filled_categories: number;
+  total_categories: number;
+}
+
+// Готовность паспорта спектакля
+export interface PassportReadiness {
+  overall_progress: number;
+  sections: PassportSectionReadiness[];
+}
+
+// Детализированная готовность раздела
+export interface SectionDetailedReadiness {
+  section: string;
+  section_name: string;
+  progress: number;
+  filled_categories: number;
+  total_categories: number;
+  categories: {
+    category: PerformanceDocumentCategory;
+    category_name: string;
+    required: boolean;
+    filled: boolean;
+    documents_count: number;
+  }[];
+}
+
 // Названия разделов
 export const SECTION_NAMES: Record<DocumentSection, string> = {
   '1.0': '1.0 Общая часть',

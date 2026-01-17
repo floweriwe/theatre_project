@@ -12,7 +12,7 @@ from fastapi import APIRouter, Depends, Query, status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_active_user, get_db
+from app.api.deps import get_current_active_user, get_db_session
 from app.models.user import User
 from app.schemas.document_template import (
     GenerateDocumentRequest,
@@ -33,7 +33,7 @@ router = APIRouter(prefix="/document-generation", tags=["Document Generation"])
 # =============================================================================
 
 def get_generation_service(
-    session: Annotated[AsyncSession, Depends(get_db)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> DocumentGenerationService:
     """Получить сервис генерации документов."""
     return DocumentGenerationService(session)
