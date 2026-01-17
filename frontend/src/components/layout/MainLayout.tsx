@@ -1,13 +1,15 @@
 /**
  * Основной layout приложения — Modern Theatre Elegance
- * 
+ *
  * Объединяет Header, Sidebar и область контента с элегантным дизайном.
+ * Включает Command Center (Cmd+K / Ctrl+K).
  */
 
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
+import { CommandCenter, useCommandCenter } from '@/components/features/CommandCenter';
 
 /**
  * Основной layout для авторизованных страниц.
@@ -16,8 +18,14 @@ import { Sidebar } from './Sidebar';
 export function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Command Center global keyboard shortcut
+  useCommandCenter();
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Command Center (Cmd+K / Ctrl+K) */}
+      <CommandCenter />
+
       {/* Sidebar - fixed, z-50 */}
       <Sidebar
         isOpen={sidebarOpen}
@@ -30,7 +38,7 @@ export function MainLayout() {
         <Header onMenuClick={() => setSidebarOpen(true)} />
 
         {/* Контент */}
-        <main className="flex-1 p-6 lg:p-8">
+        <main id="main-content" className="flex-1 p-6 lg:p-8" tabIndex={-1}>
           {/* Максимальная ширина контента для удобства чтения */}
           <div className="max-w-7xl mx-auto">
             <Outlet />

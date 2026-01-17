@@ -13,9 +13,11 @@ import {
   Settings,
   HelpCircle,
   ChevronDown,
+  Command,
 } from 'lucide-react';
 import { cn } from '@/utils/helpers';
 import { useAuthStore } from '@/store/authStore';
+import { useCommandCenterStore } from '@/store/commandCenterStore';
 import { ROUTES } from '@/utils/constants';
 
 interface HeaderProps {
@@ -27,6 +29,7 @@ export function Header({ title = 'Обзор', onMenuClick }: HeaderProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { user, logout } = useAuthStore();
+  const openCommandCenter = useCommandCenterStore((s) => s.open);
 
   const notifications = [
     { id: 1, text: 'Новый документ добавлен', time: '5 мин назад', unread: true },
@@ -54,9 +57,22 @@ export function Header({ title = 'Обзор', onMenuClick }: HeaderProps) {
 
       {/* Right side */}
       <div className="flex items-center gap-2">
-        {/* Search */}
-        <button className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-lg hover:bg-white/5">
-          <Search className="w-5 h-5" />
+        {/* Search / Command Center Trigger */}
+        <button
+          onClick={openCommandCenter}
+          className={cn(
+            'flex items-center gap-2 px-3 py-1.5 rounded-lg',
+            'text-text-secondary hover:text-text-primary',
+            'bg-white/5 hover:bg-white/10 transition-colors',
+            'border border-white/10'
+          )}
+        >
+          <Search className="w-4 h-4" />
+          <span className="hidden sm:inline text-sm">Поиск</span>
+          <div className="hidden sm:flex items-center gap-0.5 text-xs text-text-muted ml-2">
+            <Command className="w-3 h-3" />
+            <span>K</span>
+          </div>
         </button>
 
         {/* Notifications */}

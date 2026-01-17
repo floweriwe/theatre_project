@@ -30,6 +30,7 @@ export { StepWizard, StepNavigation } from './StepWizard';
 export { ImageGallery } from './ImageGallery';
 export { PageHero } from './PageHero';
 export { FormField } from './FormField';
+export { FilterBar } from './FilterBar';
 
 // Navigation & Layout
 export { 
@@ -80,6 +81,9 @@ export {
   withErrorBoundary,
 } from './ErrorBoundary';
 export { SkipToContent } from './SkipToContent';
+export { VisuallyHidden } from './VisuallyHidden';
+export { LiveAnnouncerProvider, useLiveAnnouncer } from './LiveAnnouncer';
+export { AccessibleIcon, IconButton } from './AccessibleIcon';
 
 // Types re-export
 export type { SelectOption } from './Select';
@@ -88,3 +92,4 @@ export type { MultiSelectOption } from './MultiSelect';
 export type { VirtualColumn, VirtualTableProps } from './VirtualTable';
 export type { WizardStep } from './StepWizard';
 export type { GalleryImage } from './ImageGallery';
+export type { FilterChip, FilterPreset } from './FilterBar';
