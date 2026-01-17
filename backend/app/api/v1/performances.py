@@ -4,8 +4,10 @@ API эндпоинты модуля спектаклей.
 Роуты:
 - /performances — спектакли
 - /performances/{id}/sections — разделы паспорта
+- /performances/{id}/documents — документы спектакля
 - /performances/stats — статистика
 """
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, status
 
 from app.api.deps import CurrentUserDep, SessionDep
@@ -33,6 +35,18 @@ from app.schemas.checklist import (
     ChecklistItemCreate,
     ChecklistItemResponse,
     ChecklistItemUpdate,
+)
+from app.schemas.performance_document import (
+    PerformanceDocumentCreate,
+    PerformanceDocumentUpdate,
+    PerformanceDocumentResponse,
+    PerformanceDocumentListItem,
+    PerformanceDocumentsTree,
+    DocumentTreeSection,
+    DocumentTreeCategory,
+    BulkUploadResult,
+    SECTION_NAMES,
+    CATEGORY_NAMES,
 )
 from app.models.performance_inventory import PerformanceInventory
 from app.models.inventory import InventoryItem
@@ -821,3 +835,406 @@ async def delete_checklist_item(
         return MessageResponse(message="Элемент успешно удалён")
     except NotFoundError as e:
         raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+
+# =============================================================================
+# Performance Documents Endpoints
+# =============================================================================
+
+@router.get(
+    "/{performance_id}/documents",
+    response_model=PerformanceDocumentsTree,
+    summary="Получить документы спектакля",
+)
+async def get_performance_documents(
+    performance_id: int,
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Получить документы спектакля, сгруппированные по разделам."""
+    from collections import defaultdict
+    from sqlalchemy import select
+    from app.models.performance_document import (
+        PerformanceDocument,
+        DocumentSection,
+        PerformanceDocumentCategory,
+    )
+    from app.services.performance_document_service import performance_document_storage
+
+    # Проверяем существование спектакля
+    try:
+        await service.get_performance(performance_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    # Получаем документы
+    result = await service._session.execute(
+        select(PerformanceDocument)
+        .where(
+            PerformanceDocument.performance_id == performance_id,
+            PerformanceDocument.is_current == True,
+        )
+        .order_by(PerformanceDocument.section, PerformanceDocument.sort_order)
+    )
+    documents = result.scalars().all()
+
+    # Группируем по разделам и категориям
+    grouped: dict[DocumentSection, dict[PerformanceDocumentCategory, list]] = defaultdict(
+        lambda: defaultdict(list)
+    )
+
+    for doc in documents:
+        download_url = performance_document_storage.get_download_url(doc.file_path)
+        grouped[doc.section][doc.category].append(
+            PerformanceDocumentListItem(
+                id=doc.id,
+                file_name=doc.file_name,
+                file_size=doc.file_size,
+                mime_type=doc.mime_type,
+                section=doc.section,
+                category=doc.category,
+                display_name=doc.display_name,
+                uploaded_at=doc.uploaded_at,
+                download_url=download_url,
+            )
+        )
+
+    # Формируем дерево
+    sections = []
+    for section in DocumentSection:
+        categories = []
+        section_docs = grouped.get(section, {})
+
+        for category in PerformanceDocumentCategory:
+            cat_docs = section_docs.get(category, [])
+            if cat_docs:  # Включаем только непустые категории
+                categories.append(
+                    DocumentTreeCategory(
+                        category=category,
+                        category_name=CATEGORY_NAMES.get(category, category.value),
+                        documents=cat_docs,
+                        count=len(cat_docs),
+                    )
+                )
+
+        section_total = sum(len(c.documents) for c in categories)
+        if categories:  # Включаем только непустые разделы
+            sections.append(
+                DocumentTreeSection(
+                    section=section,
+                    section_name=SECTION_NAMES.get(section, section.value),
+                    categories=categories,
+                    total_count=section_total,
+                )
+            )
+
+    return PerformanceDocumentsTree(
+        performance_id=performance_id,
+        sections=sections,
+        total_documents=len(documents),
+    )
+
+
+@router.post(
+    "/{performance_id}/documents",
+    response_model=list[PerformanceDocumentResponse],
+    status_code=status.HTTP_201_CREATED,
+    summary="Загрузить документы",
+)
+async def upload_performance_documents(
+    performance_id: int,
+    current_user: CurrentUserDep,
+    files: List[UploadFile] = File(..., description="Файлы документов"),
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Загрузить документы спектакля с автокатегоризацией."""
+    from app.models.performance_document import PerformanceDocument
+    from app.services.performance_document_service import (
+        performance_document_storage,
+        document_categorization_service,
+        StorageException,
+    )
+
+    # Проверяем существование спектакля
+    try:
+        await service.get_performance(performance_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    # Валидация файлов
+    MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
+    ALLOWED_TYPES = {
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+        "audio/mpeg",
+        "audio/wav",
+        "video/mp4",
+        "text/plain",
+        "text/csv",
+        "application/octet-stream",  # Для специализированных файлов (dwg, c2p, cues)
+    }
+
+    uploaded_docs = []
+    try:
+        for file in files:
+            # Проверяем тип файла
+            content_type = file.content_type or "application/octet-stream"
+
+            # Читаем содержимое
+            content = await file.read()
+            file_size = len(content)
+
+            # Проверяем размер
+            if file_size > MAX_FILE_SIZE:
+                raise HTTPException(
+                    status.HTTP_400_BAD_REQUEST,
+                    f"Файл {file.filename} слишком большой (максимум 50MB)"
+                )
+
+            # Автокатегоризация
+            category, section, confidence = document_categorization_service.categorize(
+                file.filename or "document"
+            )
+
+            # Генерируем отображаемое имя
+            display_name = document_categorization_service.suggest_display_name(
+                file.filename or "document"
+            )
+
+            # Загружаем в MinIO
+            storage_path, _, mime_type = await performance_document_storage.upload(
+                file_data=content,
+                performance_id=performance_id,
+                section=section,
+                filename=file.filename or "document",
+                content_type=content_type,
+            )
+
+            # Создаём запись в БД
+            doc = PerformanceDocument(
+                performance_id=performance_id,
+                file_path=storage_path,
+                file_name=file.filename or "document",
+                file_size=file_size,
+                mime_type=mime_type,
+                section=section,
+                category=category,
+                display_name=display_name,
+                uploaded_by_id=current_user.id,
+            )
+            service._session.add(doc)
+            await service._session.flush()
+
+            # Добавляем URL для ответа
+            download_url = performance_document_storage.get_download_url(storage_path)
+
+            uploaded_docs.append(
+                PerformanceDocumentResponse(
+                    id=doc.id,
+                    performance_id=doc.performance_id,
+                    file_path=doc.file_path,
+                    file_name=doc.file_name,
+                    file_size=doc.file_size,
+                    mime_type=doc.mime_type,
+                    section=doc.section,
+                    category=doc.category,
+                    subcategory=doc.subcategory,
+                    display_name=doc.display_name,
+                    description=doc.description,
+                    sort_order=doc.sort_order,
+                    report_inclusion=doc.report_inclusion,
+                    version=doc.version,
+                    is_current=doc.is_current,
+                    uploaded_by_id=doc.uploaded_by_id,
+                    uploaded_at=doc.uploaded_at,
+                    download_url=download_url,
+                )
+            )
+
+        await service._session.commit()
+        return uploaded_docs
+
+    except StorageException as e:
+        await service._session.rollback()
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Ошибка загрузки: {str(e)}")
+    except Exception as e:
+        await service._session.rollback()
+        raise
+
+
+@router.get(
+    "/{performance_id}/documents/{document_id}",
+    response_model=PerformanceDocumentResponse,
+    summary="Получить документ",
+)
+async def get_performance_document(
+    performance_id: int,
+    document_id: int,
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Получить документ спектакля по ID."""
+    from sqlalchemy import select
+    from app.models.performance_document import PerformanceDocument
+    from app.services.performance_document_service import performance_document_storage
+
+    # Проверяем существование спектакля
+    try:
+        await service.get_performance(performance_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    # Получаем документ
+    result = await service._session.execute(
+        select(PerformanceDocument).where(
+            PerformanceDocument.id == document_id,
+            PerformanceDocument.performance_id == performance_id,
+        )
+    )
+    doc = result.scalar_one_or_none()
+
+    if not doc:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Документ не найден")
+
+    download_url = performance_document_storage.get_download_url(doc.file_path)
+
+    return PerformanceDocumentResponse(
+        id=doc.id,
+        performance_id=doc.performance_id,
+        file_path=doc.file_path,
+        file_name=doc.file_name,
+        file_size=doc.file_size,
+        mime_type=doc.mime_type,
+        section=doc.section,
+        category=doc.category,
+        subcategory=doc.subcategory,
+        display_name=doc.display_name,
+        description=doc.description,
+        sort_order=doc.sort_order,
+        report_inclusion=doc.report_inclusion,
+        version=doc.version,
+        is_current=doc.is_current,
+        uploaded_by_id=doc.uploaded_by_id,
+        uploaded_at=doc.uploaded_at,
+        download_url=download_url,
+    )
+
+
+@router.patch(
+    "/{performance_id}/documents/{document_id}",
+    response_model=PerformanceDocumentResponse,
+    summary="Обновить документ",
+)
+async def update_performance_document(
+    performance_id: int,
+    document_id: int,
+    data: PerformanceDocumentUpdate,
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Обновить метаданные документа."""
+    from sqlalchemy import select
+    from app.models.performance_document import PerformanceDocument
+    from app.services.performance_document_service import performance_document_storage
+
+    # Проверяем существование спектакля
+    try:
+        await service.get_performance(performance_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    # Получаем документ
+    result = await service._session.execute(
+        select(PerformanceDocument).where(
+            PerformanceDocument.id == document_id,
+            PerformanceDocument.performance_id == performance_id,
+        )
+    )
+    doc = result.scalar_one_or_none()
+
+    if not doc:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Документ не найден")
+
+    # Обновляем поля
+    update_data = data.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(doc, field, value)
+
+    await service._session.commit()
+    await service._session.refresh(doc)
+
+    download_url = performance_document_storage.get_download_url(doc.file_path)
+
+    return PerformanceDocumentResponse(
+        id=doc.id,
+        performance_id=doc.performance_id,
+        file_path=doc.file_path,
+        file_name=doc.file_name,
+        file_size=doc.file_size,
+        mime_type=doc.mime_type,
+        section=doc.section,
+        category=doc.category,
+        subcategory=doc.subcategory,
+        display_name=doc.display_name,
+        description=doc.description,
+        sort_order=doc.sort_order,
+        report_inclusion=doc.report_inclusion,
+        version=doc.version,
+        is_current=doc.is_current,
+        uploaded_by_id=doc.uploaded_by_id,
+        uploaded_at=doc.uploaded_at,
+        download_url=download_url,
+    )
+
+
+@router.delete(
+    "/{performance_id}/documents/{document_id}",
+    response_model=MessageResponse,
+    summary="Удалить документ",
+)
+async def delete_performance_document(
+    performance_id: int,
+    document_id: int,
+    current_user: CurrentUserDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """Удалить документ спектакля."""
+    from sqlalchemy import select, delete
+    from app.models.performance_document import PerformanceDocument
+    from app.services.performance_document_service import performance_document_storage
+
+    # Проверяем существование спектакля
+    try:
+        await service.get_performance(performance_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    # Получаем документ
+    result = await service._session.execute(
+        select(PerformanceDocument).where(
+            PerformanceDocument.id == document_id,
+            PerformanceDocument.performance_id == performance_id,
+        )
+    )
+    doc = result.scalar_one_or_none()
+
+    if not doc:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Документ не найден")
+
+    # Удаляем файл из MinIO
+    await performance_document_storage.delete(doc.file_path)
+
+    # Удаляем запись из БД
+    await service._session.execute(
+        delete(PerformanceDocument).where(PerformanceDocument.id == document_id)
+    )
+    await service._session.commit()
+
+    return MessageResponse(message="Документ успешно удалён")

@@ -51,6 +51,12 @@ from app.models.schedule import (
 )
 from app.models.department import Department, DepartmentType
 from app.models.venue import Venue, VenueType
+from app.models.performance_document import (
+    PerformanceDocument,
+    DocumentSection,
+    PerformanceDocumentCategory,
+    ReportInclusion,
+)
 
 __all__ = [
     # User
@@ -102,4 +108,9 @@ __all__ = [
     # Venue
     "Venue",
     "VenueType",
+    # Performance Documents
+    "PerformanceDocument",
+    "DocumentSection",
+    "PerformanceDocumentCategory",
+    "ReportInclusion",
 ]
