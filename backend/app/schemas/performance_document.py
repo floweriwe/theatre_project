@@ -130,6 +130,39 @@ class BulkUploadResult(BaseModel):
 
 
 # =============================================================================
+# Passport Readiness Schemas
+# =============================================================================
+
+class PassportSectionReadiness(BaseModel):
+    """Готовность раздела паспорта."""
+
+    section: str  # "1.0", "2.0", "3.0", "4.0"
+    section_name: str
+    progress: int  # 0-100
+    status: str  # "EMPTY", "IN_PROGRESS", "COMPLETE"
+    filled_categories: int
+    total_categories: int
+
+
+class PassportReadinessResponse(BaseModel):
+    """Общая готовность паспорта спектакля."""
+
+    overall_progress: int  # 0-100
+    sections: list[PassportSectionReadiness]
+
+
+class SectionDetailedReadiness(BaseModel):
+    """Детализированная готовность раздела."""
+
+    section: str
+    section_name: str
+    progress: int
+    filled_categories: int
+    total_categories: int
+    categories: list[dict]  # {category, category_name, required, filled, documents_count}
+
+
+# =============================================================================
 # Section/Category Names
 # =============================================================================
 

@@ -12,6 +12,10 @@ export const performanceDocumentKeys = {
     [...performanceDocumentKeys.all, 'tree', performanceId] as const,
   detail: (performanceId: number, documentId: number) =>
     [...performanceDocumentKeys.all, 'detail', performanceId, documentId] as const,
+  passportReadiness: (performanceId: number) =>
+    [...performanceDocumentKeys.all, 'passport-readiness', performanceId] as const,
+  sectionReadiness: (performanceId: number, section: string) =>
+    [...performanceDocumentKeys.all, 'section-readiness', performanceId, section] as const,
 };
 
 /**
@@ -100,5 +104,38 @@ export function useDeletePerformanceDocument(performanceId: number) {
         queryKey: performanceDocumentKeys.tree(performanceId),
       });
     },
+  });
+}
+
+/**
+ * Получить дерево документов с категориями.
+ */
+export function useDocumentsTree(performanceId: number) {
+  return useQuery({
+    queryKey: performanceDocumentKeys.tree(performanceId),
+    queryFn: () => performanceDocumentService.getDocumentsTree(performanceId),
+    enabled: !!performanceId,
+  });
+}
+
+/**
+ * Получить готовность паспорта.
+ */
+export function usePassportReadiness(performanceId: number) {
+  return useQuery({
+    queryKey: performanceDocumentKeys.passportReadiness(performanceId),
+    queryFn: () => performanceDocumentService.getPassportReadiness(performanceId),
+    enabled: !!performanceId,
+  });
+}
+
+/**
+ * Получить детальную готовность раздела.
+ */
+export function useSectionReadiness(performanceId: number, section: string) {
+  return useQuery({
+    queryKey: performanceDocumentKeys.sectionReadiness(performanceId, section),
+    queryFn: () => performanceDocumentService.getSectionReadiness(performanceId, section),
+    enabled: !!performanceId && !!section,
   });
 }

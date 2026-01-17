@@ -2,8 +2,8 @@
 
 > **BrainGrid Requirement:** REQ-1
 > **Последнее обновление:** 2026-01-17
-> **Текущая фаза:** Phase 8 завершена (Document Storage)
-> **Общая готовность:** 100% MVP + Phases 6-8
+> **Текущая фаза:** Phase 9 завершена (Document Organization)
+> **Общая готовность:** 100% MVP + Phases 6-9
 > **Итоговый отчёт:** см. `docs/PHASE_1-4_SUMMARY.md`
 
 ---
@@ -271,6 +271,43 @@
 
 ---
 
+## Phase 9: Document Organization & Reports (6 часов) ✅
+
+**BrainGrid:** REQ-12 (8 tasks completed)
+**Ветка:** `feature/REQ-12-phase9-document-organization`
+**Цель:** Иерархическое дерево документов и отчёт готовности паспорта.
+**Результат:** Document Management Enhancement
+
+### Backend (5 tasks)
+
+| # | Задача | Статус |
+|---|--------|--------|
+| TASK-1 | DocumentCategory Domain Model (existing enums used) | ✅ |
+| TASK-2 | Document Model Category FK (already implemented) | ✅ |
+| TASK-3 | DocumentTreeService (hierarchical tree builder) | ✅ |
+| TASK-4 | PassportReadinessService (completion calculation) | ✅ |
+| TASK-5 | API endpoints (tree + passport-readiness) | ✅ |
+
+### Frontend (3 tasks)
+
+| # | Задача | Статус |
+|---|--------|--------|
+| TASK-6 | DocumentTree component (collapsible sections) | ✅ |
+| TASK-7 | PassportReadinessCard (circular progress + bars) | ✅ |
+| TASK-8 | PerformanceDocumentsTab integration | ✅ |
+
+### Критерии завершения Phase 9
+- [x] DocumentTreeService построение дерева из документов
+- [x] PassportReadinessService расчёт по 24 обязательным категориям
+- [x] GET /performances/{id}/documents/tree endpoint
+- [x] GET /performances/{id}/passport-readiness endpoint
+- [x] GET /performances/{id}/passport-readiness/{section} endpoint
+- [x] DocumentTree с expand/collapse разделов и категорий
+- [x] PassportReadinessCard с круговым индикатором и прогресс-барами
+- [x] Интеграция в PerformanceDocumentsTab (grid layout)
+
+---
+
 ## Сводка по фазам
 
 | Phase | Название | Часы | Результат | Статус |
@@ -281,7 +318,10 @@
 | 4 | Frontend Polish | 18h | 90% → 95% | ✅ Готово |
 | 5 | Testing & QA | 12h | 95% → 100% | ✅ Готово |
 | 6 | File Handling | 8h | Enhancement | ✅ Готово |
-| **Σ** | **ИТОГО** | **99h** | **100% + Enh** | **MVP + PHASE 6** |
+| 7 | Document Templates | 6h | Enhancement | ✅ Готово |
+| 8 | Document Storage | 8h | Enhancement | ✅ Готово |
+| 9 | Document Organization | 6h | Enhancement | ✅ Готово |
+| **Σ** | **ИТОГО** | **119h** | **100% + Enh** | **MVP + PHASE 9** |
 
 ---
 
@@ -296,6 +336,31 @@
 ---
 
 ## Лог прогресса
+
+### 2026-01-17 (Phase 9 завершена - Document Organization & Reports)
+**Phase 9 Document Organization & Reports завершена:**
+- Реализованы все 8 задач из REQ-12
+- **Backend:**
+  - DocumentTreeService для построения иерархического дерева документов
+  - PassportReadinessService для расчёта готовности паспорта (24 категории)
+  - API endpoint GET /performances/{id}/documents/tree
+  - API endpoint GET /performances/{id}/passport-readiness
+  - API endpoint GET /performances/{id}/passport-readiness/{section}
+  - Pydantic schemas для готовности паспорта
+- **Frontend:**
+  - DocumentTree component с expand/collapse разделов
+  - PassportReadinessCard с круговым индикатором и прогресс-барами
+  - React Query hooks (useDocumentsTree, usePassportReadiness)
+  - PerformanceDocumentsTab интеграция (grid layout)
+- **Особенности:**
+  - Расчёт готовности по 4 разделам: Общая часть, Производство, Эксплуатация, Приложение
+  - 24 обязательные категории для полного паспорта
+  - Статусы разделов: EMPTY, IN_PROGRESS, COMPLETE
+  - Color-coded progress bars
+- **Статистика:**
+  - 15+ файлов изменено/создано
+  - TypeScript check: passed
+- **PR:** pending
 
 ### 2026-01-17 (Phase 8 завершена - Document Storage & Upload)
 **Phase 8 Performance Document Storage & Upload завершена:**

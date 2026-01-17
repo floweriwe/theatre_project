@@ -45,6 +45,8 @@ from app.schemas.performance_document import (
     DocumentTreeSection,
     DocumentTreeCategory,
     BulkUploadResult,
+    PassportReadinessResponse,
+    SectionDetailedReadiness,
     SECTION_NAMES,
     CATEGORY_NAMES,
 )
@@ -1238,3 +1240,104 @@ async def delete_performance_document(
     await service._session.commit()
 
     return MessageResponse(message="Документ успешно удалён")
+
+
+# =============================================================================
+# Document Tree & Passport Readiness Endpoints
+# =============================================================================
+
+@router.get(
+    "/{performance_id}/documents/tree",
+    response_model=PerformanceDocumentsTree,
+    summary="Получить дерево документов",
+)
+async def get_documents_tree(
+    performance_id: int,
+    current_user: CurrentUserDep,
+    session: SessionDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """
+    Получить иерархическое дерево документов спектакля.
+
+    Документы сгруппированы по разделам (1.0-4.0) и категориям
+    с подсчётом количества в каждой группе.
+    """
+    from app.services.document_tree_service import document_tree_service
+
+    # Проверяем существование спектакля
+    try:
+        await service.get_performance(performance_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    return await document_tree_service.get_document_tree(session, performance_id)
+
+
+@router.get(
+    "/{performance_id}/passport-readiness",
+    response_model=PassportReadinessResponse,
+    summary="Готовность паспорта спектакля",
+)
+async def get_passport_readiness(
+    performance_id: int,
+    current_user: CurrentUserDep,
+    session: SessionDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """
+    Получить отчёт о готовности паспорта спектакля.
+
+    Рассчитывает процент заполненности по каждому разделу
+    на основе обязательных категорий документов.
+    """
+    from app.services.passport_readiness_service import PassportReadinessService
+
+    # Проверяем существование спектакля
+    try:
+        await service.get_performance(performance_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    readiness_service = PassportReadinessService(session)
+    return await readiness_service.get_passport_readiness(performance_id)
+
+
+@router.get(
+    "/{performance_id}/passport-readiness/{section}",
+    response_model=SectionDetailedReadiness,
+    summary="Детали готовности раздела",
+)
+async def get_section_readiness(
+    performance_id: int,
+    section: str,
+    current_user: CurrentUserDep,
+    session: SessionDep,
+    service: PerformanceService = PerformanceServiceDep,
+):
+    """
+    Получить детализированную готовность раздела паспорта.
+
+    Показывает статус каждой категории внутри раздела:
+    какие категории заполнены, сколько документов в каждой.
+    """
+    from app.services.passport_readiness_service import PassportReadinessService
+    from app.models.performance_document import DocumentSection
+
+    # Проверяем существование спектакля
+    try:
+        await service.get_performance(performance_id)
+    except NotFoundError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, e.detail)
+
+    # Преобразуем строку раздела в enum
+    try:
+        section_enum = DocumentSection(section)
+    except ValueError:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            f"Неверный раздел: {section}. Допустимые значения: 1.0, 2.0, 3.0, 4.0"
+        )
+
+    readiness_service = PassportReadinessService(session)
+    return await readiness_service.get_section_readiness(performance_id, section_enum)

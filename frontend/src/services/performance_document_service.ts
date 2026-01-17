@@ -6,6 +6,8 @@ import type {
   PerformanceDocument,
   PerformanceDocumentsTree,
   PerformanceDocumentUpdate,
+  PassportReadiness,
+  SectionDetailedReadiness,
 } from '@/types/performance_document';
 
 const BASE_URL = '/performances';
@@ -90,6 +92,39 @@ export const performanceDocumentService = {
    */
   downloadDocument(downloadUrl: string): void {
     window.open(downloadUrl, '_blank');
+  },
+
+  /**
+   * Получить дерево документов с подсчётом по категориям.
+   */
+  async getDocumentsTree(performanceId: number): Promise<PerformanceDocumentsTree> {
+    const response = await api.get<PerformanceDocumentsTree>(
+      `${BASE_URL}/${performanceId}/documents/tree`
+    );
+    return response.data;
+  },
+
+  /**
+   * Получить готовность паспорта спектакля.
+   */
+  async getPassportReadiness(performanceId: number): Promise<PassportReadiness> {
+    const response = await api.get<PassportReadiness>(
+      `${BASE_URL}/${performanceId}/passport-readiness`
+    );
+    return response.data;
+  },
+
+  /**
+   * Получить детальную готовность раздела.
+   */
+  async getSectionReadiness(
+    performanceId: number,
+    section: string
+  ): Promise<SectionDetailedReadiness> {
+    const response = await api.get<SectionDetailedReadiness>(
+      `${BASE_URL}/${performanceId}/passport-readiness/${section}`
+    );
+    return response.data;
   },
 };
 
