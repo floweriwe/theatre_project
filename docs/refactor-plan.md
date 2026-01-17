@@ -2,8 +2,8 @@
 
 > **BrainGrid Requirement:** REQ-1
 > **Последнее обновление:** 2026-01-18
-> **Текущая фаза:** Phase 10 завершена, Phases 11-15 запланированы
-> **Общая готовность:** 100% MVP + Phases 6-10
+> **Текущая фаза:** Phase 11 завершена, Phases 12-15 запланированы
+> **Общая готовность:** 100% MVP + Phases 6-11
 > **Итоговый отчёт:** см. `docs/PHASE_1-4_SUMMARY.md`
 > **Расширенная спецификация:** см. `docs/MVP_PHASE_10_PLUS_SPECIFICATION.md`
 
@@ -347,28 +347,40 @@
 
 ---
 
-## Phase 11: Advanced Analytics & Reporting (~55 часов) ⏳
+## Phase 11: Advanced Analytics & Reporting (~55 часов) ✅
 
 **BrainGrid:** REQ-15
 **Цель:** Аналитика и генерация отчётов.
+**Завершено:** 2026-01-18
 
 ### Backend (20h)
 | # | Задача | Статус |
 |---|--------|--------|
-| 11.1 | AnalyticsAggregationService (Redis caching) | ⏳ |
-| 11.2 | ReportTemplateEngine (Jinja2 + WeasyPrint) | ⏳ |
-| 11.3 | ScheduledReportService (background tasks) | ⏳ |
-| 11.4 | Analytics API endpoints | ⏳ |
+| 11.1 | Analytics DB models (ReportTemplate, ScheduledReport, AnalyticsSnapshot) | ✅ |
+| 11.2 | PerformanceAnalyticsService (overview, readiness) | ✅ |
+| 11.3 | InventoryAnalyticsService (overview, usage report) | ✅ |
+| 11.4 | ReportService (templates, scheduled, generation) | ✅ |
+| 11.5 | Analytics API endpoints | ✅ |
 
 ### Frontend (35h)
 | # | Задача | Статус |
 |---|--------|--------|
-| 11.5 | AnalyticsDashboard (widget-based) | ⏳ |
-| 11.6 | PerformanceReadinessWidget | ⏳ |
-| 11.7 | InventoryUsageChart (Recharts) | ⏳ |
-| 11.8 | IdleEquipmentReport | ⏳ |
-| 11.9 | ReportBuilder UI (block-based) | ⏳ |
-| 11.10 | ReportPreview + Download | ⏳ |
+| 11.6 | PerformanceAnalyticsWidget | ✅ |
+| 11.7 | InventoryAnalyticsWidget | ✅ |
+| 11.8 | ReportTemplatesManager | ✅ |
+| 11.9 | ScheduledReportsManager | ✅ |
+| 11.10 | ReportsPage integration | ✅ |
+
+### Критерии завершения Phase 11
+- [x] DB схема: report_templates, scheduled_reports, analytics_snapshots
+- [x] Alembic миграция: 015_analytics_tables
+- [x] Pydantic схемы: analytics.py (ReportTemplate, ScheduledReport, etc.)
+- [x] Services: PerformanceAnalyticsService, InventoryAnalyticsService, ReportService
+- [x] API: /analytics/performance, /analytics/inventory, /reports/templates, /reports/scheduled
+- [x] Frontend: PerformanceAnalyticsWidget, InventoryAnalyticsWidget
+- [x] Frontend: ReportTemplatesManager, ScheduledReportsManager
+- [x] TypeScript типы: analytics.ts
+- [x] Интеграция в ReportsPage с табами (overview, templates, scheduled)
 
 ---
 

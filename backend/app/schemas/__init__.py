@@ -125,6 +125,30 @@ from app.schemas.performance_cast import (
     PerformanceCastListResponse,
     PerformanceCastGroupedResponse,
 )
+from app.schemas.analytics import (
+    # Enums
+    ReportCategory,
+    ReportFormat,
+    ScheduleFrequency,
+    AnalyticsMetricType,
+    # Analytics schemas
+    PerformanceAnalytics,
+    PerformanceReadinessSummary,
+    InventoryAnalytics,
+    InventoryUsageReport,
+    # Report template schemas
+    ReportTemplateCreate,
+    ReportTemplateUpdate,
+    ReportTemplateResponse,
+    ReportTemplateListResponse,
+    # Scheduled report schemas
+    ScheduledReportCreate,
+    ScheduledReportUpdate,
+    ScheduledReportResponse,
+    # Report generation schemas
+    ReportGenerationRequest,
+    ReportGenerationResponse,
+)
 
 __all__ = [
     # Base
@@ -223,4 +247,22 @@ __all__ = [
     "PerformanceCastResponse",
     "PerformanceCastListResponse",
     "PerformanceCastGroupedResponse",
+    # Analytics
+    "ReportCategory",
+    "ReportFormat",
+    "ScheduleFrequency",
+    "AnalyticsMetricType",
+    "PerformanceAnalytics",
+    "PerformanceReadinessSummary",
+    "InventoryAnalytics",
+    "InventoryUsageReport",
+    "ReportTemplateCreate",
+    "ReportTemplateUpdate",
+    "ReportTemplateResponse",
+    "ReportTemplateListResponse",
+    "ScheduledReportCreate",
+    "ScheduledReportUpdate",
+    "ScheduledReportResponse",
+    "ReportGenerationRequest",
+    "ReportGenerationResponse",
 ]
