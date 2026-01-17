@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 
 class EventType(str, PyEnum):
     """Тип события."""
-    
+
     PERFORMANCE = "performance"      # Спектакль
     REHEARSAL = "rehearsal"          # Репетиция
     TECH_REHEARSAL = "tech_rehearsal"  # Технический прогон
@@ -42,6 +42,46 @@ class EventType(str, PyEnum):
     MEETING = "meeting"              # Совещание
     MAINTENANCE = "maintenance"      # Техническое обслуживание
     OTHER = "other"                  # Прочее
+
+
+# Event type color configuration
+EVENT_TYPE_CONFIG = {
+    EventType.PERFORMANCE: {
+        "color": "#8B5CF6",  # Purple
+        "label": "Спектакль",
+        "icon": "theater",
+    },
+    EventType.REHEARSAL: {
+        "color": "#3B82F6",  # Blue
+        "label": "Репетиция",
+        "icon": "users",
+    },
+    EventType.TECH_REHEARSAL: {
+        "color": "#F97316",  # Orange
+        "label": "Технический прогон",
+        "icon": "settings",
+    },
+    EventType.DRESS_REHEARSAL: {
+        "color": "#EC4899",  # Pink
+        "label": "Генеральная репетиция",
+        "icon": "star",
+    },
+    EventType.MEETING: {
+        "color": "#22C55E",  # Green
+        "label": "Совещание",
+        "icon": "calendar",
+    },
+    EventType.MAINTENANCE: {
+        "color": "#94A3B8",  # Gray
+        "label": "Тех. обслуживание",
+        "icon": "wrench",
+    },
+    EventType.OTHER: {
+        "color": "#64748B",  # Slate
+        "label": "Прочее",
+        "icon": "circle",
+    },
+}
 
 
 class EventStatus(str, PyEnum):
@@ -107,7 +147,20 @@ class ScheduleEvent(Base, AuditMixin):
     
     # Дополнительные данные
     extra_data: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
-    
+
+    # Recurrence (RFC 5545 RRule format)
+    recurrence_rule: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    # Parent event for recurring instances (null for master events)
+    parent_event_id: Mapped[int | None] = mapped_column(
+        ForeignKey("schedule_events.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True
+    )
+    # Original date for recurring instances (for modifications)
+    original_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    # Is this event an exception to a recurring series?
+    is_exception: Mapped[bool] = mapped_column(Boolean, default=False)
+
     # Флаги
     is_public: Mapped[bool] = mapped_column(Boolean, default=False)  # Показывать на сайте
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)

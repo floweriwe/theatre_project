@@ -3,18 +3,41 @@
  *
  * Advanced calendar with Month, Week, Day views using react-big-calendar.
  * ArtMechanics style with golden accents and dark theatre theme.
+ *
+ * Phase 14 enhancements:
+ * - Drag-and-drop event moving
+ * - Event resizing
+ * - QuickEventPopover for event preview
+ * - Custom event colors support
  */
 
 import { useState, useMemo, useCallback } from 'react';
 import { Calendar as BigCalendar, Views, dateFnsLocalizer, View } from 'react-big-calendar';
+import withDragAndDrop, { EventInteractionArgs } from 'react-big-calendar/lib/addons/dragAndDrop';
 import type { ToolbarProps } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
 import { cn } from '@/utils/helpers';
 import type { ScheduleEvent, EventType } from '@/types/schedule_types';
+import { QuickEventPopover } from './QuickEventPopover';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import '@/styles/calendar.css';
+
+// Calendar event interface (must be defined before DnDCalendar)
+interface CalendarEvent {
+  id: number;
+  title: string;
+  start: Date;
+  end: Date;
+  resource: ScheduleEvent;
+}
+
+// Create DnD-enabled calendar
+// Using any to work around react-big-calendar DnD typing issues
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const DnDCalendar = withDragAndDrop<CalendarEvent, object>(BigCalendar as any);
 
 // Configure date-fns localizer
 const locales = {
@@ -68,20 +91,18 @@ const EVENT_COLORS: Record<EventType, { bg: string; border: string; text: string
   },
 };
 
-interface CalendarEvent {
-  id: number;
-  title: string;
-  start: Date;
-  end: Date;
-  resource: ScheduleEvent;
-}
-
 interface CalendarViewProps {
   events: ScheduleEvent[];
   onSelectEvent?: (event: ScheduleEvent) => void;
   onSelectSlot?: (slotInfo: { start: Date; end: Date }) => void;
   onNavigate?: (date: Date) => void;
+  onEventDrop?: (eventId: number, start: Date, end: Date) => void;
+  onEventResize?: (eventId: number, start: Date, end: Date) => void;
+  onEventEdit?: (eventId: number) => void;
+  onEventDelete?: (eventId: number) => void;
+  onEventStatusChange?: (eventId: number, status: 'confirmed' | 'in_progress' | 'cancelled') => void;
   loading?: boolean;
+  draggable?: boolean;
 }
 
 export function CalendarView({
@@ -89,10 +110,20 @@ export function CalendarView({
   onSelectEvent,
   onSelectSlot,
   onNavigate,
+  onEventDrop,
+  onEventResize,
+  onEventEdit,
+  onEventDelete,
+  onEventStatusChange,
   loading = false,
+  draggable = true,
 }: CalendarViewProps) {
   const [view, setView] = useState<View>(Views.MONTH);
   const [date, setDate] = useState(new Date());
+
+  // Popover state
+  const [popoverEvent, setPopoverEvent] = useState<ScheduleEvent | null>(null);
+  const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
 
   // Transform events to calendar format
   const calendarEvents: CalendarEvent[] = useMemo(() => {
@@ -134,19 +165,100 @@ export function CalendarView({
     onNavigate?.(newDate);
   }, [onNavigate]);
 
-  // Handle event selection
-  const handleSelectEvent = useCallback((event: CalendarEvent) => {
-    onSelectEvent?.(event.resource);
+  // Handle event selection - show popover
+  const handleSelectEvent = useCallback((event: object, e: React.SyntheticEvent<HTMLElement>) => {
+    const calEvent = event as CalendarEvent;
+    setPopoverEvent(calEvent.resource);
+    setPopoverAnchor(e.currentTarget as HTMLElement);
+  }, []);
+
+  // Handle event click (for onSelectEvent callback)
+  const handleEventDoubleClick = useCallback((event: object) => {
+    const calEvent = event as CalendarEvent;
+    onSelectEvent?.(calEvent.resource);
   }, [onSelectEvent]);
+
+  // Close popover
+  const handleClosePopover = useCallback(() => {
+    setPopoverEvent(null);
+    setPopoverAnchor(null);
+  }, []);
+
+  // Handle drag-and-drop event move
+  const handleEventDrop = useCallback((args: EventInteractionArgs<object>) => {
+    const calEvent = args.event as CalendarEvent;
+    if (onEventDrop) {
+      const startDate = args.start instanceof Date ? args.start : new Date(args.start);
+      const endDate = args.end instanceof Date ? args.end : new Date(args.end);
+      onEventDrop(calEvent.id, startDate, endDate);
+    }
+  }, [onEventDrop]);
+
+  // Handle event resize
+  const handleEventResize = useCallback((args: EventInteractionArgs<object>) => {
+    const calEvent = args.event as CalendarEvent;
+    if (onEventResize) {
+      const startDate = args.start instanceof Date ? args.start : new Date(args.start);
+      const endDate = args.end instanceof Date ? args.end : new Date(args.end);
+      onEventResize(calEvent.id, startDate, endDate);
+    }
+  }, [onEventResize]);
+
+  // Handle status changes from popover
+  const handleConfirm = useCallback((eventId: number) => {
+    onEventStatusChange?.(eventId, 'confirmed');
+    handleClosePopover();
+  }, [onEventStatusChange, handleClosePopover]);
+
+  const handleStart = useCallback((eventId: number) => {
+    onEventStatusChange?.(eventId, 'in_progress');
+    handleClosePopover();
+  }, [onEventStatusChange, handleClosePopover]);
+
+  const handleCancel = useCallback((eventId: number) => {
+    onEventStatusChange?.(eventId, 'cancelled');
+    handleClosePopover();
+  }, [onEventStatusChange, handleClosePopover]);
+
+  const handleEdit = useCallback((eventId: number) => {
+    handleClosePopover();
+    onEventEdit?.(eventId);
+  }, [onEventEdit, handleClosePopover]);
+
+  const handleDelete = useCallback((eventId: number) => {
+    handleClosePopover();
+    onEventDelete?.(eventId);
+  }, [onEventDelete, handleClosePopover]);
 
   // Handle slot selection (empty time slot)
   const handleSelectSlot = useCallback((slotInfo: { start: Date; end: Date }) => {
     onSelectSlot?.(slotInfo);
   }, [onSelectSlot]);
 
-  // Custom event style getter
-  const eventStyleGetter = useCallback((event: CalendarEvent) => {
-    const colors = EVENT_COLORS[event.resource.eventType] || EVENT_COLORS.other;
+  // Custom event style getter - supports custom colors per event
+  const eventStyleGetter = useCallback((event: object) => {
+    const calEvent = event as CalendarEvent;
+    // Use custom color if available, otherwise fall back to type-based color
+    const customColor = calEvent.resource.color;
+
+    if (customColor) {
+      // Create translucent background from custom color
+      return {
+        style: {
+          backgroundColor: `${customColor}25`, // 15% opacity
+          borderLeft: `3px solid ${customColor}`,
+          color: customColor,
+          borderRadius: '4px',
+          border: 'none',
+          fontSize: '0.875rem',
+          padding: '2px 8px',
+          cursor: draggable ? 'grab' : 'pointer',
+        },
+      };
+    }
+
+    // Fall back to type-based colors
+    const colors = EVENT_COLORS[calEvent.resource.eventType] || EVENT_COLORS.other;
 
     return {
       style: {
@@ -157,9 +269,10 @@ export function CalendarView({
         border: 'none',
         fontSize: '0.875rem',
         padding: '2px 8px',
+        cursor: draggable ? 'grab' : 'pointer',
       },
     };
-  }, []);
+  }, [draggable]);
 
   // Custom toolbar component
   const CustomToolbar = useCallback((props: ToolbarProps<CalendarEvent, object>) => {
@@ -237,14 +350,15 @@ export function CalendarView({
   }, []);
 
   // Custom event component for better styling
-  const CustomEvent = useCallback(({ event }: { event: CalendarEvent }) => {
+  const CustomEvent = useCallback(({ event }: { event: object }) => {
+    const calEvent = event as CalendarEvent;
     return (
       <div className="flex flex-col h-full">
-        <div className="font-medium truncate">{event.title}</div>
-        {event.resource.venue && (
+        <div className="font-medium truncate">{calEvent.title}</div>
+        {calEvent.resource.venue && (
           <div className="flex items-center gap-1 text-xs opacity-80 truncate">
             <MapPin className="w-3 h-3 flex-shrink-0" />
-            <span>{event.resource.venue}</span>
+            <span>{calEvent.resource.venue}</span>
           </div>
         )}
       </div>
@@ -273,7 +387,7 @@ export function CalendarView({
 
   return (
     <div className="calendar-container bg-surface-light rounded-xl border border-white/10 p-6">
-      <BigCalendar
+      <DnDCalendar
         localizer={localizer}
         events={calendarEvents}
         view={view}
@@ -281,8 +395,13 @@ export function CalendarView({
         onView={handleViewChange}
         onNavigate={handleNavigate}
         onSelectEvent={handleSelectEvent}
+        onDoubleClickEvent={handleEventDoubleClick}
         onSelectSlot={handleSelectSlot}
+        onEventDrop={handleEventDrop}
+        onEventResize={handleEventResize}
         selectable
+        resizable={draggable}
+        draggableAccessor={() => draggable}
         popup
         eventPropGetter={eventStyleGetter}
         components={{
@@ -323,6 +442,31 @@ export function CalendarView({
         style={{ height: 600 }}
         culture="ru"
       />
+
+      {/* Quick Event Popover */}
+      {popoverEvent && (
+        <QuickEventPopover
+          event={{
+            id: popoverEvent.id,
+            title: popoverEvent.title,
+            eventType: popoverEvent.eventType,
+            status: popoverEvent.status,
+            startTime: popoverEvent.startTime,
+            endTime: popoverEvent.endTime,
+            venueName: popoverEvent.venue,
+            color: popoverEvent.color,
+            participantsCount: popoverEvent.participants?.length,
+            performanceTitle: popoverEvent.performanceTitle,
+          }}
+          anchorEl={popoverAnchor}
+          onClose={handleClosePopover}
+          onEdit={onEventEdit ? handleEdit : undefined}
+          onDelete={onEventDelete ? handleDelete : undefined}
+          onConfirm={onEventStatusChange ? handleConfirm : undefined}
+          onStart={onEventStatusChange ? handleStart : undefined}
+          onCancel={onEventStatusChange ? handleCancel : undefined}
+        />
+      )}
     </div>
   );
 }
