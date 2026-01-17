@@ -2,8 +2,8 @@
 
 > **BrainGrid Requirement:** REQ-1
 > **Последнее обновление:** 2026-01-18
-> **Текущая фаза:** Phase 11 завершена, Phases 12-15 запланированы
-> **Общая готовность:** 100% MVP + Phases 6-11
+> **Текущая фаза:** Phase 13 завершена, Phases 12, 14-15 запланированы
+> **Общая готовность:** 100% MVP + Phases 6-13
 > **Итоговый отчёт:** см. `docs/PHASE_1-4_SUMMARY.md`
 > **Расширенная спецификация:** см. `docs/MVP_PHASE_10_PLUS_SPECIFICATION.md`
 
@@ -411,27 +411,42 @@
 
 ---
 
-## Phase 13: Inventory & Equipment Enhancement (~50 часов) ⏳
+## Phase 13: Inventory & Equipment Enhancement (~50 часов) ✅
 
 **BrainGrid:** REQ-14
 **Цель:** Визуальный каталог инвентаря с bulk операциями.
+**Завершено:** 2026-01-18
 
 ### Backend (15h)
 | # | Задача | Статус |
 |---|--------|--------|
-| 13.1 | InventoryImage model (multi-photo) | ⏳ |
-| 13.2 | BulkOperationsService | ⏳ |
-| 13.3 | Tag system (colors, hierarchy) | ⏳ |
-| 13.4 | QR code generation | ⏳ |
+| 13.1 | InventoryPhoto model enhancements (thumbnail, dimensions, file_size) | ✅ |
+| 13.2 | BulkOperationsService (status, transfer, delete, tags, category) | ✅ |
+| 13.3 | Tag system (icon, description, many-to-many with inventory) | ✅ |
+| 13.4 | QRCodeService (single, batch, label sheet generation) | ✅ |
 
 ### Frontend (35h)
 | # | Задача | Статус |
 |---|--------|--------|
-| 13.5 | Grid/List/Table/Gallery views | ⏳ |
-| 13.6 | ImageUploader (crop, rotate) | ⏳ |
-| 13.7 | BulkActionBar component | ⏳ |
-| 13.8 | CategoryTreeFilter | ⏳ |
-| 13.9 | TagManager component | ⏳ |
+| 13.5 | ViewSwitcher (Grid/List/Table/Gallery modes) | ✅ |
+| 13.6 | ImageUploader (drag-drop, rotate, preview, primary selection) | ✅ |
+| 13.7 | BulkActionBar (status, transfer, tags, category, delete) | ✅ |
+| 13.8 | CategoryTreeFilter (hierarchical, expandable, search) | ✅ |
+| 13.9 | TagManager (picker, create, delete, color palette) | ✅ |
+
+### Критерии завершения Phase 13
+- [x] InventoryPhoto model enhanced with thumbnail, dimensions, file_size
+- [x] inventory_item_tags junction table for many-to-many
+- [x] Tag model enhanced with icon, description
+- [x] BulkOperationsService with 6 bulk operations
+- [x] QRCodeService for QR generation
+- [x] API endpoints for bulk operations and QR codes
+- [x] ViewSwitcher with 4 view modes
+- [x] ImageUploader with rotation and preview
+- [x] BulkActionBar for selected items
+- [x] CategoryTreeFilter with search
+- [x] TagManager with CRUD and color picker
+- [x] cn utility function (clsx + tailwind-merge)
 
 ---
 
@@ -500,14 +515,14 @@
 | 9 | Document Organization | 6h | Enhancement | ✅ Готово |
 | **Σ** | **MVP Complete** | **119h** | **100%** | **✅** |
 
-### Planned (Extended MVP - Phases 10-15)
+### Extended MVP (Phases 10-15)
 
 | Phase | Название | Часы | BrainGrid | Приоритет | Статус |
 |-------|----------|------|-----------|-----------|--------|
-| 10 | Performance Management Hub | ~65h | REQ-13 | P0 | ⏳ Planned |
-| 11 | Advanced Analytics & Reporting | ~55h | REQ-15 | P1 | ⏳ Planned |
+| 10 | Performance Management Hub | ~65h | REQ-13 | P0 | ✅ Готово |
+| 11 | Advanced Analytics & Reporting | ~55h | REQ-15 | P1 | ✅ Готово |
 | 12 | UI/UX Overhaul | ~70h | REQ-18 | P1 | ⏳ Planned |
-| 13 | Inventory & Equipment Enhancement | ~50h | REQ-14 | P2 | ⏳ Planned |
+| 13 | Inventory & Equipment Enhancement | ~50h | REQ-14 | P2 | ✅ Готово |
 | 14 | Schedule & Calendar Pro | ~40h | REQ-16 | P2 | ⏳ Planned |
 | 15 | System Polish & Branding | ~40h | REQ-17 | P3 | ⏳ Planned |
 | **Σ** | **Extended MVP** | **~320h** | | | **⏳** |
@@ -533,6 +548,33 @@
 ---
 
 ## Лог прогресса
+
+### 2026-01-18 (Phase 13 завершена - Inventory Enhancement)
+**Phase 13 Inventory & Equipment Enhancement завершена:**
+- Реализованы все 9 задач
+- **Backend:**
+  - InventoryPhoto model enhanced: thumbnail_path, sort_order, width, height, file_size
+  - Tag model enhanced: icon, description fields
+  - inventory_item_tags junction table (many-to-many)
+  - BulkOperationsService: bulk_update_status, bulk_transfer, bulk_delete, bulk_assign_tags, bulk_remove_tags, bulk_update_category
+  - QRCodeService: generate_inventory_qr, generate_batch_qr, generate_label_sheet
+  - API endpoints: /bulk/status, /bulk/transfer, /bulk/delete, /bulk/tags, /bulk/category
+  - API endpoints: /items/{id}/qr, /qr/batch, /qr/labels
+  - Alembic migration: 016_inventory_enhancement
+- **Frontend:**
+  - ViewSwitcher component (Grid/List/Table/Gallery with localStorage)
+  - ImageUploader (drag-drop, rotation, preview, primary selection)
+  - BulkActionBar (floating action bar for bulk operations)
+  - CategoryTreeFilter (hierarchical tree with search)
+  - TagManager (tag picker with CRUD and color palette)
+  - cn utility function (clsx + tailwind-merge)
+  - Enhanced inventory_types.ts with Tag, BulkOperationResult, QR types
+  - Updated transformers in inventory_service.ts and document_service.ts
+- **Статистика:**
+  - 23 файлов изменено
+  - +2,939 строк кода
+  - TypeScript check: passed
+- **PR:** https://github.com/floweriwe/theatre_project/pull/11
 
 ### 2026-01-17 (Phase 9 завершена - Document Organization & Reports)
 **Phase 9 Document Organization & Reports завершена:**
